@@ -42,6 +42,7 @@ import 'package:highrich/model/default_model.dart';
 import 'package:highrich/model/deliveryCharge.dart';
 import 'package:highrich/model/product_detail_model.dart';
 import 'package:highrich/model/subscription_model.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'edit_address.dart';
@@ -340,8 +341,21 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                     color: Colors.white,
                     child: ListView(
                       children: [
-                        SizedBox(height: getProportionateScreenHeight(50)),
-                        _imageSlider(),
+                        SizedBox(height: getProportionateScreenHeight(25)),
+                        Stack(
+                          children: [
+                            _imageSlider(),
+                            Positioned(
+                                right: 10,
+                                child: IconButton(
+                                    onPressed: () {
+                                      print(productID);
+                                      Share.share(
+                                          'https://highrich.in/product-detail/$productID');
+                                    },
+                                    icon: Icon(Icons.share))),
+                          ],
+                        ),
                         SizedBox(height: getProportionateScreenHeight(10)),
                         _productDetails(),
                         SizedBox(height: getProportionateScreenHeight(10)),

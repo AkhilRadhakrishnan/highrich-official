@@ -73,6 +73,7 @@ dependencies:
   get: ^3.24.0
   intl: ^0.17.0
   barcode: ^2.2.0
+  share_plus: ^4.0.1
 
 dev_dependencies:
   flutter_test:
