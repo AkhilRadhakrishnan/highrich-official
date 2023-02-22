@@ -17,6 +17,7 @@ import 'package:highrich/Screens/product_detail_page.dart';
 import 'package:highrich/Screens/product_listing.dart';
 import 'package:highrich/Screens/search.dart';
 import 'package:highrich/Screens/fastMoving_screen.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/HomeModel/home_banner_model.dart';
 import 'package:highrich/model/HomeModel/home_category.dart';
@@ -1800,40 +1801,41 @@ Container _buildBox(int itemIndex, BuildContext context,
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 6, right: 6),
-                  child: productSectionModelHome[itemIndex]
-                              .source
-                              .processedPriceAndStock
-                              .length >
-                          0
-                      ? Row(
-                          children: [
-                            Text(
-                              "SI:",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
-                                  fontSize: 14.0),
-                              maxLines: 1,
-                            ),
-                            Spacer(),
-                            Text(
-                              productSectionModelHome[itemIndex]
-                                  .source
-                                  ?.processedPriceAndStock[0]
-                                  ?.salesIncentive
-                                  .toStringAsFixed(2)
-                                  .toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
-                                  fontSize: 14.0),
-                            )
-                          ],
-                        )
-                      : Container(),
-                ),
+                if (AppConfig.isAuthorized)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6, right: 6),
+                    child: productSectionModelHome[itemIndex]
+                                .source
+                                .processedPriceAndStock
+                                .length >
+                            0
+                        ? Row(
+                            children: [
+                              Text(
+                                "SI:",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blueAccent,
+                                    fontSize: 14.0),
+                                maxLines: 1,
+                              ),
+                              Spacer(),
+                              Text(
+                                productSectionModelHome[itemIndex]
+                                    .source
+                                    ?.processedPriceAndStock[0]
+                                    ?.salesIncentive
+                                    .toStringAsFixed(2)
+                                    .toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blueAccent,
+                                    fontSize: 14.0),
+                              )
+                            ],
+                          )
+                        : Container(),
+                  ),
                 SizedBox(
                   height: 5,
                 ),

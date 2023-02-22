@@ -22,6 +22,7 @@ import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/Screens/search.dart';
 import 'package:highrich/database/database.dart';
 import 'package:highrich/entity/CartEntity.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/general/custom_dialog.dart';
 import 'package:highrich/general/default_button.dart';
@@ -851,7 +852,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                                               .processedPriceAndStock
                                                               .length >
                                                           0
-                                                      ? Row(
+                                                      ? AppConfig.isAuthorized ? Row(
                                                           children: [
                                                             Text(
                                                               "SI:",
@@ -888,7 +889,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                                                       14.0),
                                                             )
                                                           ],
-                                                        )
+                                                        ) : SizedBox.shrink()
                                                       : Container(),
                                                   SizedBox(height: 2),
                                                   ElevatedButton(

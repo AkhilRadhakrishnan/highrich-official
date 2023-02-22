@@ -26,6 +26,7 @@ import 'package:highrich/Screens/search.dart';
 import 'package:highrich/Screens/specification_product_detail.dart';
 import 'package:highrich/database/database.dart';
 import 'package:highrich/entity/CartEntity.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/general/custom_dialog.dart';
 import 'package:highrich/general/default_button.dart';
@@ -591,34 +592,35 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                 )
               : Container(),
           SizedBox(height: 10),
-          Row(
-            children: [
-              salesIncentive != null
-                  ? Container(
-                      height: 32,
-                      constraints: BoxConstraints(minWidth: 60.0),
-                      decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          border: Border.all(color: Colors.blueAccent),
-                          borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(62.0),
-                              bottomLeft: Radius.circular(0.0),
-                              topLeft: Radius.circular(0.0),
-                              topRight: Radius.circular(0.0))),
-                      child: Center(
-                          child: Row(
-                        children: [
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text("SI: " + salesIncentive.toString() + "     ",
-                              style: TextStyle(color: Colors.white)),
-                        ],
-                      )),
-                    )
-                  : Container(),
-            ],
-          ),
+          if (AppConfig.isAuthorized)
+            Row(
+              children: [
+                salesIncentive != null
+                    ? Container(
+                        height: 32,
+                        constraints: BoxConstraints(minWidth: 60.0),
+                        decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            border: Border.all(color: Colors.blueAccent),
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(62.0),
+                                bottomLeft: Radius.circular(0.0),
+                                topLeft: Radius.circular(0.0),
+                                topRight: Radius.circular(0.0))),
+                        child: Center(
+                            child: Row(
+                          children: [
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text("SI: " + salesIncentive.toString() + "     ",
+                                style: TextStyle(color: Colors.white)),
+                          ],
+                        )),
+                      )
+                    : Container(),
+              ],
+            ),
           SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1363,41 +1365,42 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 6, right: 6),
-                    child: recentlyViewedProductsList[index]
-                                .source
-                                .processedPriceAndStock
-                                .length >
-                            0
-                        ? Row(
-                            children: [
-                              Text(
-                                "SI:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
-                                    fontSize: 14.0),
-                                maxLines: 1,
-                              ),
-                              Spacer(),
-                              Text(
-                                // '₹ ' +
-                                recentlyViewedProductsList[index]
-                                    .source
-                                    ?.processedPriceAndStock[0]
-                                    ?.salesIncentive
-                                    .toStringAsFixed(2)
-                                    .toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
-                                    fontSize: 14.0),
-                              )
-                            ],
-                          )
-                        : Container(),
-                  ),
+                  if (AppConfig.isAuthorized)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6, right: 6),
+                      child: recentlyViewedProductsList[index]
+                                  .source
+                                  .processedPriceAndStock
+                                  .length >
+                              0
+                          ? Row(
+                              children: [
+                                Text(
+                                  "SI:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blueAccent,
+                                      fontSize: 14.0),
+                                  maxLines: 1,
+                                ),
+                                Spacer(),
+                                Text(
+                                  // '₹ ' +
+                                  recentlyViewedProductsList[index]
+                                      .source
+                                      ?.processedPriceAndStock[0]
+                                      ?.salesIncentive
+                                      .toStringAsFixed(2)
+                                      .toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blueAccent,
+                                      fontSize: 14.0),
+                                )
+                              ],
+                            )
+                          : Container(),
+                    ),
                   SizedBox(
                     height: 4,
                   )
@@ -1631,41 +1634,42 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 6, right: 6),
-                    child: relatedProductsList[index]
-                                .source
-                                .processedPriceAndStock
-                                .length >
-                            0
-                        ? Row(
-                            children: [
-                              Text(
-                                "SI:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
-                                    fontSize: 14.0),
-                                maxLines: 1,
-                              ),
-                              Spacer(),
-                              Text(
-                                // '₹ ' +
-                                relatedProductsList[index]
-                                    .source
-                                    ?.processedPriceAndStock[0]
-                                    ?.salesIncentive
-                                    .toStringAsFixed(2)
-                                    .toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueAccent,
-                                    fontSize: 14.0),
-                              )
-                            ],
-                          )
-                        : Container(),
-                  ),
+                  if (AppConfig.isAuthorized)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6, right: 6),
+                      child: relatedProductsList[index]
+                                  .source
+                                  .processedPriceAndStock
+                                  .length >
+                              0
+                          ? Row(
+                              children: [
+                                Text(
+                                  "SI:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blueAccent,
+                                      fontSize: 14.0),
+                                  maxLines: 1,
+                                ),
+                                Spacer(),
+                                Text(
+                                  // '₹ ' +
+                                  relatedProductsList[index]
+                                      .source
+                                      ?.processedPriceAndStock[0]
+                                      ?.salesIncentive
+                                      .toStringAsFixed(2)
+                                      .toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blueAccent,
+                                      fontSize: 14.0),
+                                )
+                              ],
+                            )
+                          : Container(),
+                    ),
                   SizedBox(
                     height: 4,
                   )

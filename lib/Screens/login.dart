@@ -12,6 +12,7 @@ import 'package:highrich/Screens/Home/profile.dart';
 import 'package:highrich/Screens/forgot_password.dart';
 import 'package:highrich/Screens/product_detail_page.dart';
 import 'package:highrich/Screens/signup.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/LogInModel.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -139,6 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         else {
                           DartNotificationCenter.post(channel: 'LOGIN');
+                          AppConfig.isAuthorized = true;
                           SharedPreferences prefs =
                           await SharedPreferences.getInstance();
                           prefs.setBool("LOGIN", true);
