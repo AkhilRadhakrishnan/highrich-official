@@ -564,7 +564,7 @@ class _FastMovingState extends State<FastMoving> {
                   // homeAPI();
                 });
               },
-              child: Text(pinCode != defaultPincode ? pinCode : "",
+              child: Text(pinCode==null?"": pinCode != defaultPincode ? pinCode : "",
                   style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.blue,

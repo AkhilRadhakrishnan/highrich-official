@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
     if (pinCode != null && pinCode != ("null") && pinCode != ("")) {
       homeAPI();
     } else {
-      showDialog(
+      /*showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) =>
@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
           pinCode = value[0];
         });
         homeAPI();
-      });
+      });*/
     }
   }
 
