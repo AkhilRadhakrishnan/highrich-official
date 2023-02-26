@@ -997,7 +997,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "+91 95445 00096, +91 8137000844",
+                                "+91 95445 00096, +91 81370 00844",
                                 style: (TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.w400,
