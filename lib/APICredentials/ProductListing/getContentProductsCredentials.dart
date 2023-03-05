@@ -10,8 +10,10 @@ class GetContentProductsCredentials {
   String sortType;
   bool hasRangeAndSort;
   bool forMobileApp;
+  String fmcgCategoryId;
   FilterCredentialsContent filter;
-  GetContentProductsCredentials({this.sectionId, this.offset, this.size,this.filter,this.hasRangeAndSort,this.forMobileApp});
+
+  GetContentProductsCredentials({this.sectionId, this.offset, this.size,this.filter,this.hasRangeAndSort,this.forMobileApp,this.fmcgCategoryId});
 
   GetContentProductsCredentials.fromJson(Map<String, dynamic> json) {
     type = json['type'];
@@ -20,6 +22,7 @@ class GetContentProductsCredentials {
     hasRangeAndSort = json['hasRangeAndSort'];
     forMobileApp = json['forMobileApp'];
     sectionId = json['sectionId'];
+    fmcgCategoryId = json['fmcgCategoryId'];
     offset = json['offset'];
     size = json['size'];
     filter =
@@ -34,6 +37,7 @@ class GetContentProductsCredentials {
     data['hasRangeAndSort'] = this.hasRangeAndSort;
     data['forMobileApp'] = this.forMobileApp;
     data['sectionId'] = this.sectionId;
+    data['fmcgCategoryId'] = this.fmcgCategoryId;
     data['offset'] = this.offset;
     data['size'] = this.size;
     if (this.filter != null) {

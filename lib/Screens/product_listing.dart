@@ -54,6 +54,7 @@ class ProductListing extends StatefulWidget {
   String categoryName;
   GetContentProductsCredentials getContentProductsCredentials;
   ProductListingCredentials productListingCredentials;
+  final bool isFromFMCG;
 
   ProductListing(
       {@required this.apiName,
@@ -67,7 +68,9 @@ class ProductListing extends StatefulWidget {
       this.subCategory2Id,
       this.subCategory3Id,
       this.brandId,
-      this.vendorId});
+      this.vendorId,
+      this.isFromFMCG = false,
+      });
 
   @override
   _ProductListingPageState createState() => _ProductListingPageState();
@@ -1004,7 +1007,7 @@ class _ProductListingPageState extends State<ProductListing> {
     });
 
     Result result =
-        await _apiResponse.productListing(productListingCredentials);
+        await _apiResponse.productListing(productListingCredentials,isFromFMCG: widget.isFromFMCG);
 
     setState(() {
       isLoading = false;
@@ -1047,7 +1050,7 @@ class _ProductListingPageState extends State<ProductListing> {
     });
 
     Result result =
-        await _apiResponse.getContentProducts(getContentProductsCredentials);
+        await _apiResponse.getContentProducts(getContentProductsCredentials,isFromFMCG: widget.isFromFMCG);
 
     setState(() {
       isLoading = false;

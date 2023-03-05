@@ -1140,8 +1140,13 @@ class _FastMovingState extends State<FastMoving> {
 
                             productListingCredentials.offset = 0;
                             productListingCredentials.size = 30;
-                            productListingCredentials.sortBy = "";
-                            productListingCredentials.sortType = "";
+                            if(categoryName.toLowerCase() == "fmcg"){
+                              productListingCredentials.sortBy = "";
+                              productListingCredentials.sortType = "";
+                            }else{
+                              productListingCredentials.sortBy = "highestDiscount.discount";
+                              productListingCredentials.sortType = "desc";
+                            }
                             productListingCredentials.hasRangeAndSort = false;
                             productListingCredentials.key =
                                 subCategories[index].subCategory0Name;
@@ -1151,6 +1156,7 @@ class _FastMovingState extends State<FastMoving> {
                             search.pinCode = widget.pinCode;
                             productListingCredentials.userSearch = search;
                             productListingCredentials.forMobileApp = true;
+                            productListingCredentials.fmcgCategoryId = subCategories[index].subCategory0Id;
 
                             FilterCredentials filterCredentials =
                                 new FilterCredentials();
@@ -1198,6 +1204,7 @@ class _FastMovingState extends State<FastMoving> {
                                           subCategories[index].subCategory0Name,
                                       subCategory0Id:
                                           subCategories[index].subCategory0Id,
+                                      isFromFMCG: categoryName.toLowerCase() == "fmcg",
                                     ),
                                   ));
                               //  print(advertisementCardList.length);

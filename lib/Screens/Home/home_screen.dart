@@ -1234,12 +1234,17 @@ class _HomePageState extends State<HomePage> {
                                 new GetContentProductsCredentials();
                             getContentProductsCredentials.sectionId =
                                 homeProductsSectionsList[index]?.sectionId;
+                            getContentProductsCredentials.fmcgCategoryId = homeProductsSectionsList[index].conditions.fmcgId;
                             getContentProductsCredentials.offset = 0;
                             getContentProductsCredentials.size = 20;
-                            getContentProductsCredentials.type = "section";
-                            getContentProductsCredentials.sortBy = "price";
-                            getContentProductsCredentials.sortType = "asc";
-
+                            getContentProductsCredentials.type = "";
+                            if(homeProductsSectionsList[index]?.sectionTypeName?.contains("FMCG") ?? false){
+                              getContentProductsCredentials.sortBy = "";
+                              getContentProductsCredentials.sortType = "";
+                            }else{
+                              getContentProductsCredentials.sortBy = "highestDiscount.discount";
+                              getContentProductsCredentials.sortType = "desc";
+                            }
                             FilterCredentialsContent filterCredentials =
                                 new FilterCredentialsContent();
                             TermCredentialsContent termCredentials =
@@ -1281,6 +1286,7 @@ class _HomePageState extends State<HomePage> {
                                       categoryName:
                                           homeProductsSectionsList[index]
                                               ?.sectionTitle,
+                                      isFromFMCG:homeProductsSectionsList[index]?.sectionTypeName?.contains("FMCG"),
                                     ),
                                   ));
                             } else {

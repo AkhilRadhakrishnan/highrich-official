@@ -209,7 +209,7 @@ class RemoteDataSource {
   }
 
   //Product Listing api call
-  Future<Result> productListing(ProductListingCredentials productListingCredentials) async {
+  Future<Result> productListing(ProductListingCredentials productListingCredentials,{bool isFromFMCG = false}) async {
 
 
     print("*** Params ProductListing  ****");
@@ -217,7 +217,7 @@ class RemoteDataSource {
 
     final response = await client.request(
         requestType: RequestType.POST,
-        path: "product/search/filter",
+        path: isFromFMCG ? "product/fast-moving/list":"product/search/filter",
         parameter: productListingCredentials);
         print("============search=========");
     print(response.request);
@@ -238,12 +238,12 @@ class RemoteDataSource {
   }
 
   //Product Listing api section/get-contents call
-  Future<Result> getContentProducts(GetContentProductsCredentials getContentProductsCredentials) async {
+  Future<Result> getContentProducts(GetContentProductsCredentials getContentProductsCredentials,{bool isFromFMCG = false}) async {
     print("*** Params Contents  ****");
     print(json.encode(getContentProductsCredentials));
     final response = await client.request(
         requestType: RequestType.POST,
-        path: "section/get-contents",
+        path: isFromFMCG ? "product/fast-moving/list":"section/get-contents",
         parameter: getContentProductsCredentials);
         print("****get-contents***");
     print(response.request);
