@@ -11,11 +11,13 @@ import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/Address/address_list_model.dart';
 import 'package:highrich/model/default_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'add_address.dart';
 import 'package:http/http.dart' as http;
+
 /*
  *  2021 Highrich.in
  */
@@ -26,9 +28,9 @@ class AddressPage extends StatefulWidget {
 
   const AddressPage(
       {Key key,
-        this.menuScreenContext,
-        this.onScreenHideButtonPressed,
-        this.hideStatus = false})
+      this.menuScreenContext,
+      this.onScreenHideButtonPressed,
+      this.hideStatus = false})
       : super(key: key);
 
   @override
@@ -38,7 +40,7 @@ class AddressPage extends StatefulWidget {
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class _AddressPageState extends State<AddressPage> {
-  int itemListingFlag=0;
+  int itemListingFlag = 0;
   bool isLoading = false;
   PersistentTabController _controller;
   List<Address> addressList = new List();
@@ -63,118 +65,128 @@ class _AddressPageState extends State<AddressPage> {
     var body = new Container(
       width: MediaQuery.of(context).size.width,
       color: Colors.white,
-      child: itemListingFlag==1?
-           Padding(
-        padding: const EdgeInsets.only(top: 12.0),
-        child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: addressList.length,
-                  itemBuilder: (_, indexAddress) {
-                    return _buildBoxCategory(indexAddress);
-                  },
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.only(left: 12, right: 12),
-                  child: FlatButton(
-                    color: Color(0xFFE0E0E0),
-                    textColor: Colors.grey,
-                    splashColor: Colors.grey,
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddAddressPage()),);
-                      if (result != null) {
-                        if (result == true){
-                          getAddress();
-                        }
-                      }
+      child: itemListingFlag == 1
+          ? Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: SingleChildScrollView(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: addressList.length,
+                    itemBuilder: (_, indexAddress) {
+                      return _buildBoxCategory(indexAddress);
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: SvgPicture.asset("images/ic_add_orange.svg"),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    height: 50,
+                    margin: EdgeInsets.only(left: 12, right: 12),
+                    child: Container(
+                      color: Color(0xFFE0E0E0),
+                      child: TextButton(
+                        // textColor: Colors.grey,
+                        // splashColor: Colors.grey,
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddAddressPage()),
+                          );
+                          if (result != null) {
+                            if (result == true) {
+                              getAddress();
+                            }
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child:
+                                  SvgPicture.asset("images/ic_add_orange.svg"),
+                            ),
+                            Text(
+                              "Add new address",
+                              style: (TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey)),
+                            )
+                          ],
                         ),
-                        Text(
-                          "Add new address",
-                          style: (TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey)),
-                        )
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              )),
+            )
+          : itemListingFlag == 2
+              ? Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(child: SvgPicture.asset("images/no_adrz.svg")),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(child: Text("There is no address at the moment")),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 50,
+                        margin: EdgeInsets.only(left: 12, right: 12),
+                        child: Container(
+                          color: Color(0xFFE0E0E0),
+                          child: TextButton(
+                            // textColor: Colors.grey,
+                            // splashColor: Colors.grey,
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddAddressPage()),
+                              );
+                              if (result != null) {
+                                if (result == true) {
+                                  getAddress();
+                                }
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: SvgPicture.asset(
+                                      "images/ic_add_orange.svg"),
+                                ),
+                                Text(
+                                  "Add new address",
+                                  style: (TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey)),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
-              ],
-            )),
-      )
-          :itemListingFlag==2? Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(child: SvgPicture.asset("images/no_adrz.svg")),
-            SizedBox(
-              height: 20,
-            ),
-            Center(child: Text("There is no address at the moment")),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              height: 50,
-              margin: EdgeInsets.only(left: 12, right: 12),
-              child: FlatButton(
-                color: Color(0xFFE0E0E0),
-                textColor: Colors.grey,
-                splashColor: Colors.grey,
-                onPressed: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddAddressPage()),);
-                  if (result != null) {
-                    if (result == true){
-                      getAddress();
-                    }
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: SvgPicture.asset("images/ic_add_orange.svg"),
-                    ),
-                    Text(
-                      "Add new address",
-                      style: (TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey)),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ):Container(),
+              : Container(),
     );
 
     return Scaffold(
@@ -225,178 +237,177 @@ class _AddressPageState extends State<AddressPage> {
   }
 
   Widget _buildBoxCategory(int indexAddress) => Container(
-    margin: EdgeInsets.only(left: 12, right: 12, bottom: 12),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+        margin: EdgeInsets.only(left: 12, right: 12, bottom: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Text(
+                  addressList[indexAddress]?.ownerName,
+                  style: (TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black)),
+                ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    setDefaultAddress(addressList[indexAddress]?.id);
+                  },
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    child: addressList[indexAddress]?.primary ?? false
+                        ? SvgPicture.asset("images/green_tick.svg")
+                        : SvgPicture.asset("images/radio_not_selected.svg"),
+                  ),
+                )
+              ],
+            ),
             Text(
-              addressList[indexAddress]?.ownerName,
+              addressDetails(indexAddress),
+              textAlign: TextAlign.left,
               style: (TextStyle(
                   fontSize: 14.0,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black)),
             ),
-            Spacer(),
-            GestureDetector(
-              onTap: () {
-                setDefaultAddress(addressList[indexAddress]?.id);
-              },
-              child: Container(
-                width: 24,
-                height: 24,
-                child: addressList[indexAddress]?.primary ?? false
-                    ? SvgPicture.asset("images/green_tick.svg")
-                    : SvgPicture.asset("images/radio_not_selected.svg"),
+            SizedBox(
+              height: 3,
+            ),
+            Text(
+              addressList[indexAddress]?.pinCode,
+              textAlign: TextAlign.left,
+              style: (TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black)),
+            ),
+            SizedBox(
+              height: 6,
+            ),
+            RichText(
+              text: TextSpan(
+                children: [
+                  WidgetSpan(
+                    child: SvgPicture.asset("images/phone_black.svg"),
+                  ),
+                  TextSpan(text: "     "),
+                  TextSpan(
+                      text: addressList[indexAddress]?.phoneNo,
+                      style: new TextStyle(color: Colors.black)),
+                ],
+              ),
+            ),
+            RichText(
+              text: TextSpan(
+                children: [
+                  WidgetSpan(
+                    child: SvgPicture.asset("images/email_black.svg"),
+                  ),
+                  TextSpan(text: "     "),
+                  TextSpan(
+                      text: addressList[indexAddress]?.emailId,
+                      style: new TextStyle(color: Colors.black)),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              color: addressList[indexAddress].addressType == "Home"
+                  ? Colors.blue
+                  : addressList[indexAddress].addressType == "Office"
+                      ? Colors.green
+                      : Colors.orange,
+              child: Row(
+                children: [
+                  Container(
+                      height: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Center(
+                          child: addressList[indexAddress].addressType == "Home"
+                              ? Text(
+                                  'Home',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0),
+                                )
+                              : addressList[indexAddress].addressType ==
+                                      "Office"
+                                  ? Text(
+                                      'Office',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0),
+                                    )
+                                  : Text(
+                                      addressList[indexAddress].addressType,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0),
+                                    ),
+                        ),
+                      )),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Spacer(),
+                  TextButton(
+                      onPressed: () {
+                        String pageFrom = "address";
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditAddresspage(
+                                    addressModel: addressList[indexAddress],
+                                    pageFrom: pageFrom)));
+                      },
+                      child: Text("EDIT",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600))),
+                  Container(
+                    width: 1,
+                    height: 30,
+                    color: Colors.white,
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        showAlertDialog(context, indexAddress);
+                      },
+                      child: Text("REMOVE",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600))),
+                ],
               ),
             )
           ],
         ),
-        Text(
-          addressDetails(indexAddress),
-          textAlign: TextAlign.left,
-          style: (TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.w500,
-              color: Colors.black)),
-        ),
-        SizedBox(
-          height: 3,
-        ),
-        Text(
-          addressList[indexAddress]?.pinCode,
-          textAlign: TextAlign.left,
-          style: (TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.w500,
-              color: Colors.black)),
-        ),
-        SizedBox(
-          height: 6,
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              WidgetSpan(
-                child: SvgPicture.asset("images/phone_black.svg"),
-              ),
-              TextSpan(text: "     "),
-              TextSpan(
-                  text: addressList[indexAddress]?.phoneNo,
-                  style: new TextStyle(color: Colors.black)),
-            ],
-          ),
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              WidgetSpan(
-                child: SvgPicture.asset("images/email_black.svg"),
-              ),
-              TextSpan(text: "     "),
-              TextSpan(
-                  text: addressList[indexAddress]?.emailId,
-                  style: new TextStyle(color: Colors.black)),
-            ],
-          ),
-        ),
-        SizedBox(height: 20),
-        Container(
-          color: addressList[indexAddress].addressType == "Home"
-              ? Colors.blue
-              : addressList[indexAddress].addressType == "Office"
-              ? Colors.green
-              : Colors.orange,
-          child: Row(
-            children: [
-              Container(
-                  height: 30,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Center(
-                      child: addressList[indexAddress].addressType ==
-                          "Home"
-                          ? Text(
-                        'Home',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.0),
-                      )
-                          : addressList[indexAddress].addressType ==
-                          "Office"
-                          ? Text(
-                        'Office',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.0),
-                      )
-                          : Text(
-                        addressList[indexAddress].addressType,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.0),
-                      ),
-                    ),
-                  )),
-              SizedBox(
-                width: 5,
-              ),
-              Spacer(),
-              FlatButton(
-                  onPressed: () {
-                    String pageFrom="address";
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EditAddresspage(
-                                addressModel: addressList[indexAddress],pageFrom:pageFrom)));
-                  },
-                  child: Text("EDIT",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600))),
-              Container(
-                width: 1,
-                height: 30,
-                color: Colors.white,
-              ),
-              FlatButton(
-                  onPressed: () {
-                    showAlertDialog(context, indexAddress);
-                  },
-                  child: Text("REMOVE",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600))),
-            ],
-          ),
-        )
-      ],
-    ),
-  );
+      );
 
   showAlertDialog(BuildContext context, int indexAddress) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("No"),
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop();
       },
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Yes"),
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop();
-        deleteAddress(
-            addressList[indexAddress].id, indexAddress, context);
+        deleteAddress(addressList[indexAddress].id, indexAddress, context);
       },
     );
 
@@ -452,7 +463,7 @@ class _AddressPageState extends State<AddressPage> {
       //padding: EdgeInsets.only(bottom:16.0),
       content: Text(" " + message),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   //Address listing api call
@@ -471,17 +482,15 @@ class _AddressPageState extends State<AddressPage> {
       if (response.status == "success") {
         setState(() {
           addressList = response.address;
-          if(addressList.length>0)
-            {
-              itemListingFlag = 1;
-            } else {
+          if (addressList.length > 0) {
+            itemListingFlag = 1;
+          } else {
             itemListingFlag = 2;
           }
         });
         addressList.forEach((element) async {
           if (element.primary == true) {
-            SharedPreferences prefs =
-            await SharedPreferences.getInstance();
+            SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString("addressId", element.id);
           }
         });
@@ -512,8 +521,7 @@ class _AddressPageState extends State<AddressPage> {
       DefaultModel response = (result).value;
       if (response.status == "success") {
         showSnackBar("Default address changed successfully");
-        SharedPreferences prefs =
-        await SharedPreferences.getInstance();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("addressId", addressId);
         setState(() {
           for (int j = 0; j < addressList.length; j++) {
@@ -563,7 +571,6 @@ class _AddressPageState extends State<AddressPage> {
     if (response.statusCode != 200) {
       return Future.error("error: status code ${response.statusCode}");
     } else {
-
       final resp = await response.stream.bytesToString();
       DefaultModel defaultModel = DefaultModel.fromRawJson(resp);
       String status = defaultModel.status;

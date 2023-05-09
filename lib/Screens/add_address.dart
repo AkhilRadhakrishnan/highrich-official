@@ -13,7 +13,7 @@ import 'package:highrich/general/default_button.dart';
 import 'package:highrich/model/Address/address_list_model.dart';
 import 'package:highrich/model/Address/district_suggestion_model.dart';
 import 'package:highrich/model/default_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home/home_screen.dart';
@@ -21,6 +21,7 @@ import 'Home/profile.dart';
 import '../general/constants.dart';
 import '../general/shared_pref.dart';
 import 'delivery_address.dart';
+
 /*
  *  2021 Highrich.in
  */
@@ -31,11 +32,12 @@ class AddAddressPage extends StatefulWidget {
   final Function onScreenHideButtonPressed;
   final bool hideStatus;
   String pageFrom;
-   AddAddressPage(
+  AddAddressPage(
       {Key key,
       this.menuScreenContext,
       this.onScreenHideButtonPressed,
-      this.hideStatus = false,this.pageFrom})
+      this.hideStatus = false,
+      this.pageFrom})
       : super(key: key);
 
   @override
@@ -62,16 +64,16 @@ class _AddAddressPageState extends State<AddAddressPage> {
   String buildingName;
   String _dropDownValue;
   String _dropDownValueDist;
-   List<String> districts = new List();
-  bool dropDownDisabled= true;
+  List<String> districts = new List();
+  bool dropDownDisabled = true;
   bool clearDrop = false;
   int _radioValue1 = -1;
   bool secureText = true;
   bool isLoading = false;
   String alternatePhoneNo;
-  String countryCode="91";
-  String countryCodesec="91";
-  bool setasPrimaryAdrz=false;
+  String countryCode = "91";
+  String countryCodesec = "91";
+  bool setasPrimaryAdrz = false;
   String radioButtonItem = 'Home';
   bool otherTypeVisibility = false;
   PersistentTabController _controller;
@@ -83,7 +85,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   @override
   void initState() {
-    pageFrom=widget.pageFrom;
+    pageFrom = widget.pageFrom;
     _loadUserId();
     super.initState();
   }
@@ -106,202 +108,202 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   Widget _uiSetup(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: GestureDetector(
-              onTap: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context,false);
-                } else {
-                  SystemNavigator.pop();
-                }
-              },
-              child: Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.all(6),
-                child: Icon(
-                  Icons.keyboard_backspace,
-                  color: Colors.black,
+        appBar: AppBar(
+          centerTitle: false,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: GestureDetector(
+                onTap: () {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context, false);
+                  } else {
+                    SystemNavigator.pop();
+                  }
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(6),
+                  child: Icon(
+                    Icons.keyboard_backspace,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.all(6),
-            child: Text("Add new Address",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600)),
-          ),
-          Spacer(),
-        ],
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-                children: <Widget>[
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Column(
-                      children: [
-                        _addressTextFields(context),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        _addressType(context),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        otherTypeVisibility
-                            ? Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 18.0, right: 18.0),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.text,
-                                  onSaved: (newValue) => otherType = newValue,
-                                  textCapitalization: TextCapitalization.words,
-                                  onChanged: (value) {
-                                    radioButtonItem=value;
-                                    return null;
-                                  },
-
-                                  decoration: InputDecoration(
-                                    //  labelText: "Email",
-                                    hintText: "Type",
-                                    helperText:
-                                        "Please specify the type of address",
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
-                                    isDense: true,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(2),
-                                      borderSide: const BorderSide(
-                                          color: Colors.orangeAccent,
-                                          width: 0.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(2),
-                                    ),
-                                  ),
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.all(6),
+              child: Text("Add new Address",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600)),
+            ),
+            Spacer(),
+          ],
+        ),
+        body: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              SizedBox(
+                height: 20.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Column(
+                  children: [
+                    _addressTextFields(context),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    _addressType(context),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    otherTypeVisibility
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.only(left: 18.0, right: 18.0),
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              onSaved: (newValue) => otherType = newValue,
+                              textCapitalization: TextCapitalization.words,
+                              onChanged: (value) {
+                                radioButtonItem = value;
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                //  labelText: "Email",
+                                hintText: "Type",
+                                helperText:
+                                    "Please specify the type of address",
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                isDense: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                  borderSide: const BorderSide(
+                                      color: Colors.orangeAccent, width: 0.0),
                                 ),
-                              )
-                            : Container(
-                                height: 1.0,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
                               ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        CheckboxListTile(
-                          title: Text("Set as default address"),
-                          value: setasPrimaryAdrz,
-                          onChanged: (newValue) {
-                            setState(() {
-                              setasPrimaryAdrz=newValue;
-                            });
-                          },
-                          controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 12, right: 12),
-                          child: BlueButton(
-                            text: "Save Address",
-                            press: () async {
-                              if (_formKey.currentState.validate()) {
-                                _formKey.currentState.save();
-                                if(_dropDownValue == null || _dropDownValueDist == null) {
+                            ),
+                          )
+                        : Container(
+                            height: 1.0,
+                          ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    CheckboxListTile(
+                      title: Text("Set as default address"),
+                      value: setasPrimaryAdrz,
+                      onChanged: (newValue) {
+                        setState(() {
+                          setasPrimaryAdrz = newValue;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //  <-- leading Checkbox
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 12, right: 12),
+                      child: BlueButton(
+                        text: "Save Address",
+                        press: () async {
+                          if (_formKey.currentState.validate()) {
+                            _formKey.currentState.save();
+                            if (_dropDownValue == null ||
+                                _dropDownValueDist == null) {
                               showToast("Empty State or District");
                             } else {
                               reqBody.addAll({
-                                  "accountType": "customer",
-                                  "addressLine1": addressLine1,
-                                  "addressLine2": addressLine2,
-                                  "addressType": radioButtonItem,
-                                  "buildingName": buildingName,
-                                  "district": _dropDownValueDist,
-                                  "emailId": emailId,
-                                  "ownerName": ownerName,
-                                  "phoneNo": phoneNo,
-                                  "alternatePhoneNo": alternatePhoneNo,
-                                  "pinCode": pinCode,
-                                  "primary": setasPrimaryAdrz,
-                                  "state": _dropDownValue,
-                                  "userId": userId,
-                                });
-                                print(reqBody);
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                Result result =
-                                    await _apiResponse.addAddress(reqBody);
-                                setState(() {
-                                  isLoading = false;
-                                });
-                                if (result is SuccessState) {
-                                  DefaultModel user = result.value;
-                                  print(user.status);
-                                  if (user.status == "success") {
-                                    String message = user.message;
-                                    String hk = message;
-                                    if(pageFrom=="subscribe"){
-                                      DartNotificationCenter.post(channel: 'SUBSCRIBE_ADDRESS');
-                                      Navigator.pop(context);
-                                    }
-                                    else{
-                                      Navigator.pop(context, true);
-                                    }
-
+                                "accountType": "customer",
+                                "addressLine1": addressLine1,
+                                "addressLine2": addressLine2,
+                                "addressType": radioButtonItem,
+                                "buildingName": buildingName,
+                                "district": _dropDownValueDist,
+                                "emailId": emailId,
+                                "ownerName": ownerName,
+                                "phoneNo": phoneNo,
+                                "alternatePhoneNo": alternatePhoneNo,
+                                "pinCode": pinCode,
+                                "primary": setasPrimaryAdrz,
+                                "state": _dropDownValue,
+                                "userId": userId,
+                              });
+                              print(reqBody);
+                              setState(() {
+                                isLoading = true;
+                              });
+                              Result result =
+                                  await _apiResponse.addAddress(reqBody);
+                              setState(() {
+                                isLoading = false;
+                              });
+                              if (result is SuccessState) {
+                                DefaultModel user = result.value;
+                                print(user.status);
+                                if (user.status == "success") {
+                                  String message = user.message;
+                                  String hk = message;
+                                  if (pageFrom == "subscribe") {
+                                    DartNotificationCenter.post(
+                                        channel: 'SUBSCRIBE_ADDRESS');
+                                    Navigator.pop(context);
+                                  } else {
+                                    Navigator.pop(context, true);
                                   }
-                                } else if (result is UnAuthoredState) {
-                                  DefaultModel unAuthoedUser = (result).value;
-                                  print(unAuthoedUser.message);
-                                  // return _showAlert('Sorry', unAuthoedUser.message);
-                                } else if (result is ErrorState) {
-                                  String errorMessage = (result).msg;
-                                  //  return _showAlert('Sorry', errorMessage);
                                 }
+                              } else if (result is UnAuthoredState) {
+                                DefaultModel unAuthoedUser = (result).value;
+                                print(unAuthoedUser.message);
+                                // return _showAlert('Sorry', unAuthoedUser.message);
+                              } else if (result is ErrorState) {
+                                String errorMessage = (result).msg;
+                                //  return _showAlert('Sorry', errorMessage);
                               }
                             }
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50.0,
-                        ),
-                      ],
+                          }
+                        },
+                      ),
                     ),
-                  )
-                ],
-              ),
-      ),
-      key:_scaffoldkey
-    );
+                    SizedBox(
+                      height: 50.0,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        key: _scaffoldkey);
   }
 
   //Display snack bar
   void showSnackBar(String message) {
     final snackBarContent = SnackBar(
-     // padding: EdgeInsets.only(bottom:16.0),
+      // padding: EdgeInsets.only(bottom:16.0),
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
+
   Padding _addressTextFields(BuildContext context) {
     final node = FocusScope.of(context);
     return Padding(
@@ -312,7 +314,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
           TextFormField(
             keyboardType: TextInputType.name,
             onSaved: (newValue) => ownerName = newValue,
-            inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ' ']"))],
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ' ']"))
+            ],
             onChanged: (value) {
               return null;
             },
@@ -345,10 +349,10 @@ class _AddAddressPageState extends State<AddAddressPage> {
             //Center Row contents vertically,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom:16.0),
+                padding: const EdgeInsets.only(bottom: 16.0),
                 child: CountryCodePicker(
-                  onChanged: (value){
-                    countryCode="91";
+                  onChanged: (value) {
+                    countryCode = "91";
                   },
                   // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                   initialSelection: '+91',
@@ -362,41 +366,41 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 ),
               ),
               Expanded(
-                  child:
-                  TextFormField(
-                    keyboardType: TextInputType.phone,
-                    onSaved: (newValue) => phoneNo = newValue,
-                    maxLength: 10,
-                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(phoneRegex),],
-                    onChanged: (value) {
-                      return null;
-                    },
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return kPhoneNumberNullError;
-                      } else if(!phoneRegex.hasMatch(value)){
-                        return kPhoneNumberValidError;
-                      }
-                      else if(value.length<10)
-                      {
-                        return kPhoneNumberValidError;
-                      }
-                      return null;
-                    },
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => node.nextFocus(),
-                    decoration: InputDecoration(
-                      //  labelText: "Email",
-                      hintText: "Phone *",
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      isDense: true,
-                      border:
-                      OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+                child: TextFormField(
+                  keyboardType: TextInputType.phone,
+                  onSaved: (newValue) => phoneNo = newValue,
+                  maxLength: 10,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(phoneRegex),
+                  ],
+                  onChanged: (value) {
+                    return null;
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return kPhoneNumberNullError;
+                    } else if (!phoneRegex.hasMatch(value)) {
+                      return kPhoneNumberValidError;
+                    } else if (value.length < 10) {
+                      return kPhoneNumberValidError;
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.next,
+                  onEditingComplete: () => node.nextFocus(),
+                  decoration: InputDecoration(
+                    //  labelText: "Email",
+                    hintText: "Phone *",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    isDense: true,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(2)),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                  ),)
+                  ),
+                ),
+              )
             ],
           ),
           SizedBox(
@@ -407,11 +411,11 @@ class _AddAddressPageState extends State<AddAddressPage> {
             //Center Row contents vertically,
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom:16.0),
+                padding: const EdgeInsets.only(bottom: 16.0),
                 child: CountryCodePicker(
-                    onChanged: (value){
-                      countryCodesec="91";
-                    },
+                  onChanged: (value) {
+                    countryCodesec = "91";
+                  },
 
                   // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                   initialSelection: '+91',
@@ -425,22 +429,21 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 ),
               ),
               Expanded(
-                child:
-                TextFormField(
+                child: TextFormField(
                   keyboardType: TextInputType.phone,
                   onSaved: (newValue) => alternatePhoneNo = newValue,
                   maxLength: 10,
-                  inputFormatters: <TextInputFormatter>[new FilteringTextInputFormatter.allow(phoneRegex),],
+                  inputFormatters: <TextInputFormatter>[
+                    new FilteringTextInputFormatter.allow(phoneRegex),
+                  ],
                   onChanged: (value) {
                     return null;
                   },
                   validator: (value) {
-                    if(value.isNotEmpty){
-                      if(!phoneRegex.hasMatch(value)){
+                    if (value.isNotEmpty) {
+                      if (!phoneRegex.hasMatch(value)) {
                         return kPhoneNumberValidError;
-                      }
-                      else if(value.length<10)
-                      {
+                      } else if (value.length < 10) {
                         return kPhoneNumberValidError;
                       }
                       return null;
@@ -453,13 +456,14 @@ class _AddAddressPageState extends State<AddAddressPage> {
                     hintText: "Phone",
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     isDense: true,
-                    border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(2)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                ),)
+                ),
+              )
             ],
           ),
           SizedBox(
@@ -473,7 +477,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
               return null;
             },
             validator: (value) {
-              if(value.isNotEmpty) {
+              if (value.isNotEmpty) {
                 if (!emailValidatorRegExp.hasMatch(value)) {
                   return "Enter Valid Email";
                 }
@@ -585,15 +589,14 @@ class _AddAddressPageState extends State<AddAddressPage> {
             height: 10.0,
           ),
 
-           //State
+          //State
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
-           decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(2)
-            ),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(2)),
             child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
+              child: DropdownButton(
                 hint: _dropDownValue == null
                     ? Text('State *')
                     : Text(
@@ -603,7 +606,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
                 isExpanded: true,
                 iconSize: 30.0,
                 style: TextStyle(color: Colors.black),
-                
                 items: stateSuggestions.map(
                   (val) {
                     return DropdownMenuItem<String>(
@@ -617,7 +619,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   setState(() {
                     clearDrop = true;
                   });
-                   if(clearDrop == true) {
+                  if (clearDrop == true) {
                     _dropDownValueDist = null;
                   }
                   var statesPayload = Map<String, dynamic>();
@@ -628,31 +630,30 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   Result result = await _apiResponse.districtSuggestion({
                     "states": [val]
                   });
-                              
+
                   if (result is SuccessState) {
                     DistrictModel districtModel = (result).value;
                     if (districtModel.status == "success") {
                       districts.clear();
                       setState(() {
-                          dropDownDisabled = false;
+                        dropDownDisabled = false;
                       });
-                       
-                       for(int i = 0; i < districtModel.documents.length ; i ++) {
-                         var distr = districtModel.documents[i];
-                         Districts dist = distr;
-                         districts.addAll(dist.source.districts);
-                       }
+
+                      for (int i = 0; i < districtModel.documents.length; i++) {
+                        var distr = districtModel.documents[i];
+                        Districts dist = distr;
+                        districts.addAll(dist.source.districts);
+                      }
                     } else {
                       setState(() {
-                          dropDownDisabled = true;
+                        dropDownDisabled = true;
                       });
                     }
-                  
                   } else if (result is ErrorState) {
                     String errorMessage = (result).msg;
                     //  return _showAlert('Sorry', errorMessage);
                   }
-                  
+
                   setState(
                     () {
                       _dropDownValue = val;
@@ -662,76 +663,76 @@ class _AddAddressPageState extends State<AddAddressPage> {
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           //Distrit
-          dropDownDisabled == false ? 
-           Container(
-             padding: EdgeInsets.symmetric(horizontal: 10.0),
-           decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(2)
-            ),
-             child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                hint: _dropDownValueDist == null
-                    ? Text('District *')
-                    : Text(
-                        clearDrop == true ? "" : _dropDownValueDist,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                isExpanded: true,
-                iconSize: 30.0,
-                style: TextStyle(color: Colors.black),
-                items: districts.map(
-                  (val) {
-                    return DropdownMenuItem<String>(
-                      value: val,
-                      child: Text(val),
+          dropDownDisabled == false
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(2)),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      hint: _dropDownValueDist == null
+                          ? Text('District *')
+                          : Text(
+                              clearDrop == true ? "" : _dropDownValueDist,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                      isExpanded: true,
+                      iconSize: 30.0,
+                      style: TextStyle(color: Colors.black),
+                      items: districts.map(
+                        (val) {
+                          return DropdownMenuItem<String>(
+                            value: val,
+                            child: Text(val),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (val) {
+                        print(val);
 
-                    );
-                  },
-                ).toList(),
-                onChanged: (val) {
-                  print(val);
-                   
-                  setState(
-                    () {
-                      clearDrop = false;
-                      _dropDownValueDist = val;
-                    },
-                  );
-                },
-          ),
-             ),
-           ) :  Container(
-             padding: EdgeInsets.symmetric(horizontal: 10.0),
-           decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(2)
-            ),
-             child: DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                hint: _dropDownValueDist == null
-                    ? Text('District *')
-                    : Text(
-                        _dropDownValueDist,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                isExpanded: true,
-                iconSize: 30.0,
-                style: TextStyle(color: Colors.black),
-                items: [].map(
-                  (val) {
-                    return DropdownMenuItem<String>(
-                      value: val,
-                      child: Text(val),
-                    );
-                  },
-                ).toList(),
-                onChanged: (_) {},
-          ),
-             ),
-           ),
+                        setState(
+                          () {
+                            clearDrop = false;
+                            _dropDownValueDist = val;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                )
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(2)),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      hint: _dropDownValueDist == null
+                          ? Text('District *')
+                          : Text(
+                              _dropDownValueDist,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                      isExpanded: true,
+                      iconSize: 30.0,
+                      style: TextStyle(color: Colors.black),
+                      items: [].map(
+                        (val) {
+                          return DropdownMenuItem<String>(
+                            value: val,
+                            child: Text(val),
+                          );
+                        },
+                      ).toList(),
+                      onChanged: (_) {},
+                    ),
+                  ),
+                ),
           //Distrit
           // TextFormField(
           //   keyboardType: TextInputType.text,
@@ -794,7 +795,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
           TextFormField(
             keyboardType: TextInputType.number,
             onSaved: (newValue) => pinCode = newValue,
-            inputFormatters: <TextInputFormatter>[new FilteringTextInputFormatter.allow(phoneRegex),],
+            inputFormatters: <TextInputFormatter>[
+              new FilteringTextInputFormatter.allow(phoneRegex),
+            ],
             onChanged: (value) {
               return null;
             },
@@ -949,6 +952,4 @@ class _AddAddressPageState extends State<AddAddressPage> {
       ],
     );
   }
-
-
 }

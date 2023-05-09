@@ -20,7 +20,8 @@ import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/PlaceOrderModel/place_order_model.dart';
 import 'package:highrich/model/cart_model.dart';
 import 'package:highrich/model/default_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -462,27 +463,29 @@ class _PaymentpageState extends State<Paymentpage> {
             SizedBox(height: 15),
             Container(alignment: Alignment.centerLeft, child: _address()),
             SizedBox(height: 20),
-            RaisedButton(
-                color: colorButtonOrange,
-                onPressed: () {
-                  print(pinCode);
-                  placeOrderAPI(paymentMode);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Place Order",
-                        style: (TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white)),
-                      )
-                    ],
-                  ),
-                )),
+            InkWell(
+              onTap: () {
+                print(pinCode);
+                placeOrderAPI(paymentMode);
+              },
+              child: Container(
+                  color: colorButtonOrange,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Place Order",
+                          style: (TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white)),
+                        )
+                      ],
+                    ),
+                  )),
+            ),
             SizedBox(height: 10),
           ],
         ));
@@ -636,7 +639,7 @@ class _PaymentpageState extends State<Paymentpage> {
             options: "getCartCountAPI",
           );
 
-          pushNewScreen(context,
+          PersistentNavBarNavigator.pushNewScreen(context,
               screen: PaymentSucccessPage(orderModel: placeOrderModel.order),
               withNavBar: false);
         } else {
@@ -688,9 +691,11 @@ class _PaymentpageState extends State<Paymentpage> {
     final snackBarContent = SnackBar(
       content: Text(message),
       action: SnackBarAction(
-          label: 'OK', onPressed: _scafolKey.currentState.hideCurrentSnackBar),
+          label: 'OK',
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scafolKey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   @override
@@ -780,7 +785,7 @@ class _PaymentpageState extends State<Paymentpage> {
       if (defaultModel.status == "success") {
         print(defaultModel.message);
         Navigator.pop(context);
-        pushNewScreen(context,
+        PersistentNavBarNavigator.pushNewScreen(context,
             screen: PaymentSucccessPage(orderModel: orderModel),
             withNavBar: false);
         print(defaultModel.message);
@@ -871,38 +876,44 @@ class addressDialog extends StatelessWidget {
                   child: Row(
                     children: [
                       type == "ADDRESS"
-                          ? OutlineButton(
-                              child: new Text("Change ADDRESS"),
-                              onPressed: () {
+                          ? InkWell(
+                              onTap: () {
                                 Navigator.pop(context);
                                 // Navigator.push(
                                 //     context,
                                 //     MaterialPageRoute(
                                 //         builder: (context) => DeliveryAddressPage()));
                               },
-                              borderSide: BorderSide(
-                                width: 2.0,
-                                color: Colors.grey,
-                                style: BorderStyle.solid,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        new BorderRadius.circular(5.0),
+                                    border: Border.all(
+                                      width: 2.0,
+                                      color: Colors.grey,
+                                      style: BorderStyle.solid,
+                                    )),
+                                child: new Text("Change ADDRESS"),
                               ),
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(5.0)))
+                            )
                           : Container(),
                       Spacer(),
-                      FlatButton(
-                          color: colorButtonOrange,
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          DartNotificationCenter.post(
+                              channel: "NONDELIVERABLE", options: cartItemIds);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: colorButtonOrange,
+                              borderRadius: new BorderRadius.circular(5.0)),
                           child: new Text(
                             "Yes",
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            DartNotificationCenter.post(
-                                channel: "NONDELIVERABLE",
-                                options: cartItemIds);
-                          },
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(5.0))),
+                        ),
+                      ),
                       Spacer()
                     ],
                   ),

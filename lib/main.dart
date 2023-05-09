@@ -60,7 +60,7 @@ class _InitalState extends State<Inital> {
       AppUpdateModel appUpdate = (result).value;
       if (appUpdate.status == "success") {
         setState(() {
-          updateAvailable = true;
+          updateAvailable = false;
         });
       } else {
         setState(() {
@@ -115,18 +115,28 @@ class _MyHomeState extends State<MyHome> {
 
   void _checkVersion() async {
     final newVersion = NewVersion(
-        androidId: "com.app.highrich",
-        context: context,
-        dialogText: "Please update your app in order to use",
-        dialogTitle: "New update is here",
-        updateText: "Update Now",
-        dismissText: "Exit",
-        dismissAction: () {
-          SystemNavigator.pop();
-        });
+      androidId: "com.app.highrich",
+      // context: context,
+      // dialogText: "Please update your app in order to use",
+      // dialogTitle: "New update is here",
+      // updateText: "Update Now",
+      // dismissText: "Exit",
+      // dismissAction: () {
+      //   SystemNavigator.pop();
+      // }
+    );
     final status = await newVersion.getVersionStatus();
     if (status.localVersion != status.storeVersion) {
-      newVersion.showUpdateDialog(status);
+      newVersion.showUpdateDialog(
+          context: context,
+          versionStatus: status,
+          dialogText: "Please update your app in order to use",
+          dialogTitle: "New update is here",
+          updateButtonText: "Update Now",
+          dismissButtonText: "Exit",
+          dismissAction: () {
+            SystemNavigator.pop();
+          });
     }
   }
 

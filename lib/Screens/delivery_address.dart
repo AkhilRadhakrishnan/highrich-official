@@ -21,6 +21,7 @@ import 'package:highrich/model/cart_model.dart';
 import 'package:highrich/model/default_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
 /*
  *  2021 Highrich.in
  */
@@ -342,57 +343,61 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
                     ],
                   ),
                   SizedBox(height: 12),
-                  RaisedButton(
-                      color: colorButtonOrange,
-                      
-                      onPressed: () {
-                        if (defaultAddressModel != null && disableContinue == false) {
-                          if (defaultAddressModel.id != null && disableContinue == false) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                settings: RouteSettings(name: "/Paymentpage"),
-                                builder: (context) => Paymentpage(
-                                    nameAdrz: defaultAddressModel.ownerName,
-                                    fullAdrz:
-                                        deliveryAddress(defaultAddressModel),
-                                    pinCodeAdrz: defaultAddressModel.pinCode,
-                                    phoneAdrz: defaultAddressModel.phoneNo,
-                                    idAdrz: defaultAddressModel.id,
-                                    cartIDAdrz: cartIdDeliveryAdrz,
-                                    deliveryCharges: deliveryCharges,
-                                    finalTotal: finalTotal,
-                                    subTotal: totalHRP,
-                                    totalPrice: totalMRP,
-                                    vendorDeliveryChargeMap:
-                                        vendorDeliveryChargeMap),
-                              ),
-                            );
-                          } else {
-                            Fluttertoast.showToast(
-                              msg: "Please select a delivery address",
-                            );
-                          }
+                  InkWell(
+                    onTap: () {
+                      if (defaultAddressModel != null &&
+                          disableContinue == false) {
+                        if (defaultAddressModel.id != null &&
+                            disableContinue == false) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              settings: RouteSettings(name: "/Paymentpage"),
+                              builder: (context) => Paymentpage(
+                                  nameAdrz: defaultAddressModel.ownerName,
+                                  fullAdrz:
+                                      deliveryAddress(defaultAddressModel),
+                                  pinCodeAdrz: defaultAddressModel.pinCode,
+                                  phoneAdrz: defaultAddressModel.phoneNo,
+                                  idAdrz: defaultAddressModel.id,
+                                  cartIDAdrz: cartIdDeliveryAdrz,
+                                  deliveryCharges: deliveryCharges,
+                                  finalTotal: finalTotal,
+                                  subTotal: totalHRP,
+                                  totalPrice: totalMRP,
+                                  vendorDeliveryChargeMap:
+                                      vendorDeliveryChargeMap),
+                            ),
+                          );
                         } else {
                           Fluttertoast.showToast(
                             msg: "Please select a delivery address",
                           );
                         }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Continue",
-                              style: (TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white)),
-                            )
-                          ],
-                        ),
-                      )),
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Please select a delivery address",
+                        );
+                      }
+                    },
+                    child: Container(
+                        color: colorButtonOrange,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Continue",
+                                style: (TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white)),
+                              )
+                            ],
+                          ),
+                        )),
+                  ),
                   SizedBox(height: 8),
                 ],
               ),
@@ -413,21 +418,20 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
             )
           : itemListingFlag == 2
               ? Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  Container(
-                      height: 100,
-                      child: Center(
-                          child: SvgPicture.asset("images/no_adrz.svg"))),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Center(child: Text("There is no address at the moment")),
-                  Spacer(),
-
-                ],
-              )
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Spacer(),
+                    Container(
+                        height: 100,
+                        child: Center(
+                            child: SvgPicture.asset("images/no_adrz.svg"))),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Center(child: Text("There is no address at the moment")),
+                    Spacer(),
+                  ],
+                )
               : Container(),
     );
   }
@@ -437,32 +441,35 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-        child: FlatButton(
-          color: Color(0xFFE0E0E0),
-          textColor: Colors.grey,
-          padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-          splashColor: Colors.grey,
-          onPressed: () {
+        child: InkWell(
+          onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => AddDeliveryAddressPage()));
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: SvgPicture.asset("images/ic_add_orange.svg"),
-              ),
-              Text(
-                "Deliver to another address",
-                style: (TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey)),
-              )
-            ],
+          child: Container(
+            color: Color(0xFFE0E0E0),
+            // textColor: Colors.grey,
+            padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+            // splashColor: Colors.grey,
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: SvgPicture.asset("images/ic_add_orange.svg"),
+                ),
+                Text(
+                  "Deliver to another address",
+                  style: (TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey)),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -475,9 +482,9 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
       child: GestureDetector(
         onTap: () {
           setDefaultAddress(addressList[indexAddress]?.id);
-              setState(() {
-                disableContinue = false;
-              });
+          setState(() {
+            disableContinue = false;
+          });
         },
         child: Container(
           decoration: BoxDecoration(
@@ -571,40 +578,31 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
       key = key + buildingName;
     }
     if (addressLine1 != null && addressLine1 != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + addressLine1;
+      } else {
+        key = key + addressLine1;
       }
-      else{
-        key = key+ addressLine1;
-      }
-
     }
     if (addressLine2 != null && addressLine2 != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + addressLine2;
-      }
-      else{
-        key = key+ addressLine2;
+      } else {
+        key = key + addressLine2;
       }
     }
     if (district != null && district != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + district;
-      }
-      else{
-        key = key+ district;
+      } else {
+        key = key + district;
       }
     }
     if (state != null && state != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + state;
-      }
-      else{
-        key = key+ state;
+      } else {
+        key = key + state;
       }
     }
     return key;
@@ -686,7 +684,7 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
       isLoading = true;
     });
     print("Address iD" + addressId);
-     print("UDI iD" + userId);
+    print("UDI iD" + userId);
     print("Toke" + token);
     Result result = await _apiResponse.setDefaultAddress(userId, addressId);
     setState(() {
@@ -727,7 +725,7 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (this.mounted) {
       setState(() {
-         isLoading = true;
+        isLoading = true;
       });
     }
     String userId = preferences.getString("userId");
@@ -741,26 +739,26 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
 
     if (this.mounted) {
       setState(() {
-         isLoading = false;
+        isLoading = false;
       });
     }
     if (result is SuccessState) {
       CartModel cartModel = (result).value;
       if (cartModel.status == "success") {
         cart = cartModel.cart;
-        if(this.mounted){
+        if (this.mounted) {
           setState(() {
-          cartList = cart.cartItems;
-          cartId = cart.cartId;
-          cartIdDeliveryAdrz = cart.cartId;
-          itemsCount = cartList.length;
-          totalHRP = cart.totalPrice;
-          discount = cart.totalDiscount;
-          totalMRP = cart.bagTotal;
-          finalTotal = totalHRP;
-        });
+            cartList = cart.cartItems;
+            cartId = cart.cartId;
+            cartIdDeliveryAdrz = cart.cartId;
+            itemsCount = cartList.length;
+            totalHRP = cart.totalPrice;
+            discount = cart.totalDiscount;
+            totalMRP = cart.bagTotal;
+            finalTotal = totalHRP;
+          });
         }
-        
+
         getAddress();
       } else {
         showSnackBar("Failed, please try agian later");
@@ -796,8 +794,8 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
           deliveryCharges = deliveryChargeModel.priceSummary.deliveryCharge;
           finalTotal = deliveryChargeModel.priceSummary.totalPrice;
         });
-        DartNotificationCenter.post(channel: "NON_DELIVERABLE_BUTTON",options: null);
-
+        DartNotificationCenter.post(
+            channel: "NON_DELIVERABLE_BUTTON", options: null);
       } else {
         String failureType = deliveryChargeModel.failureType;
         if (failureType == "ADDRESS") {
@@ -842,7 +840,7 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
     String userId = preferences.getString("userId");
     token = preferences.getString("token");
 
-    final Uri URL = Uri.parse(baseURL + "user/cart/calculate-delivery-charge") ;
+    final Uri URL = Uri.parse(baseURL + "user/cart/calculate-delivery-charge");
     final response = await http.post(
       URL,
       headers: <String, String>{
@@ -872,9 +870,10 @@ class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 }
 
@@ -886,7 +885,8 @@ class AddressDelivryPageDialog extends StatefulWidget {
   List<String> cartItemIds;
 
   @override
-  _AddressDelivryPageDialogState createState() => _AddressDelivryPageDialogState();
+  _AddressDelivryPageDialogState createState() =>
+      _AddressDelivryPageDialogState();
 }
 
 class _AddressDelivryPageDialogState extends State<AddressDelivryPageDialog> {
@@ -956,52 +956,63 @@ class _AddressDelivryPageDialogState extends State<AddressDelivryPageDialog> {
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Row(
                     children: [
-                      widget.type=="ADDRESS"?OutlineButton(
-                          child: new Text("Change ADDRESS"),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => DeliveryAddressPage()));
-                          },
-                          borderSide: BorderSide(
-                            width: 2.0,
-                            color: Colors.grey,
-                            style: BorderStyle.solid,
-                          ),
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(5.0))):Container(width: 0,),
+                      widget.type == "ADDRESS"
+                          ? InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => DeliveryAddressPage()));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                  width: 2.0,
+                                  color: Colors.grey,
+                                  style: BorderStyle.solid,
+                                )),
+                                child: new Text("Change ADDRESS"),
+                              ),
+                            )
+                          : Container(
+                              width: 0,
+                            ),
                       Spacer(),
-                      FlatButton(
-                          color: colorButtonOrange,
-                          child: new Text(
-                            "Yes",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Navigator.pop(context);
-                            // Navigator.of(context)
-                            //     .popUntil(ModalRoute.withName("/DeliveryAddressPage"));
-                            // Navigator.pop(context);
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          // Navigator.pop(context);
+                          // Navigator.of(context)
+                          //     .popUntil(ModalRoute.withName("/DeliveryAddressPage"));
+                          // Navigator.pop(context);
 
+                          DartNotificationCenter.post(
+                              channel: "NONDELIVERABLE",
+                              options: widget.cartItemIds);
 
-                            DartNotificationCenter.post(channel: "NONDELIVERABLE",options: widget.cartItemIds);
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => CartPage(
+                          //           hideStatus: false,
+                          //             deleteNoDeliverableBtnFlag: true,
+                          //             cartItemIds: cartItemIds)));
+                        },
+                        child: Container(
 
+                            decoration: BoxDecoration(
+                                color: colorButtonOrange,
+                                borderRadius: new BorderRadius.circular(5.0)
+                            ),
+                            child: new Text(
+                              "Yes",
+                              style: TextStyle(color: Colors.white),
+                            ),
 
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => CartPage(
-                            //           hideStatus: false,
-                            //             deleteNoDeliverableBtnFlag: true,
-                            //             cartItemIds: cartItemIds)));
-                          },
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(5.0))),
+                        )
+                      ),
                       Spacer()
                     ],
                   ),

@@ -396,7 +396,7 @@ class _ProductFilterState extends State<ProductFilterPage> {
     List<Widget> columnContent = [];
     for (SubCategoryLevelThreeFilter content in document2) {
       columnContent.add(new ExpansionTile(
-        title: FlatButton(
+        title: TextButton(
           child: Row(
             children: [
               Padding(
@@ -446,7 +446,7 @@ class _ProductFilterState extends State<ProductFilterPage> {
 
     for (SubCategoryLevelOneFilter content in document.subCategories)
       columnContent.add(ExpansionTile(
-        title: FlatButton(
+        title: TextButton(
           child: Row(
             children: [
               Padding(
@@ -494,7 +494,7 @@ class _ProductFilterState extends State<ProductFilterPage> {
 
     for (SubCategoryLevelTwoFilter content in document)
       columnContent.add(ExpansionTile(
-        title: FlatButton(
+        title: TextButton(
           child: Row(
             children: [
               Padding(
@@ -684,7 +684,7 @@ class _ProductFilterState extends State<ProductFilterPage> {
             itemCount: categoryList.length,
             itemBuilder: (context, index) {
               return new ExpansionTile(
-                title: FlatButton(
+                title: TextButton(
                   child: Row(
                     children: [
                       Text(
@@ -1389,8 +1389,9 @@ class _ProductFilterState extends State<ProductFilterPage> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 }

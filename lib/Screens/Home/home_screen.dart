@@ -23,7 +23,8 @@ import 'package:highrich/model/HomeModel/home_category.dart';
 import 'package:highrich/model/HomeModel/home_products_model.dart';
 import 'package:highrich/model/HomeModel/home_products_section_model.dart';
 import 'package:highrich/model/fast_moving_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -178,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -512,9 +513,10 @@ class _HomePageState extends State<HomePage> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   Widget _typeView(BuildContext context) {
@@ -1222,7 +1224,7 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w700)),
                       ),
                       Spacer(),
-                      FlatButton(
+                      TextButton(
                           // color: Colors.green,
                           onPressed: () async {
                             ProductListingCredentials

@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 /*
  *  2021 Highrich.in
  */
@@ -31,12 +32,12 @@ class CustomNavBarWidget extends StatelessWidget {
               data: IconThemeData(
                   size: 26.0,
                   color: isSelected
-                      ? (item.activeContentColor == null
-                      ? item.activeColor
-                      : item.activeContentColor)
-                      : item.inactiveColor == null
-                      ? item.activeColor
-                      : item.inactiveColor),
+                      ? (item.activeColorPrimary == null
+                          ? item.activeColorPrimary
+                          : item.activeColorPrimary)
+                      : item.inactiveColorPrimary == null
+                          ? item.activeColorPrimary
+                          : item.inactiveColorPrimary),
               child: item.icon,
             ),
           ),
@@ -57,12 +58,14 @@ class CustomNavBarWidget extends StatelessWidget {
           children: items.map((item) {
             var index = items.indexOf(item);
             return Flexible(
-              child: FlatButton(
-                color: Colors.white,
-                onPressed: () {
+              child: InkWell(
+                onTap: () {
                   this.onItemSelected(index);
                 },
-                child: _buildItem(item, selectedIndex == index),
+                child: Container(
+                  color: Colors.white,
+                  child: _buildItem(item, selectedIndex == index),
+                ),
               ),
             );
           }).toList(),

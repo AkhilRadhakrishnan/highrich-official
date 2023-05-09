@@ -26,7 +26,7 @@ import 'package:highrich/Screens/order_detail.dart';
 
 class MyReturns extends StatefulWidget {
   String apiName;
- 
+
   MyReturns({@required this.apiName});
 
   @override
@@ -39,7 +39,7 @@ class _MyReturnsPageState extends State<MyReturns> {
   SharedPref sharedPref = SharedPref();
   List<Documents> documentList = new List();
   RemoteDataSource _apiResponse = RemoteDataSource();
-  
+
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -52,7 +52,6 @@ class _MyReturnsPageState extends State<MyReturns> {
           getMyReturns(sortType);
         });
     DartNotificationCenter.post(channel: 'GET_MY_RETURNS');
-
   }
 
   @override
@@ -224,7 +223,8 @@ class _MyReturnsPageState extends State<MyReturns> {
                                                                           .source
                                                                           .itemCurrentPrice
                                                                           .sellingPrice
-                                                                          .toStringAsFixed(2)
+                                                                          .toStringAsFixed(
+                                                                              2)
                                                                           .toString(),
                                                                   style:
                                                                       TextStyle(
@@ -245,7 +245,8 @@ class _MyReturnsPageState extends State<MyReturns> {
                                                                           .source
                                                                           .itemCurrentPrice
                                                                           .price
-                                                                          .toStringAsFixed(2)
+                                                                          .toStringAsFixed(
+                                                                              2)
                                                                           .toString(),
                                                                   style:
                                                                       TextStyle(
@@ -865,8 +866,7 @@ class _BottomSheetViewDetailsState extends State<BottomSheetViewDetails>
                     ),
                     Expanded(
                         child: Text(
-                                  sourceMyReturns.vendor,
-                          
+                      sourceMyReturns.vendor,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -1115,7 +1115,7 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
   bool firstLoading = true;
 
   Widget build(BuildContext context) {
-    if(firstLoading) {
+    if (firstLoading) {
       sourceMyReturns = widget.sourceMyReturns;
       print("IFSCCODE");
       firstLoading = false;
@@ -1184,7 +1184,6 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                 )
                               ],
                             ),
-                            
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -1248,7 +1247,8 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                           sourceMyReturns
                                                               .itemCurrentPrice
                                                               .sellingPrice
-                                                              .toStringAsFixed(2)
+                                                              .toStringAsFixed(
+                                                                  2)
                                                               .toString(),
                                                       style: TextStyle(
                                                         fontWeight:
@@ -1466,7 +1466,12 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                 }
                                                 return null;
                                               },
-                                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ' ']"))],
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .allow(
+                                                        RegExp("[a-zA-Z ' ']"))
+                                              ],
                                               keyboardType: TextInputType.text,
                                               textInputAction:
                                                   TextInputAction.next,
@@ -1542,7 +1547,12 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                               textInputAction:
                                                   TextInputAction.next,
                                               controller: bankNameController,
-                                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ' ']"))],
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .allow(
+                                                        RegExp("[a-zA-Z ' ']"))
+                                              ],
                                               onEditingComplete: () =>
                                                   node.nextFocus(),
                                               decoration: InputDecoration(
@@ -1608,7 +1618,12 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                 }
                                                 return null;
                                               },
-                                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ' ']"))],
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .allow(
+                                                        RegExp("[a-zA-Z ' ']"))
+                                              ],
                                               controller: branchController,
                                               keyboardType: TextInputType.text,
                                               textInputAction:
@@ -1678,9 +1693,10 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                 }
                                                 return null;
                                               },
-                                              inputFormatters: <TextInputFormatter> [
-                                                new FilteringTextInputFormatter.allow(
-                                                    RegExp("[0-9]")),
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                new FilteringTextInputFormatter
+                                                    .allow(RegExp("[0-9]")),
                                               ],
                                               controller:
                                                   accountNumberController,
@@ -1752,7 +1768,12 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                 }
                                                 return null;
                                               },
-                                              inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9 ' ']"))],
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                FilteringTextInputFormatter
+                                                    .allow(RegExp(
+                                                        "[a-zA-Z0-9 ' ']"))
+                                              ],
                                               controller: ifscController,
                                               keyboardType: TextInputType.text,
                                               textInputAction:
@@ -1822,13 +1843,8 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                 SizedBox(
                                   height: 20,
                                 ),
-                                FlatButton(
-                                    color: Colors.deepOrange,
-                                    child: new Text(
-                                      "Save Changes",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    onPressed: () {
+                                InkWell(
+                                    onTap: () {
                                       FocusScope.of(context).unfocus();
                                       if (_formKey.currentState.validate()) {
                                         _formKey.currentState.save();
@@ -1842,9 +1858,11 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                         String accountNumber =
                                             accountNumberController.text;
                                         String ifscCde = ifscController.text;
-                                        String trackingId = trackingIdCOntroller.text;
-                                        String trackingLink = trackingLinkCOntroller.text;
-                                        Widget cancelButton = FlatButton(
+                                        String trackingId =
+                                            trackingIdCOntroller.text;
+                                        String trackingLink =
+                                            trackingLinkCOntroller.text;
+                                        Widget cancelButton = TextButton(
                                           child: Text(
                                             "No",
                                             style: TextStyle(
@@ -1858,7 +1876,7 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                 .pop();
                                           },
                                         );
-                                        Widget continueButton = FlatButton(
+                                        Widget continueButton = TextButton(
                                           child: Text("Yes",
                                               style: TextStyle(
                                                   color: colorButtonOrange,
@@ -1883,11 +1901,9 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                   shipmentTrackerCredential =
                                                   new ShipmentTrackerCredential();
                                               shipmentTrackerCredential
-                                                      .trackingId =
-                                                  trackingId;
+                                                  .trackingId = trackingId;
                                               shipmentTrackerCredential
-                                                      .trackingLink =
-                                                  trackingLink;
+                                                  .trackingLink = trackingLink;
                                               updateStatusModel
                                                       .shipmentTracker =
                                                   shipmentTrackerCredential;
@@ -1923,11 +1939,9 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                                   shipmentTrackerCredential =
                                                   new ShipmentTrackerCredential();
                                               shipmentTrackerCredential
-                                                      .trackingId =
-                                                  trackingId;
+                                                  .trackingId = trackingId;
                                               shipmentTrackerCredential
-                                                      .trackingLink =
-                                                  trackingLink;
+                                                  .trackingLink = trackingLink;
                                               updateStatusModel
                                                       .shipmentTracker =
                                                   shipmentTrackerCredential;
@@ -1955,9 +1969,13 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
                                         );
                                       }
                                     },
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(0.0))),
+                                    child: Container(
+                                      color: Colors.deepOrange,
+                                      child: new Text(
+                                        "Save Changes",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    )),
                                 SizedBox(
                                   height: 50,
                                 ),
@@ -2001,7 +2019,6 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
   }
 
   Future<DefaultModel> updateStatus(UpdateStatusModel updateStatusModel) async {
-
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final userId = preferences.getString("userId");
     setState(() {
@@ -2015,7 +2032,7 @@ class _BottomSheetUpdateStatusState extends State<BottomSheetUpdateStatus>
     if (result is SuccessState) {
       DefaultModel response = (result).value;
       if (response.status == "success") {
-        Widget continueButton = FlatButton(
+        Widget continueButton = TextButton(
           child: Text(
             "Ok",
             style: TextStyle(

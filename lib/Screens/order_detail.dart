@@ -217,286 +217,290 @@ class _OrderDetailPageState extends State<OrderDetail> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  FlatButton(
-                                    color: Colors.white,
-                                    textColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: Colors.black, width: 1),
-                                    ),
-                                    padding: EdgeInsets.all(8.0),
-                                    splashColor: Colors.deepOrange,
-                                    onPressed: () async {
-                                      final date = DateTime.now();
-                                      final dueDate =
-                                          date.add(Duration(days: 7));
-                                      List<InvoiceItem> invoiceList =
-                                          new List();
-                                      int count = 1;
-                                      // print("hrid:   " + loginModel[index].accountType.toString());
-                                      processedOrderedItemsList[index]
-                                          ?.orderedItemsOfVendor
-                                          ?.forEach((element) {
-                                        if (element.itemOrderStatus
-                                                .currentStatus !=
-                                            "CANCELLED") {
-                                          invoiceList.add(
-                                            InvoiceItem(
-                                              count: count,
-                                              description: element
-                                                          .productName.length <=
-                                                      10
-                                                  ? element.productName
-                                                  : element.productName
-                                                          .substring(0, 10) +
-                                                      '...',
-                                              unit: element.itemCurrentPrice
-                                                      .quantity +
-                                                  " " +
-                                                  element.itemCurrentPrice.unit,
-                                              mrp: element
-                                                  .itemCurrentPrice.price
-                                                  .toStringAsFixed(2)
-                                                  .toString(),
-                                              sellingprice: element
-                                                  .itemCurrentPrice.sellingPrice
-                                                  .toStringAsFixed(2)
-                                                  .toString(),
-                                              quantity: element.quantity,
-                                              tax: element.taxPerCent + "%",
-                                              si: element?.itemCurrentPrice
-                                                  ?.salesIncentive
-                                                  ?.toStringAsFixed(2)
-                                                  .toString(),
-                                              // vat: 0.19,
-                                              unitPrice: element.totalAmount
-                                                  .toStringAsFixed(2)
-                                                  .toString(),
-                                            ),
-                                          );
-                                          count = count + 1;
-                                        }
-                                      });
+                                  InkWell(
+                                    onTap: () async {
+                            final date = DateTime.now();
+                            final dueDate =
+                            date.add(Duration(days: 7));
+                            List<InvoiceItem> invoiceList =
+                            new List();
+                            int count = 1;
+                            // print("hrid:   " + loginModel[index].accountType.toString());
+                            processedOrderedItemsList[index]
+                                ?.orderedItemsOfVendor
+                                ?.forEach((element) {
+                            if (element.itemOrderStatus
+                                .currentStatus !=
+                            "CANCELLED") {
+                            invoiceList.add(
+                            InvoiceItem(
+                            count: count,
+                            description: element
+                                .productName.length <=
+                            10
+                            ? element.productName
+                                : element.productName
+                                .substring(0, 10) +
+                            '...',
+                            unit: element.itemCurrentPrice
+                                .quantity +
+                            " " +
+                            element.itemCurrentPrice.unit,
+                            mrp: element
+                                .itemCurrentPrice.price
+                                .toStringAsFixed(2)
+                                .toString(),
+                            sellingprice: element
+                                .itemCurrentPrice.sellingPrice
+                                .toStringAsFixed(2)
+                                .toString(),
+                            quantity: element.quantity,
+                            tax: element.taxPerCent + "%",
+                            si: element?.itemCurrentPrice
+                                ?.salesIncentive
+                                ?.toStringAsFixed(2)
+                                .toString(),
+                            // vat: 0.19,
+                            unitPrice: element.totalAmount
+                                .toStringAsFixed(2)
+                                .toString(),
+                            ),
+                            );
+                            count = count + 1;
+                            }
+                            });
 
-                                      final invoice = Invoice(
-                                          companycontact: Companycontact(
-                                            title: 'Contact',
-                                            gstin: processedOrderedItemsList[
-                                                            index]
-                                                        ?.windowType ==
-                                                    "singleWindow"
-                                                ? "GSTIN: 32AAFCH0823E1Z8"
-                                                : "GSTIN: " +
-                                                    processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorGstNumber,
-                                            phone: processedOrderedItemsList[
-                                                            index]
-                                                        ?.windowType ==
-                                                    "singleWindow"
-                                                ? '+91 9744338134'
-                                                : "Ph: " +
-                                                    processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorAddress
-                                                        ?.phoneNo,
-                                            mail:
-                                                processedOrderedItemsList[index]
-                                                            ?.windowType ==
-                                                        "singleWindow"
-                                                    ? 'info@highrich.in'
-                                                    : "",
-                                          ),
-                                          company: Company(
-                                            title:
-                                                processedOrderedItemsList[index]
-                                                            ?.vendorType ==
-                                                        "SELLER"
-                                                    ? 'Seller Address'
-                                                    : 'Company Address',
-                                            name: processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorType ==
-                                                    "SELLER"
-                                                ? processedOrderedItemsList[
-                                                        index]
-                                                    ?.vendor
-                                                : 'Highrich Online Shoppe Pvt. Ltd.',
-                                            firstaddr: processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorType ==
-                                                    "SELLER"
-                                                ? processedOrderedItemsList[
-                                                        index]
-                                                    ?.vendorAddress
-                                                    ?.addressLine1
-                                                : '2nd Floor, Kanimangalam Tower',
-                                            secondaddr: processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorType ==
-                                                    "SELLER"
-                                                ? processedOrderedItemsList[
-                                                        index]
-                                                    ?.vendorAddress
-                                                    ?.addressLine2
-                                                : 'Valiyalukkal,Thrissur,Kerala, 680027',
-                                          ),
-                                          supplier: Seller(
-                                            title:
-                                                processedOrderedItemsList[index]
-                                                            ?.vendorType ==
-                                                        "SELLER"
-                                                    ? 'Shipped To '
-                                                    : 'Shipped From',
-                                            gstin: processedOrderedItemsList[
-                                                            index]
-                                                        ?.windowType ==
-                                                    "singleWindow"
-                                                ? "GSTIN: 32AAFCH0823E1Z8"
-                                                : "GSTIN: " +
-                                                    processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorGstNumber,
-                                            name:
-                                                processedOrderedItemsList[index]
-                                                            ?.vendorType ==
-                                                        "SELLER"
-                                                    ? ordersModelNew
-                                                        ?.source?.customerName
-                                                    : processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendor,
-                                            building:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.buildingName,
-                                            address:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.addressLine1,
-                                            address2:
-                                                processedOrderedItemsList[index]
-                                                            ?.vendorAddress
-                                                            ?.addressLine2 !=
-                                                        null
-                                                    ? processedOrderedItemsList[
-                                                            index]
-                                                        ?.vendorAddress
-                                                        ?.addressLine2
-                                                    : "",
-                                            state:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.state,
-                                            dist:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.district,
-                                            pin:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.pinCode,
-                                            phno:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.phoneNo,
-                                            email:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorAddress
-                                                    ?.emailId,
+                            final invoice = Invoice(
+                            companycontact: Companycontact(
+                            title: 'Contact',
+                            gstin: processedOrderedItemsList[
+                            index]
+                                ?.windowType ==
+                            "singleWindow"
+                            ? "GSTIN: 32AAFCH0823E1Z8"
+                                : "GSTIN: " +
+                            processedOrderedItemsList[
+                            index]
+                                ?.vendorGstNumber,
+                            phone: processedOrderedItemsList[
+                            index]
+                                ?.windowType ==
+                            "singleWindow"
+                            ? '+91 9744338134'
+                                : "Ph: " +
+                            processedOrderedItemsList[
+                            index]
+                                ?.vendorAddress
+                                ?.phoneNo,
+                            mail:
+                            processedOrderedItemsList[index]
+                                ?.windowType ==
+                            "singleWindow"
+                            ? 'info@highrich.in'
+                                : "",
+                            ),
+                            company: Company(
+                            title:
+                            processedOrderedItemsList[index]
+                                ?.vendorType ==
+                            "SELLER"
+                            ? 'Seller Address'
+                                : 'Company Address',
+                            name: processedOrderedItemsList[
+                            index]
+                                ?.vendorType ==
+                            "SELLER"
+                            ? processedOrderedItemsList[
+                            index]
+                                ?.vendor
+                                : 'Highrich Online Shoppe Pvt. Ltd.',
+                            firstaddr: processedOrderedItemsList[
+                            index]
+                                ?.vendorType ==
+                            "SELLER"
+                            ? processedOrderedItemsList[
+                            index]
+                                ?.vendorAddress
+                                ?.addressLine1
+                                : '2nd Floor, Kanimangalam Tower',
+                            secondaddr: processedOrderedItemsList[
+                            index]
+                                ?.vendorType ==
+                            "SELLER"
+                            ? processedOrderedItemsList[
+                            index]
+                                ?.vendorAddress
+                                ?.addressLine2
+                                : 'Valiyalukkal,Thrissur,Kerala, 680027',
+                            ),
+                            supplier: Seller(
+                            title:
+                            processedOrderedItemsList[index]
+                                ?.vendorType ==
+                            "SELLER"
+                            ? 'Shipped To '
+                                : 'Shipped From',
+                            gstin: processedOrderedItemsList[
+                            index]
+                                ?.windowType ==
+                            "singleWindow"
+                            ? "GSTIN: 32AAFCH0823E1Z8"
+                                : "GSTIN: " +
+                            processedOrderedItemsList[
+                            index]
+                                ?.vendorGstNumber,
+                            name:
+                            processedOrderedItemsList[index]
+                                ?.vendorType ==
+                            "SELLER"
+                            ? ordersModelNew
+                                ?.source?.customerName
+                                : processedOrderedItemsList[
+                            index]
+                                ?.vendor,
+                            building:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.buildingName,
+                            address:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.addressLine1,
+                            address2:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.addressLine2 !=
+                            null
+                            ? processedOrderedItemsList[
+                            index]
+                                ?.vendorAddress
+                                ?.addressLine2
+                                : "",
+                            state:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.state,
+                            dist:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.district,
+                            pin:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.pinCode,
+                            phno:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.phoneNo,
+                            email:
+                            processedOrderedItemsList[index]
+                                ?.vendorAddress
+                                ?.emailId,
 
-                                            // paymentInfo: 'https://paypal.me/sarahfieldzz',
-                                          ),
-                                          customer: Customer(
-                                            title: 'Billed To',
-                                            name: ordersModelNew
-                                                ?.source?.customerName,
-                                            building: ordersModelNew?.source
-                                                ?.shippingAddress?.buildingName,
-                                            address: ordersModelNew?.source
-                                                ?.shippingAddress?.addressLine1,
-                                            address2: ordersModelNew
-                                                        ?.source
-                                                        ?.shippingAddress
-                                                        ?.addressLine2
-                                                        .length !=
-                                                    null
-                                                ? ordersModelNew
-                                                    ?.source
-                                                    ?.shippingAddress
-                                                    ?.addressLine2
-                                                : "",
-                                            state: ordersModelNew?.source
-                                                ?.shippingAddress?.state,
-                                            dist: ordersModelNew?.source
-                                                ?.shippingAddress?.district,
-                                            pin: ordersModelNew?.source
-                                                ?.shippingAddress?.pinCode,
-                                            cusno: ordersModelNew?.source
-                                                ?.shippingAddress?.phoneNo,
-                                          ),
-                                          info: InvoiceInfo(
-                                            hrid: ordersModelNew
-                                                ?.source?.referralId,
-                                            indate: getFormatedDate(
-                                                ordersModelNew
-                                                    ?.source?.orderedDate),
-                                            paymode: ordersModelNew
-                                                ?.source?.paymentMode,
-                                            // description: 'sugar',
-                                            number: ordersModelNew
-                                                ?.source?.orderGroupId,
-                                          ),
-                                          items: invoiceList,
-                                          totalPrice: InvoicePrice(
-                                            // rs: '\₹',
-                                            deliveryCharge:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorOrderSummary
-                                                    ?.deliveryCharge
-                                                    ?.toStringAsFixed(2)
-                                                    .toString(),
-                                            totalDiscount:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorOrderSummary
-                                                    ?.totalDiscount
-                                                    ?.toStringAsFixed(2)
-                                                    .toString(),
-                                            netTotal:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorOrderSummary
-                                                    ?.subTotal
-                                                    ?.toStringAsFixed(2)
-                                                    .toString(),
-                                            totalAmount:
-                                                processedOrderedItemsList[index]
-                                                    ?.vendorOrderSummary
-                                                    ?.totalPrice
-                                                    ?.toStringAsFixed(2)
-                                                    .toString(),
-                                          ));
+                            // paymentInfo: 'https://paypal.me/sarahfieldzz',
+                            ),
+                            customer: Customer(
+                            title: 'Billed To',
+                            name: ordersModelNew
+                                ?.source?.customerName,
+                            building: ordersModelNew?.source
+                                ?.shippingAddress?.buildingName,
+                            address: ordersModelNew?.source
+                                ?.shippingAddress?.addressLine1,
+                            address2: ordersModelNew
+                                ?.source
+                                ?.shippingAddress
+                                ?.addressLine2
+                                .length !=
+                            null
+                            ? ordersModelNew
+                                ?.source
+                                ?.shippingAddress
+                                ?.addressLine2
+                                : "",
+                            state: ordersModelNew?.source
+                                ?.shippingAddress?.state,
+                            dist: ordersModelNew?.source
+                                ?.shippingAddress?.district,
+                            pin: ordersModelNew?.source
+                                ?.shippingAddress?.pinCode,
+                            cusno: ordersModelNew?.source
+                                ?.shippingAddress?.phoneNo,
+                            ),
+                            info: InvoiceInfo(
+                            hrid: ordersModelNew
+                                ?.source?.referralId,
+                            indate: getFormatedDate(
+                            ordersModelNew
+                                ?.source?.orderedDate),
+                            paymode: ordersModelNew
+                                ?.source?.paymentMode,
+                            // description: 'sugar',
+                            number: ordersModelNew
+                                ?.source?.orderGroupId,
+                            ),
+                            items: invoiceList,
+                            totalPrice: InvoicePrice(
+                            // rs: '\₹',
+                            deliveryCharge:
+                            processedOrderedItemsList[index]
+                                ?.vendorOrderSummary
+                                ?.deliveryCharge
+                                ?.toStringAsFixed(2)
+                                .toString(),
+                            totalDiscount:
+                            processedOrderedItemsList[index]
+                                ?.vendorOrderSummary
+                                ?.totalDiscount
+                                ?.toStringAsFixed(2)
+                                .toString(),
+                            netTotal:
+                            processedOrderedItemsList[index]
+                                ?.vendorOrderSummary
+                                ?.subTotal
+                                ?.toStringAsFixed(2)
+                                .toString(),
+                            totalAmount:
+                            processedOrderedItemsList[index]
+                                ?.vendorOrderSummary
+                                ?.totalPrice
+                                ?.toStringAsFixed(2)
+                                .toString(),
+                            ));
 
-                                      final pdfFile =
-                                          await PdfInvoiceApi.generate(invoice);
+                            final pdfFile =
+                            await PdfInvoiceApi.generate(invoice);
 
-                                      PdfApi.openFile(pdfFile);
-                                      // BottomSheetViewInvoice mbs =
-                                      // new BottomSheetViewInvoice(
-                                      //     processedOrderedItemsList:
-                                      //     processedOrderedItemsList[index],
-                                      //     ordersModel: ordersModelNew,
-                                      //     tabIndex: tabIndex);
-                                      // Future(() =>
-                                      //     showModalBottomSheet(
-                                      //         isScrollControlled: true,
-                                      //         context: context,
-                                      //         builder: (context) {
-                                      //           return mbs;
-                                      //         }));
-                                    },
-                                    child: Text(
-                                      "View Invoice",
-                                      style: TextStyle(fontSize: 14.0),
+                            PdfApi.openFile(pdfFile);
+                            // BottomSheetViewInvoice mbs =
+                            // new BottomSheetViewInvoice(
+                            //     processedOrderedItemsList:
+                            //     processedOrderedItemsList[index],
+                            //     ordersModel: ordersModelNew,
+                            //     tabIndex: tabIndex);
+                            // Future(() =>
+                            //     showModalBottomSheet(
+                            //         isScrollControlled: true,
+                            //         context: context,
+                            //         builder: (context) {
+                            //           return mbs;
+                            //         }));
+                            },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Colors.black, width: 1)),
+                                      color: Colors.white,
+                                      // textColor: Colors.black,
+
+                                      padding: EdgeInsets.all(8.0),
+                                      //splashColor: Colors.deepOrange,
+
+                                      child: Text(
+                                        "View Invoice",
+                                        style: TextStyle(fontSize: 14.0),
+                                      ),
                                     ),
                                   )
                                 ],
@@ -750,13 +754,13 @@ class _OrderDetailPageState extends State<OrderDetail> {
                             width: 20,
                           ),
                           content?.itemOrderStatus?.currentStatus == "SHIPPED"
-                              ? FlatButton(
+                              ? Container(
                                   color: Colors.blue,
-                                  textColor: Colors.white,
-                                  onPressed: () {},
+                                  //textColor: Colors.white,
+                                  // onPressed: () {},
                                   child: Text(
                                     "Track Order",
-                                    style: TextStyle(fontSize: 12.0),
+                                    style: TextStyle(fontSize: 12.0,color: Colors.white),
                                   ),
                                 )
                               : content?.itemOrderStatus?.currentStatus ==
@@ -765,17 +769,20 @@ class _OrderDetailPageState extends State<OrderDetail> {
                                           "PICKED" ||
                                       content?.itemOrderStatus?.currentStatus ==
                                           "CONFIRMED"
-                                  ? OutlineButton(
-                                      child: Text(
-                                        "Cancel Item",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                      borderSide: BorderSide(
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
+                                  ? InkWell(
+                                      onTap: () {
                                         cancelOrderReason(content?.orderId);
                                       },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                          color: Colors.red,
+                                        )),
+                                        child: Text(
+                                          "Cancel Item",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
                                     )
                                   : content?.itemOrderStatus?.currentStatus ==
                                               "RETURN_REQUESTED" ||
@@ -811,19 +818,22 @@ class _OrderDetailPageState extends State<OrderDetail> {
                                                             Colors.deepOrange),
                                                   ),
                                                 )
-                                              : FlatButton(
-                                                  child: Text(
-                                                    "Return Request",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                              : InkWell(
+                            onTap: () {
+                              returnReasons(
+                                  content?.quantity,
+                                  content?.orderId);
+                            },
+                                                child: Container(
+                                                    child: Text(
+                                                      "Return Request",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    color: Colors.deepOrange,
+
                                                   ),
-                                                  color: Colors.deepOrange,
-                                                  onPressed: () {
-                                                    returnReasons(
-                                                        content?.quantity,
-                                                        content?.orderId);
-                                                  },
-                                                )
+                                              )
                         ],
                       ),
                     ],
@@ -1020,33 +1030,38 @@ class _CancelRequestBottomSheetState extends State<CancelRequestBottomSheet>
                     Spacer(),
                     Container(
                       width: 130,
-                      child: OutlineButton(
-                          child: new Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.deepOrange),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          borderSide: BorderSide(color: Colors.deepOrange),
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(0.0),
+                      child: InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.deepOrange)),
+                            child: new Text(
+                              "Cancel",
+                              style: TextStyle(color: Colors.deepOrange),
+                            ),
+
+                            // shape: new RoundedRectangleBorder(
+                            //borderRadius: new BorderRadius.circular(0.0),
+                            // ),
                           )),
                     ),
                     Spacer(),
                     Container(
                       width: 130,
-                      child: FlatButton(
+                      child: InkWell(
+                        onTap: () {
+                          cancelOrders(orderGroupId, orderId, selectedReason);
+                        },
+                        child: Container(
                           color: Colors.deepOrange,
                           child: new Text(
                             "Cancel Order",
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: () {
-                            cancelOrders(orderGroupId, orderId, selectedReason);
-                          },
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(0.0))),
+                          // shape: new RoundedRectangleBorder(
+                          //     borderRadius: new BorderRadius.circular(0.0))
+                        ),
+                      ),
                     ),
                     Spacer(),
                   ],
@@ -1239,34 +1254,39 @@ class _ReturnRequestBottomSheetState extends State<ReturnRequestBottomSheet>
                     Spacer(),
                     Container(
                       width: 130,
-                      child: OutlineButton(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.deepOrange)),
                           child: new Text(
                             "Cancel",
                             style: TextStyle(color: Colors.deepOrange),
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          borderSide: BorderSide(color: Colors.deepOrange),
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(0.0),
-                          )),
+
+                          // shape: new RoundedRectangleBorder(
+                          //   borderRadius: new BorderRadius.circular(0.0),
+                          // )
+                        ),
+                      ),
                     ),
                     Spacer(),
-                    Container(
-                      width: 130,
-                      child: FlatButton(
-                          color: Colors.deepOrange,
-                          child: new Text(
-                            "Return Order",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () {
-                            returnOrderRequest(orderGroupId, orderId,
-                                selectedReason, quantity);
-                          },
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(0.0))),
+                    InkWell(
+                      onTap: () {
+                        returnOrderRequest(
+                            orderGroupId, orderId, selectedReason, quantity);
+                      },
+                      child: Container(
+                          width: 130,
+                          child: Container(
+                            color: Colors.deepOrange,
+                            child: new Text(
+                              "Return Order",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
                     ),
                     Spacer(),
                   ],

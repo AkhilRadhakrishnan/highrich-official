@@ -737,45 +737,47 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                 )
               : Container(),
           SizedBox(height: 20),
-          RaisedButton(
-              color: availability == 2
-                  ? Colors.grey
-                  : stockValue < qty
-                      ? Colors.grey
-                      : colorButtonOrange,
-              onPressed: availability == 2
-                  ? () {}
-                  : stockValue < qty
-                      ? () {}
-                      : () async {
-                          bool checkConnection =
-                              await DataConnectionChecker().hasConnection;
-                          if (checkConnection == true) {
-                            _moveToCart();
-                          } else {
-                            _showAlert("No internet connection",
-                                "No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                          }
-                        },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: SvgPicture.asset("images/ic_cart_white.svg"),
-                    ),
-                    Text(
-                      stockValue < qty ? "Out of Stock" : "Add to Cart",
-                      style: (TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white)),
-                    )
-                  ],
-                ),
-              )),
+          InkWell(
+            onTap: availability == 2
+                ? () {}
+                : stockValue < qty
+                    ? () {}
+                    : () async {
+                        bool checkConnection =
+                            await DataConnectionChecker().hasConnection;
+                        if (checkConnection == true) {
+                          _moveToCart();
+                        } else {
+                          _showAlert("No internet connection",
+                              "No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
+                        }
+                      },
+            child: Container(
+                color: availability == 2
+                    ? Colors.grey
+                    : stockValue < qty
+                        ? Colors.grey
+                        : colorButtonOrange,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: SvgPicture.asset("images/ic_cart_white.svg"),
+                      ),
+                      Text(
+                        stockValue < qty ? "Out of Stock" : "Add to Cart",
+                        style: (TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white)),
+                      )
+                    ],
+                  ),
+                )),
+          ),
           SizedBox(height: 20),
           token != null && token != ("null") && token != ""
               ? GestureDetector(
@@ -920,14 +922,8 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                           SizedBox(height: 20),
                           Row(
                             children: [
-                              FlatButton(
-                                color: Colors.deepOrange,
-                                textColor: Colors.white,
-                                disabledColor: Colors.grey,
-                                disabledTextColor: Colors.black,
-                                padding: EdgeInsets.all(8.0),
-                                splashColor: Colors.deepOrange,
-                                onPressed: () async {
+                              InkWell(
+                                onTap: () async {
                                   Result delivResult =
                                       await _apiResponse.deliveryCharge(
                                           _currentPrice,
@@ -961,9 +957,19 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                                     }
                                   }
                                 },
-                                child: Text(
-                                  "Subscribe Now",
-                                  style: TextStyle(fontSize: 14.0),
+                                child: Container(
+                                  color: Colors.deepOrange,
+                                  // textColor: Colors.white,
+                                  // disabledColor: Colors.grey,
+                                  // disabledTextColor: Colors.black,
+                                  padding: EdgeInsets.all(8.0),
+                                  //splashColor: Colors.deepOrange,
+
+                                  child: Text(
+                                    "Subscribe Now",
+                                    style: TextStyle(
+                                        fontSize: 14.0, color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ],
@@ -1873,7 +1879,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
 
 //Display snack bar
   void showSnackBar(String message) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: Colors.black,
       content: Text(message, style: TextStyle(fontFamily: 'Poppins')),
     ));
@@ -1894,7 +1900,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -2465,33 +2471,36 @@ class _DeliveryAddressBottomSheetState extends State<DeliveryAddressBottomSheet>
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-        child: FlatButton(
-          color: Color(0xFFE0E0E0),
-          textColor: Colors.grey,
-          padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-          splashColor: Colors.grey,
-          onPressed: () {
+        child: InkWell(
+          onTap: () {
             String pageFrom = "subscribe";
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => AddAddressPage(pageFrom: pageFrom)));
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: SvgPicture.asset("images/ic_add_orange.svg"),
-              ),
-              Text(
-                "Deliver to another address",
-                style: (TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey)),
-              )
-            ],
+          child: Container(
+            color: Color(0xFFE0E0E0),
+            //textColor: Colors.grey,
+            padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+            // splashColor: Colors.grey,
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: SvgPicture.asset("images/ic_add_orange.svg"),
+                ),
+                Text(
+                  "Deliver to another address",
+                  style: (TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey)),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -2607,20 +2616,23 @@ class _DeliveryAddressBottomSheetState extends State<DeliveryAddressBottomSheet>
                         child: Column(
                           children: [
                             _button(),
-                            FlatButton(
-                              minWidth: MediaQuery.of(context).size.width,
-                              color: Colors.deepOrange,
-                              textColor: Colors.white,
-                              disabledColor: Colors.grey,
-                              disabledTextColor: Colors.black,
-                              padding: EdgeInsets.all(8.0),
-                              splashColor: Colors.deepOrange,
-                              onPressed: () {
+                            InkWell(
+                              onTap: () {
                                 widget.selectedAddressID(selectedAddressId);
                               },
-                              child: Text(
-                                "Continue",
-                                style: TextStyle(fontSize: 14.0),
+                              child: Container(
+                                //minWidth: MediaQuery.of(context).size.width,
+                                color: Colors.deepOrange,
+                                // textColor: Colors.white,
+                                // disabledColor: Colors.grey,
+                                // disabledTextColor: Colors.black,
+                                padding: EdgeInsets.all(8.0),
+                                // splashColor: Colors.deepOrange,
+
+                                child: Text(
+                                  "Continue",
+                                  style: TextStyle(fontSize: 14.0),
+                                ),
                               ),
                             ),
                           ],
@@ -2938,21 +2950,24 @@ class _SubscriptionSummaryBottomSheetState
           SizedBox(
             height: 30,
           ),
-          FlatButton(
-            minWidth: MediaQuery.of(context).size.width,
-            color: Colors.deepOrange,
-            textColor: Colors.white,
-            disabledColor: Colors.grey,
-            disabledTextColor: Colors.black,
-            padding: EdgeInsets.all(8.0),
-            splashColor: Colors.deepOrange,
-            onPressed: () {
+          InkWell(
+            onTap: () {
               widget.subscriptionSummaryModelReturn(
                   widget.subscriptionSummaryModel);
             },
-            child: Text(
-              "Continue",
-              style: TextStyle(fontSize: 14.0),
+            child: Container(
+              // minWidth: MediaQuery.of(context).size.width,
+              color: Colors.deepOrange,
+              // textColor: Colors.white,
+              // disabledColor: Colors.grey,
+              // disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              //splashColor: Colors.deepOrange,
+
+              child: Text(
+                "Continue",
+                style: TextStyle(fontSize: 14.0),
+              ),
             ),
           )
         ],

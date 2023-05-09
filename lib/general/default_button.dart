@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,11 +5,11 @@ import 'package:flutter/rendering.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/general/size_config.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+
 /*
  *  2021 Highrich.in
  */
 class OrangeButton extends StatelessWidget {
-
   const OrangeButton({
     Key key,
     this.text,
@@ -26,7 +24,7 @@ class OrangeButton extends StatelessWidget {
       width: double.infinity,
       height: 55,
       color: colorButtonOrange,
-      child: FlatButton(
+      child: TextButton(
         //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: press,
         child: Center(
@@ -58,7 +56,7 @@ class BlueButton extends StatelessWidget {
       width: double.infinity,
       height: 55,
       color: colorButtonBlue,
-      child: FlatButton(
+      child: TextButton(
         //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: press,
         child: Center(
@@ -90,26 +88,27 @@ class OrangeStrokeButton extends StatelessWidget {
       width: double.infinity,
       height: 55,
       color: Colors.white,
-      child: FlatButton(
-        onPressed: press,
+      child: InkWell(
+        onTap: press,
+        child: Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: colorButtonOrange,
+                  width: 1,
+                  style: BorderStyle.solid)),
 
-        child: Text(text, style: TextStyle(
-            color: colorButtonOrange,fontWeight:  FontWeight.w600
-        )
+          child: Text(text,
+              style: TextStyle(
+                  color: colorButtonOrange, fontWeight: FontWeight.w600)),
+          //textColor: colorButtonOrange,
         ),
-        textColor: colorButtonOrange,
-        shape: RoundedRectangleBorder(side: BorderSide(
-            color: colorButtonOrange,
-            width: 1,
-            style: BorderStyle.solid
-        ), ),
       ),
     );
   }
 }
 
 class GreyButton extends StatelessWidget {
-
   final String text;
   final Function press;
 
@@ -121,7 +120,7 @@ class GreyButton extends StatelessWidget {
       width: double.infinity,
       height: 40,
       color: Colors.grey,
-      child: FlatButton(
+      child: TextButton(
         //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: press,
         child: Center(
@@ -138,7 +137,9 @@ class GreyButton extends StatelessWidget {
   }
 }
 
-final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+final RoundedLoadingButtonController _btnController =
+    new RoundedLoadingButtonController();
+
 class roundedButton extends StatelessWidget {
   const roundedButton({
     Key key,
@@ -151,25 +152,27 @@ class roundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoundedLoadingButton(
-
-        child: Text(text, style: TextStyle(color: Colors.white,  fontSize: 18,)),
+        child: Text(text,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            )),
         controller: _btnController,
-        width:  MediaQuery.of(context).size.width-60,
+        width: MediaQuery.of(context).size.width - 60,
         height: 55,
         color: colorButtonBlue,
-      //  borderRadius: 2,
+        //  borderRadius: 2,
 
-        onPressed: press
-      );
-
+        onPressed: press);
   }
 }
 
-class ShowAlert extends StatelessWidget{
+class ShowAlert extends StatelessWidget {
   final String title;
   final String message;
   final Function press;
-  const ShowAlert({Key key, this.title,this.message, this.press}) : super(key: key);
+  const ShowAlert({Key key, this.title, this.message, this.press})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -182,7 +185,7 @@ class ShowAlert extends StatelessWidget{
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text('OK'),
           onPressed: () {
             Navigator.of(context).pop();
@@ -192,5 +195,3 @@ class ShowAlert extends StatelessWidget{
     );
   }
 }
-
-

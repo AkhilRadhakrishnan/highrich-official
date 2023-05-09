@@ -12,13 +12,14 @@ import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/general/shared_pref.dart';
 import 'package:highrich/general/size_config.dart';
-import 'package:flutter_ticket_widget/flutter_ticket_widget.dart';
+
 // import 'package:pdf/widgets/barcode.dart';
 import 'package:highrich/Screens/my_orders.dart';
 
 import 'package:highrich/model/PlaceOrderModel/place_order_model.dart';
 import 'package:intl/intl.dart';
 import 'add_address.dart';
+
 /*
  *  2021 Highrich.in
  */
@@ -53,25 +54,27 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
   DateTime currentBackPressTime;
   void initState() {
     super.initState();
-    orderModel=widget.orderModel;
+    orderModel = widget.orderModel;
     print("ORDRMOEL");
-    print(orderModel.subTotal.toStringAsFixed(2),);
-    String orderGroupId=orderModel.orderGroupId;
-    String orGroupId=orderGroupId;
+    print(
+      orderModel.subTotal.toStringAsFixed(2),
+    );
+    String orderGroupId = orderModel.orderGroupId;
+    String orGroupId = orderGroupId;
 
     DateTime now = DateTime.now();
 
     var date = DateTime.fromMillisecondsSinceEpoch(orderModel?.orderedDate);
     orderDate = DateFormat('dd-MM-yyyy').format(date);
-
   }
 
   Future<bool> onWillPop() {
     DartNotificationCenter.unregisterChannel(channel: 'LOGIN');
     DartNotificationCenter.unregisterChannel(channel: 'cartCount_event');
 
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-        BottomNavScreen()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => BottomNavScreen()),
+        (Route<dynamic> route) => false);
   }
 
   @override
@@ -92,36 +95,35 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
               ),
             ),
             Spacer(),
-
           ],
         ),
-        body: WillPopScope(child: Container(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
+        body: WillPopScope(
             child: Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  _top(),
-                  Container(
-                    height: 1.0,
-                    width: MediaQuery.of(context).size.width,
-                    color: gray_bg,
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      _top(),
+                      Container(
+                        height: 1.0,
+                        width: MediaQuery.of(context).size.width,
+                        color: gray_bg,
+                      ),
+                      _bottom(),
+                    ],
                   ),
-                  _bottom(),
-                ],
+                ),
               ),
             ),
-          ),
-        ), onWillPop: onWillPop),
+            onWillPop: onWillPop),
         key: _scaffoldkey,
       ),
       inAsyncCall: isLoading,
       opacity: 0.3,
     );
   }
-
-
 
   Container _top() {
     return Container(
@@ -130,243 +132,245 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
       width: MediaQuery.of(context).size.width,
       child: Column(
         children: [
-          FlutterTicketWidget(
-          width: 350,
-          height: 500,
-          color: Colors.grey[200],
-          isCornerRounded: true,
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children:  <Widget>[
-                    Container(
-                      width: 120,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(width: 1, color: Colors.green)
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Order Confirmed',
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        // Text(
-                        //   'SLM',
-                        //   style: TextStyle(
-                        //       color: Colors.black,
-                        //       fontWeight: FontWeight.bold
-                        //   ),
-                        // ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Icon(
-                            Icons.shopping_cart,
-                            color: Colors.orange,
-                          ),
-                        ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 8),
-                        //   child: Text(
-                        //     'BTL',
-                        //     style: TextStyle(
-                        //         color: Colors.black,
-                        //         fontWeight: FontWeight.bold
-                        //     ),
-                        //   ),
-                        // )
-                      ],
-                    ),
-                  ],
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Text(
-                    'Order Details',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: [
-                          Text("Date",
-                          style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold
-                    ),
-                    ),
-                          SizedBox(width: 90,),
-                          Text("Order ID",
-                          style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold
-                    ),
-                    )
-                      ],
-                      ),
-                      SizedBox(height: 2,),
-                      
-                       Row(
-                        children: [
-                          Text(orderDate.toString(),
-                          style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                    ),
-                          SizedBox(width: 54,),
-                          Text(orderModel.orderGroupId,
-                          style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                    ),
-                      ], 
-                      ),
-                      SizedBox(height: 10,),
-                       Row(
-                        children: [
-                          Text("Payment",
-                          style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold
-                    ),
-                    ),
-                          SizedBox(width: 63,),
-                    //       Text("Status",
-                    //       style: TextStyle(
-                    //   color: Colors.grey[600],
-                    //   fontWeight: FontWeight.bold
-                    // ),
-                    // )
-                      ],
-                      ),
-                      
-                      
-                      SizedBox(height: 2,),
-                      Row(
-                        children: [
-                          Text(orderModel.paymentMode,
-                          style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                    ),
-                          SizedBox(width: 95,),
-                    //       Text(orderModel.orderStatus,
-                    //       style: TextStyle(
-                    //   color: Colors.black,
-                    //   fontWeight: FontWeight.bold,
-                    //   fontSize: 12,
-                    // ),
-                    // ),
-                          
-                      ],
-                      ),
-                      
-                      SizedBox(height: 10,),
-                      Row(children: [
-                        Text("Delivery address",
-                        style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold
-                    ),
-                    )
-                      ],),
-                      SizedBox(height: 2,),
-                       Row(
-                        children: [
-                          SizedBox(width: 0,),
-                          Container(
-                            height: 60,
-                            width: 250,
-                            child: Text(
-                             addressDetails(),
-                             maxLines: 3,
-                             style: (TextStyle(
-                                 fontSize: 12.0,
-                                 fontWeight: FontWeight.bold,
-                                 color: Colors.black)),
-                           ),
-                          ),
-                      ],
-                      ),
-                      
-                    ],
-                    
-                  ),
-                ),
-                  
-              //   Container(
-              //   height: 50,
-              //   width: 50,
-              //   child: BarcodeWidget(
-              //     barcode: Barcode.qrCode(),
-              //     data: 'https://play.google.com/store/apps/details?id=com.app.highrich',
-                  
-              //   ),
-                
-              // ),
-                // ),
-                SizedBox(height: 12,),
-                
-                Container(
-                    height: MediaQuery.of(context).size.height / 4,
-                    width: 400,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                       color: Colors.white,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                     child: ListView.builder(
-                      //  scrollDirection: Axis.vertical,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemCount: orderModel.orderedItems.length,
-                    itemBuilder: (_, index) {
-                      return _buildBoxProducts(index);
-                    },
-                  ),
-                  ),
-                
-
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 10, left: 75, right: 75),
-                //   child: Text(
-                //     'Thanks for your Order',
-                //     style: TextStyle(
-                //       color: Colors.orange,
-                //       fontWeight: FontWeight.bold,
-                //     ),
-                //   ),
-                // )
-                
-              ],
-            ),
+          //   FlutterTicketWidget(
+          //   width: 350,
+          //   height: 500,
+          //   color: Colors.grey[200],
+          //   isCornerRounded: true,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(15),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: <Widget>[
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children:  <Widget>[
+          //             Container(
+          //               width: 120,
+          //               height: 25,
+          //               decoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.circular(30),
+          //                 border: Border.all(width: 1, color: Colors.green)
+          //               ),
+          //               child: Center(
+          //                 child: Text(
+          //                   'Order Confirmed',
+          //                   style: TextStyle(
+          //                     color: Colors.green,
+          //                     fontWeight: FontWeight.bold
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             Row(
+          //               children: <Widget>[
+          //                 // Text(
+          //                 //   'SLM',
+          //                 //   style: TextStyle(
+          //                 //       color: Colors.black,
+          //                 //       fontWeight: FontWeight.bold
+          //                 //   ),
+          //                 // ),
+          //                 Padding(
+          //                   padding: const EdgeInsets.only(left: 8),
+          //                   child: Icon(
+          //                     Icons.shopping_cart,
+          //                     color: Colors.orange,
+          //                   ),
+          //                 ),
+          //                 // Padding(
+          //                 //   padding: const EdgeInsets.only(left: 8),
+          //                 //   child: Text(
+          //                 //     'BTL',
+          //                 //     style: TextStyle(
+          //                 //         color: Colors.black,
+          //                 //         fontWeight: FontWeight.bold
+          //                 //     ),
+          //                 //   ),
+          //                 // )
+          //               ],
+          //             ),
+          //           ],
+          //         ),
+          //
+          //         Padding(
+          //           padding: const EdgeInsets.only(top: 20),
+          //           child: Text(
+          //             'Order Details',
+          //             style: TextStyle(
+          //               color: Colors.black,
+          //               fontWeight: FontWeight.bold
+          //             ),
+          //           ),
+          //         ),
+          //         Divider(),
+          //         Padding(
+          //           padding: const EdgeInsets.only(top: 5),
+          //           child: Column(
+          //             children: <Widget>[
+          //               Row(
+          //                 children: [
+          //                   Text("Date",
+          //                   style: TextStyle(
+          //               color: Colors.grey[600],
+          //               fontWeight: FontWeight.bold
+          //             ),
+          //             ),
+          //                   SizedBox(width: 90,),
+          //                   Text("Order ID",
+          //                   style: TextStyle(
+          //               color: Colors.grey[600],
+          //               fontWeight: FontWeight.bold
+          //             ),
+          //             )
+          //               ],
+          //               ),
+          //               SizedBox(height: 2,),
+          //
+          //                Row(
+          //                 children: [
+          //                   Text(orderDate.toString(),
+          //                   style: TextStyle(
+          //               color: Colors.black,
+          //               fontWeight: FontWeight.bold,
+          //               fontSize: 12,
+          //             ),
+          //             ),
+          //                   SizedBox(width: 54,),
+          //                   Text(orderModel.orderGroupId,
+          //                   style: TextStyle(
+          //               color: Colors.black,
+          //               fontWeight: FontWeight.bold,
+          //               fontSize: 12,
+          //             ),
+          //             ),
+          //               ],
+          //               ),
+          //               SizedBox(height: 10,),
+          //                Row(
+          //                 children: [
+          //                   Text("Payment",
+          //                   style: TextStyle(
+          //               color: Colors.grey[600],
+          //               fontWeight: FontWeight.bold
+          //             ),
+          //             ),
+          //                   SizedBox(width: 63,),
+          //             //       Text("Status",
+          //             //       style: TextStyle(
+          //             //   color: Colors.grey[600],
+          //             //   fontWeight: FontWeight.bold
+          //             // ),
+          //             // )
+          //               ],
+          //               ),
+          //
+          //
+          //               SizedBox(height: 2,),
+          //               Row(
+          //                 children: [
+          //                   Text(orderModel.paymentMode,
+          //                   style: TextStyle(
+          //               color: Colors.green,
+          //               fontWeight: FontWeight.bold,
+          //               fontSize: 12,
+          //             ),
+          //             ),
+          //                   SizedBox(width: 95,),
+          //             //       Text(orderModel.orderStatus,
+          //             //       style: TextStyle(
+          //             //   color: Colors.black,
+          //             //   fontWeight: FontWeight.bold,
+          //             //   fontSize: 12,
+          //             // ),
+          //             // ),
+          //
+          //               ],
+          //               ),
+          //
+          //               SizedBox(height: 10,),
+          //               Row(children: [
+          //                 Text("Delivery address",
+          //                 style: TextStyle(
+          //               color: Colors.grey[600],
+          //               fontWeight: FontWeight.bold
+          //             ),
+          //             )
+          //               ],),
+          //               SizedBox(height: 2,),
+          //                Row(
+          //                 children: [
+          //                   SizedBox(width: 0,),
+          //                   Container(
+          //                     height: 60,
+          //                     width: 250,
+          //                     child: Text(
+          //                      addressDetails(),
+          //                      maxLines: 3,
+          //                      style: (TextStyle(
+          //                          fontSize: 12.0,
+          //                          fontWeight: FontWeight.bold,
+          //                          color: Colors.black)),
+          //                    ),
+          //                   ),
+          //               ],
+          //               ),
+          //
+          //             ],
+          //
+          //           ),
+          //         ),
+          //
+          //       //   Container(
+          //       //   height: 50,
+          //       //   width: 50,
+          //       //   child: BarcodeWidget(
+          //       //     barcode: Barcode.qrCode(),
+          //       //     data: 'https://play.google.com/store/apps/details?id=com.app.highrich',
+          //
+          //       //   ),
+          //
+          //       // ),
+          //         // ),
+          //         SizedBox(height: 12,),
+          //
+          //         Container(
+          //             height: MediaQuery.of(context).size.height / 4,
+          //             width: 400,
+          //             decoration: BoxDecoration(
+          //               borderRadius: BorderRadius.circular(10),
+          //                color: Colors.white,
+          //             ),
+          //             padding: EdgeInsets.symmetric(horizontal: 10),
+          //              child: ListView.builder(
+          //               //  scrollDirection: Axis.vertical,
+          //             // physics: const NeverScrollableScrollPhysics(),
+          //             itemCount: orderModel.orderedItems.length,
+          //             itemBuilder: (_, index) {
+          //               return _buildBoxProducts(index);
+          //             },
+          //           ),
+          //           ),
+          //
+          //
+          //         // Padding(
+          //         //   padding: const EdgeInsets.only(top: 10, left: 75, right: 75),
+          //         //   child: Text(
+          //         //     'Thanks for your Order',
+          //         //     style: TextStyle(
+          //         //       color: Colors.orange,
+          //         //       fontWeight: FontWeight.bold,
+          //         //     ),
+          //         //   ),
+          //         // )
+          //
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          Container(
+            height: 2,
           ),
-        ),
-         Container(height: 2,),
           // Text(
           //   "Your Order is confirmed.",
           //   style: (TextStyle(
@@ -484,8 +488,6 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
     );
   }
 
-
-
   Widget _buildBoxProducts(int index) => Container(
         width: MediaQuery.of(context).size.width,
         height: 60,
@@ -493,9 +495,9 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
           SizedBox(height: 10),
           Row(
             children: [
-                Container(
-                  width: 220,
-                  child: Text(
+              Container(
+                width: 220,
+                child: Text(
                   orderModel?.orderedItems[index]?.productName,
                   maxLines: 2,
                   textAlign: TextAlign.left,
@@ -503,8 +505,8 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
                       fontSize: 14,
                       color: Colors.black,
                       fontWeight: FontWeight.w400),
-              ),
                 ),
+              ),
               Spacer(),
               Padding(
                 padding: const EdgeInsets.only(right: 4.0),
@@ -518,7 +520,9 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
                 ),
               ),
               Text(
-                orderModel?.orderedItems[index]?.itemCurrentPrice?.sellingPrice?.toStringAsFixed(2).toString(),
+                orderModel?.orderedItems[index]?.itemCurrentPrice?.sellingPrice
+                    ?.toStringAsFixed(2)
+                    .toString(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 14,
@@ -530,7 +534,11 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
           Row(
             children: [
               Text(
-                orderModel?.orderedItems[index]?.itemCurrentPrice?.quantity.toString()+" "+orderModel?.orderedItems[index]?.itemCurrentPrice?.unit.toString(),
+                orderModel?.orderedItems[index]?.itemCurrentPrice?.quantity
+                        .toString() +
+                    " " +
+                    orderModel?.orderedItems[index]?.itemCurrentPrice?.unit
+                        .toString(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 12,
@@ -539,7 +547,7 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
               ),
               SizedBox(width: 6),
               Text(
-                "Qty:"+orderModel?.orderedItems[index]?.quantity.toString(),
+                "Qty:" + orderModel?.orderedItems[index]?.quantity.toString(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 12,
@@ -638,7 +646,9 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
                   Container(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      orderModel?.deliveryCharge?.toStringAsFixed(2)?.toString(),
+                      orderModel?.deliveryCharge
+                          ?.toStringAsFixed(2)
+                          ?.toString(),
                       style: (TextStyle(
                           fontSize: 14.0,
                           fontWeight: FontWeight.w400,
@@ -677,49 +687,51 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
                 ],
               ),
               SizedBox(height: 12),
-              RaisedButton(
-                  color: colorButtonOrange,
-                  onPressed: (){
-                    onWillPop();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Continue Shopping",
-                          style: (TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white)),
-                        )
-                      ],
-                    ),
-                  )),
-                  // ElevatedButton(
-                  // // color: colorButtonOrange,
-                  // onPressed: (){
-                  //    Navigator.push(
-                  //                     context,
-                  //                     MaterialPageRoute(
-                  //                         builder: (context) => MyOrders(tabIndex: 0,)));
-                  // },
-                  // child: Padding(
-                  //   padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: [
-                  //       Text(
-                  //         "My Orders",
-                  //         style: (TextStyle(
-                  //             fontSize: 14.0,
-                  //             fontWeight: FontWeight.w400,
-                  //             color: Colors.white)),
-                  //       )
-                  //     ],
-                  //   ),
-                  // )),
+              InkWell(
+                onTap: () {
+                  onWillPop();
+                },
+                child: Container(
+                    color: colorButtonOrange,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Continue Shopping",
+                            style: (TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white)),
+                          )
+                        ],
+                      ),
+                    )),
+              ),
+              // ElevatedButton(
+              // // color: colorButtonOrange,
+              // onPressed: (){
+              //    Navigator.push(
+              //                     context,
+              //                     MaterialPageRoute(
+              //                         builder: (context) => MyOrders(tabIndex: 0,)));
+              // },
+              // child: Padding(
+              //   padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Text(
+              //         "My Orders",
+              //         style: (TextStyle(
+              //             fontSize: 14.0,
+              //             fontWeight: FontWeight.w400,
+              //             color: Colors.white)),
+              //       )
+              //     ],
+              //   ),
+              // )),
               // SizedBox(height: 8),
             ],
           ),
@@ -750,30 +762,33 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
       height: MediaQuery.of(context).size.height * 0.09,
       child: Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-        child: FlatButton(
-          color: Color(0xFFE0E0E0),
-          textColor: Colors.grey,
-          padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-          splashColor: Colors.grey,
-          onPressed: () {
+        child: InkWell(
+          onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => AddAddressPage()));
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: SvgPicture.asset("images/ic_add_orange.svg"),
-              ),
-              Text(
-                "Deliver to another address",
-                style: (TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey)),
-              )
-            ],
+          child: Container(
+            color: Color(0xFFE0E0E0),
+            //textColor: Colors.grey,
+            padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+            // splashColor: Colors.grey,
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: SvgPicture.asset("images/ic_add_orange.svg"),
+                ),
+                Text(
+                  "Deliver to another address",
+                  style: (TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey)),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -902,50 +917,41 @@ class _PaymentSucccessPageState extends State<PaymentSucccessPage> {
   String addressDetails() {
     String key = "";
 
-    String buildingName =orderModel.shippingAddress?.buildingName;
+    String buildingName = orderModel.shippingAddress?.buildingName;
     String addressLine1 = orderModel.shippingAddress?.addressLine1;
     String addressLine2 = orderModel.shippingAddress?.addressLine2;
-    String district =orderModel.shippingAddress?.district;
-    String state =orderModel.shippingAddress?.state;
+    String district = orderModel.shippingAddress?.district;
+    String state = orderModel.shippingAddress?.state;
 
     if (buildingName != null && buildingName != "") {
       key = key + buildingName;
     }
     if (addressLine1 != null && addressLine1 != "") {
-      if(key.length>0)
-        {
-          key = key + "," + addressLine1;
-        }
-      else{
-        key = key+ addressLine1;
+      if (key.length > 0) {
+        key = key + "," + addressLine1;
+      } else {
+        key = key + addressLine1;
       }
-
     }
     if (addressLine2 != null && addressLine2 != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + addressLine2;
-      }
-      else{
-        key = key+ addressLine2;
+      } else {
+        key = key + addressLine2;
       }
     }
     if (district != null && district != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + district;
-      }
-      else{
-        key = key+ district;
+      } else {
+        key = key + district;
       }
     }
     if (state != null && state != "") {
-      if(key.length>0)
-      {
+      if (key.length > 0) {
         key = key + "," + state;
-      }
-      else{
-        key = key+ state;
+      } else {
+        key = key + state;
       }
     }
     return key;

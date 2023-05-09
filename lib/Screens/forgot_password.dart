@@ -16,6 +16,7 @@ import '../general/constants.dart';
 import '../general/default_button.dart';
 import '../general/shared_pref.dart';
 import '../general/size_config.dart';
+
 /*
  *  2021 Highrich.in
  */
@@ -44,7 +45,8 @@ class _ForGotPwdPageState extends State<ForGotPwdPage> {
   var _formKey = GlobalKey<FormState>();
   RemoteDataSource _apiResponse = RemoteDataSource();
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
-  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController =
+      new RoundedLoadingButtonController();
 
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -64,7 +66,7 @@ class _ForGotPwdPageState extends State<ForGotPwdPage> {
             width: MediaQuery.of(context).size.width - 60,
             height: 55,
             color: colorButtonBlue,
-           // borderRadius: 2,
+            // borderRadius: 2,
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
@@ -94,8 +96,7 @@ class _ForGotPwdPageState extends State<ForGotPwdPage> {
                         timeInSecForIosWeb: 1,
                         backgroundColor: Colors.black,
                         textColor: Colors.white,
-                        fontSize: 16.0
-                    );
+                        fontSize: 16.0);
                     // ShowAlert(title: "Success",message:respnse.message,
                     //   press: () async{
                     //     Navigator.of(context).pop();
@@ -236,12 +237,13 @@ class _ForGotPwdPageState extends State<ForGotPwdPage> {
   //Display snack bar
   void showSnackBar(String message) {
     final snackBarContent = SnackBar(
-     // padding: EdgeInsets.only(bottom:16.0),
+      // padding: EdgeInsets.only(bottom:16.0),
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 }

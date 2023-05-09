@@ -9,7 +9,8 @@ import 'package:highrich/Network/result.dart';
 import 'package:highrich/Screens/product_listing.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/Search/search_suggestion.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 // import 'package:avatar_glow/avatar_glow.dart';

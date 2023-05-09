@@ -18,7 +18,7 @@ import 'package:highrich/entity/CartEntity.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/cart_model.dart';
 import 'package:highrich/model/default_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../login.dart';
@@ -28,6 +28,7 @@ import 'home_screen.dart';
 import 'package:dart_notification_center/dart_notification_center.dart';
 import 'package:dart_notification_center/dart_notification_center.dart';
 import 'package:http/http.dart' as http;
+
 /*
  *  2021 Highrich.in
  */
@@ -87,8 +88,8 @@ class _CartPageState extends State<CartPage> {
   List<ProcessedPriceAndStocks> unitsList = new List();
   ProcessedPriceAndStocks selectedUnit = new ProcessedPriceAndStocks();
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
-  
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   List<DropdownMenuItem<ProcessedPriceAndStocks>> buildDropDownMenuItems(
       List listItems) {
@@ -118,20 +119,21 @@ class _CartPageState extends State<CartPage> {
     _loadToken();
     deleteNoDeliverableBtnFlag = widget.deleteNoDeliverableBtnFlag;
     cartItemIds = widget.cartItemIds;
-    DartNotificationCenter.subscribe(channel: 'LOGIN', observer: this, onNotification: (result) {
-      _loadToken();
-    });
+    DartNotificationCenter.subscribe(
+        channel: 'LOGIN',
+        observer: this,
+        onNotification: (result) {
+          _loadToken();
+        });
     DartNotificationCenter.subscribe(
         channel: "NON_DELIVERABLE_BUTTON",
         observer: this,
         onNotification: (result) {
-
           setState(() {
             cartItemIds = result;
             deleteNoDeliverableBtnFlag = false;
           });
           getCart();
-
         });
     if (cartItemIds != null) {
       if (cartItemIds.length > 0) {
@@ -161,15 +163,18 @@ class _CartPageState extends State<CartPage> {
             Map<String, dynamic> userMap = jsonDecode(cartListTemp[i]);
 
             CartItems cartItemModel = CartItems.fromJson(userMap);
-            AddAllToCartCredentials addAllToCartCredentials=new AddAllToCartCredentials();
-            addAllToCartCredentials.productId=cartItemModel.productId;
-            addAllToCartCredentials.productName=cartItemModel.productName;
-            addAllToCartCredentials.vendorId=cartItemModel.vendorId;
-            addAllToCartCredentials.vendorType=cartItemModel.vendorType;
-            addAllToCartCredentials.quantity=cartItemModel.quantity;
-            addAllToCartCredentials.image=cartItemModel.image;
-            addAllToCartCredentials.itemCurrentPrice=cartItemModel.itemCurrentPrice;
-            addAllToCartCredentials.processedPriceAndStocks=cartItemModel.processedPriceAndStocks;
+            AddAllToCartCredentials addAllToCartCredentials =
+                new AddAllToCartCredentials();
+            addAllToCartCredentials.productId = cartItemModel.productId;
+            addAllToCartCredentials.productName = cartItemModel.productName;
+            addAllToCartCredentials.vendorId = cartItemModel.vendorId;
+            addAllToCartCredentials.vendorType = cartItemModel.vendorType;
+            addAllToCartCredentials.quantity = cartItemModel.quantity;
+            addAllToCartCredentials.image = cartItemModel.image;
+            addAllToCartCredentials.itemCurrentPrice =
+                cartItemModel.itemCurrentPrice;
+            addAllToCartCredentials.processedPriceAndStocks =
+                cartItemModel.processedPriceAndStocks;
             cartList.add(cartItemModel);
           }
 
@@ -207,13 +212,10 @@ class _CartPageState extends State<CartPage> {
           print(countTest);
           if (token != null && token != ("null") && token != "") {
             getCart();
-          }
-          else
-          {
+          } else {
             getGuestCartCount();
             getGuestCart();
           }
-
         });
     DartNotificationCenter.subscribe(
         channel: "GET_CART_NON_DELIVERABLE",
@@ -265,14 +267,13 @@ class _CartPageState extends State<CartPage> {
     totalMRP = 0.0;
     discount = 0.0;
     for (int i = 0; i < cartList.length; i++) {
-
-      if(cartList[i].vendorType == "SELLER") {
+      if (cartList[i].vendorType == "SELLER") {
         setState(() {
           cartSellerList.add(cartList[i]);
         });
       } else {
         setState(() {
-        cartStoreList.add(cartList[i]);
+          cartStoreList.add(cartList[i]);
         });
       }
 
@@ -284,9 +285,8 @@ class _CartPageState extends State<CartPage> {
       itemsCount = cartList?.length ?? 0;
       cartList[i].totalAmount = total;
       totalHRP = totalHRP + total;
-      totalMRP =  totalMRP + mrpTotal;
+      totalMRP = totalMRP + mrpTotal;
       discount = totalMRP - totalHRP;
-      
     }
     cartList.clear();
     setState(() {
@@ -321,7 +321,9 @@ class _CartPageState extends State<CartPage> {
         Text(
           "₹ ",
           style: TextStyle(
-              color: Colors.green[800], fontWeight: FontWeight.w600, fontSize: 16),
+              color: Colors.green[800],
+              fontWeight: FontWeight.w600,
+              fontSize: 16),
         ),
         Text(
           totalHRP.toStringAsFixed(2),
@@ -351,9 +353,7 @@ class _CartPageState extends State<CartPage> {
         Text(
           discount.toStringAsFixed(2),
           style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.w600,
-              fontSize: 15),
+              color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 15),
         )
       ],
     );
@@ -376,9 +376,7 @@ class _CartPageState extends State<CartPage> {
         Text(
           totalMRP.toStringAsFixed(2),
           style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.w600,
-              fontSize: 15),
+              color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 15),
         )
       ],
     );
@@ -400,17 +398,23 @@ class _CartPageState extends State<CartPage> {
         child: Container(
           child: Column(
             children: [
-              cartList[index].vendorType == "SELLER" ?
-              Row(
-                children: [
-                  Text("SELLER (COD not available)",style:TextStyle(color: Colors.red,fontWeight: FontWeight.bold)),
-                ],
-              ):
-              Row(
-                children: [
-                  Text("STORE",style:TextStyle(color: Colors.blue,fontWeight: FontWeight.bold)),
-                ],
-              ),
+              cartList[index].vendorType == "SELLER"
+                  ? Row(
+                      children: [
+                        Text("SELLER (COD not available)",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Text("STORE",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
               Row(
                 children: [
                   Spacer(),
@@ -439,24 +443,23 @@ class _CartPageState extends State<CartPage> {
                           double mrpTotal = price * qty;
                           cartList[i].totalAmount = total;
                           totalHRP = totalHRP + total;
-                          totalMRP =  totalMRP + mrpTotal;
+                          totalMRP = totalMRP + mrpTotal;
                           discount = totalMRP - totalHRP;
-                          if(cartList.length > 0 ) {
-                          guestCartCount = cartList[i].quantity;
-                          setGuestCartCount(guestCartCount);
-                        }
-                        }
-                        if(cartList.length==0)
-                          {
-                            guestCartCount=0;
+                          if (cartList.length > 0) {
+                            guestCartCount = cartList[i].quantity;
+                            setGuestCartCount(guestCartCount);
                           }
+                        }
+                        if (cartList.length == 0) {
+                          guestCartCount = 0;
+                        }
                         setGuestCartCount(guestCartCount);
                         if (cartList.length == 0) {
                           setState(() {
                             itemListingCount = 2;
                           });
                         }
-                        
+
                         DartNotificationCenter.post(
                           channel: CHANNEL_NAME,
                           options: "getCartCountAPI",
@@ -590,7 +593,7 @@ class _CartPageState extends State<CartPage> {
                                   .price
                                   .toStringAsFixed(2),
                               style: TextStyle(
-                                decoration: TextDecoration.lineThrough,
+                                  decoration: TextDecoration.lineThrough,
                                   color: cartList[index]?.cartStockFlage
                                       ? Colors.grey.withOpacity(0.10)
                                       : Colors.grey,
@@ -645,73 +648,79 @@ class _CartPageState extends State<CartPage> {
                       child: SizedBox(
                           width: 28,
                           height: 38,
-                          child: FlatButton(
-                            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                            child: Text(
-                              '-',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30.0),
+                              color: cartList[index].cartStockFlage
+                                  ? colorButtonBlue.withOpacity(0.10)
+                                  : colorButtonBlue,
                             ),
-                            color: cartList[index]?.cartStockFlage
-                                ? colorButtonBlue.withOpacity(0.10)
-                                : colorButtonBlue,
-                            onPressed: () {
-                              if (cartList[index]?.cartStockFlage == false) {
-                                int qty = 0;
-                                qty = cartList[index]?.quantity;
-                                setState(() async {
-                                  if (qty > 1) {
-                                    if (token != null &&
-                                        token != ("null") &&
-                                        token != "") {
-                                      cartList[index]?.quantity = qty - 1;
-                                      updateCart(cartList[index], "-",
-                                          cartList[index]?.quantity);
-                                    } else {
-                                      cartList[index]?.quantity = qty - 1;
-                                      await cartDao.clearCartEntity();
-                                      cartList.forEach((element) async {
-                                        String jsonCartItemModel =
-                                            jsonEncode(element);
-                                        final cart =
-                                            CartEntity(null, jsonCartItemModel);
-                                        await cartDao.addToGuestCart(cart);
-                                      });
-                                      totalHRP = 0.0;
-                                      totalMRP = 0.0;
-                                      discount = 0.0;
-                                      for (int i = 0;
-                                          i < cartList.length;
-                                          i++) {
-                                        double sellingPrice = cartList[i]
-                                            .itemCurrentPrice
-                                            .sellingPrice;
-                                        int qty = cartList[i].quantity;
-                                        double total = sellingPrice * qty;
-                                        double price = cartList[i].itemCurrentPrice.price;
-                                        double mrpTotal = price * qty;
-                                        cartList[i].totalAmount = total;
-                                        totalHRP = totalHRP + total;
-                                        totalMRP =  totalMRP + mrpTotal;
-                                        discount = totalMRP - totalHRP;
+                            child: TextButton(
+                              child: Text(
+                                '-',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () {
+                                if (cartList[index]?.cartStockFlage == false) {
+                                  int qty = 0;
+                                  qty = cartList[index]?.quantity;
+                                  setState(() async {
+                                    if (qty > 1) {
+                                      if (token != null &&
+                                          token != ("null") &&
+                                          token != "") {
+                                        cartList[index]?.quantity = qty - 1;
+                                        updateCart(cartList[index], "-",
+                                            cartList[index]?.quantity);
+                                      } else {
+                                        cartList[index]?.quantity = qty - 1;
+                                        await cartDao.clearCartEntity();
+                                        cartList.forEach((element) async {
+                                          String jsonCartItemModel =
+                                              jsonEncode(element);
+                                          final cart = CartEntity(
+                                              null, jsonCartItemModel);
+                                          await cartDao.addToGuestCart(cart);
+                                        });
+                                        totalHRP = 0.0;
+                                        totalMRP = 0.0;
+                                        discount = 0.0;
+                                        for (int i = 0;
+                                            i < cartList.length;
+                                            i++) {
+                                          double sellingPrice = cartList[i]
+                                              .itemCurrentPrice
+                                              .sellingPrice;
+                                          int qty = cartList[i].quantity;
+                                          double total = sellingPrice * qty;
+                                          double price = cartList[i]
+                                              .itemCurrentPrice
+                                              .price;
+                                          double mrpTotal = price * qty;
+                                          cartList[i].totalAmount = total;
+                                          totalHRP = totalHRP + total;
+                                          totalMRP = totalMRP + mrpTotal;
+                                          discount = totalMRP - totalHRP;
+                                        }
+                                        if (guestCartCount > 0) {
+                                          guestCartCount = guestCartCount - 1;
+                                          setGuestCartCount(guestCartCount);
+                                        }
+
+                                        DartNotificationCenter.post(
+                                          channel: CHANNEL_NAME,
+                                          options: "getCartCountAPI",
+                                        );
+                                        setState(() {});
                                       }
-                                      if (guestCartCount > 0) {
-                                        guestCartCount = guestCartCount - 1;
-                                        setGuestCartCount(guestCartCount);
-                                      }
-                                    
-                                      DartNotificationCenter.post(
-                                        channel: CHANNEL_NAME,
-                                        options: "getCartCountAPI",
-                                      );
-                                      setState(() {});
                                     }
-                                  }
-                                });
-                              }
-                            },
+                                  });
+                                }
+                              },
+                            ),
                           ))),
                   SizedBox(
                     child: Center(
@@ -722,87 +731,91 @@ class _CartPageState extends State<CartPage> {
                       child: SizedBox(
                           width: 18,
                           height: 38,
-                          child: FlatButton(
-                            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                            child: Text(
-                              '+',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30.0),
+                              color: cartList[index].cartStockFlage
+                                  ? colorButtonBlue.withOpacity(0.10)
+                                  : colorButtonBlue,
                             ),
-                            color: cartList[index]?.cartStockFlage
-                                ? colorButtonBlue.withOpacity(0.10)
-                                : colorButtonBlue,
-                            onPressed: () {
-                              
-                              if (cartList[index]?.cartStockFlage == false) {
-                                
-                                int qty = 0;
-                                qty = cartList[index]?.quantity;
+                            child: TextButton(
+                              child: Text(
+                                '+',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                              onPressed: () {
+                                if (cartList[index]?.cartStockFlage == false) {
+                                  int qty = 0;
+                                  qty = cartList[index]?.quantity;
 
-                                if (cartList[index].itemCurrentPrice.stock == qty) {
-                                        Fluttertoast.showToast(msg:"Out of Stock",backgroundColor: Color(0xFF42A5F5));
-                                        
-                                        
-                                  }
-
-                                setState(() async {
-                                  if (cartList[index].itemCurrentPrice.stock >
+                                  if (cartList[index].itemCurrentPrice.stock ==
                                       qty) {
-                                    cartList[index]?.quantity = qty + 1;
-                                    if (token != null &&
-                                        token != ("null") &&
-                                        token != "") {
-                                      updateCart(cartList[index], "+",
-                                          cartList[index]?.quantity);
-                                    } else {
-                                      await cartDao.clearCartEntity();
-                                      cartList.forEach((element) async {
-                                        String jsonCartItemModel =
-                                            jsonEncode(element);
-                                        final cart =
-                                            CartEntity(null, jsonCartItemModel);
-                                        await cartDao.addToGuestCart(cart);
-                                      });
-                                      totalHRP = 0.0;
-                                      totalMRP = 0.0;
-                                      discount = 0.0;
-                                      for (int i = 0;
-                                          i < cartList.length;
-                                          i++) {
-                                        double sellingPrice = cartList[i]
-                                            .itemCurrentPrice
-                                            .sellingPrice;
-                                        int qty = cartList[i].quantity;
-                                        double total = sellingPrice * qty;
-                                        double price = cartList[i].itemCurrentPrice.price;
-                          
-                                        cartList[i].totalAmount = total;
-                                        totalHRP = totalHRP + total;
-                                        double mrpTotal = price * qty;
-                                        totalMRP =  totalMRP + mrpTotal;
-                                        discount = totalMRP - totalHRP;
-                                      }
-                                      if (guestCartCount > 0) {
-                                        guestCartCount = guestCartCount + 1;
-                                      }
-                                      setGuestCartCount(guestCartCount);
-                                      DartNotificationCenter.post(
-                                        channel: CHANNEL_NAME,
-                                        options: "getCartCountAPI",
-                                      );
-                                      setState(() {});
-                                    }
+                                    Fluttertoast.showToast(
+                                        msg: "Out of Stock",
+                                        backgroundColor: Color(0xFF42A5F5));
                                   }
-                                });
-                              } else {
 
-                                Fluttertoast.showToast(
-                                    msg:
-                                        "Some items in the cart are out of stock");
-                              }
-                            },
+                                  setState(() async {
+                                    if (cartList[index].itemCurrentPrice.stock >
+                                        qty) {
+                                      cartList[index]?.quantity = qty + 1;
+                                      if (token != null &&
+                                          token != ("null") &&
+                                          token != "") {
+                                        updateCart(cartList[index], "+",
+                                            cartList[index]?.quantity);
+                                      } else {
+                                        await cartDao.clearCartEntity();
+                                        cartList.forEach((element) async {
+                                          String jsonCartItemModel =
+                                              jsonEncode(element);
+                                          final cart = CartEntity(
+                                              null, jsonCartItemModel);
+                                          await cartDao.addToGuestCart(cart);
+                                        });
+                                        totalHRP = 0.0;
+                                        totalMRP = 0.0;
+                                        discount = 0.0;
+                                        for (int i = 0;
+                                            i < cartList.length;
+                                            i++) {
+                                          double sellingPrice = cartList[i]
+                                              .itemCurrentPrice
+                                              .sellingPrice;
+                                          int qty = cartList[i].quantity;
+                                          double total = sellingPrice * qty;
+                                          double price = cartList[i]
+                                              .itemCurrentPrice
+                                              .price;
+
+                                          cartList[i].totalAmount = total;
+                                          totalHRP = totalHRP + total;
+                                          double mrpTotal = price * qty;
+                                          totalMRP = totalMRP + mrpTotal;
+                                          discount = totalMRP - totalHRP;
+                                        }
+                                        if (guestCartCount > 0) {
+                                          guestCartCount = guestCartCount + 1;
+                                        }
+                                        setGuestCartCount(guestCartCount);
+                                        DartNotificationCenter.post(
+                                          channel: CHANNEL_NAME,
+                                          options: "getCartCountAPI",
+                                        );
+                                        setState(() {});
+                                      }
+                                    }
+                                  });
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Some items in the cart are out of stock");
+                                }
+                              },
+                            ),
                           )))
                 ],
               )
@@ -825,10 +838,12 @@ class _CartPageState extends State<CartPage> {
   Widget _uiSetup(BuildContext context) {
     void choiceAction(String choice) {
       if (choice == Menu.Home) {
-        pushNewScreenWithRouteSettings(context, screen: HomePage());
+        PersistentNavBarNavigator.pushNewScreenWithRouteSettings(context,
+            screen: HomePage());
       }
       if (choice == Menu.Cart) {
-        pushNewScreenWithRouteSettings(context, screen: ProfilePage());
+        PersistentNavBarNavigator.pushNewScreenWithRouteSettings(context,
+            screen: ProfilePage());
       }
     }
 
@@ -871,31 +886,32 @@ class _CartPageState extends State<CartPage> {
                               return cartItems(index);
                             },
                           ),
-                          ),
                         ),
                       ),
-                  
+                    ),
                     Divider(
                       height: 1.0,
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
                         color: Colors.white,
                         boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[400],
-                    offset: Offset(10.0, 20.0), //(x,y)
-                    blurRadius: 36.0,
-                  ),
-                ],
+                          BoxShadow(
+                            color: Colors.grey[400],
+                            offset: Offset(10.0, 20.0), //(x,y)
+                            blurRadius: 36.0,
+                          ),
+                        ],
                         // border: Border(
                         //     left: BorderSide(
                         //         color: Colors.green,
                         //         width: 3,
                         //     ),
                         //   ),
-                        ),
+                      ),
                       child: new Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
@@ -939,29 +955,32 @@ class _CartPageState extends State<CartPage> {
                               ? Padding(
                                   padding: const EdgeInsets.only(
                                       left: 12, right: 12),
-                                  child: RaisedButton(
-                                    // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                    color: Colors.red,
-                                    onPressed: () {
+                                  child: InkWell(
+                                    onTap: () {
                                       if (cartItemIds.length > 0) {
                                         deleteMultipleFromCart(context);
                                       }
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 12.0, bottom: 12.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Remove non deliverable items",
-                                            style: (TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.white)),
-                                          )
-                                        ],
+                                    child: Container(
+                                      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      color: Colors.red,
+
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 12.0, bottom: 12.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Remove non deliverable items",
+                                              style: (TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.white)),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -974,87 +993,96 @@ class _CartPageState extends State<CartPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 12, right: 12),
-                            child: RaisedButton(
-                                // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                color: colorButtonOrange,
-                                onPressed: () {
-                                  if (token != null && token != ("null") && token != "" && cartSellerList.length > 0) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Row(
-                                          children: [
-                                            Icon(Icons.warning_outlined,color: Colors.red,),
-                                            Text(" COD not available"),
-                                          ],
-                                        ),
-                                        content: Text("Ony ONLINE payment available. Seller products fount in cart."),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                            onPressed: () {
-                                              Navigator.of(ctx).pop();
-                                            },
-                                            child: Text("Go back"),
+                            child: InkWell(
+                              onTap: () {
+                                if (token != null &&
+                                    token != ("null") &&
+                                    token != "" &&
+                                    cartSellerList.length > 0) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.warning_outlined,
+                                            color: Colors.red,
                                           ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              Navigator.of(ctx).push(
-                                                MaterialPageRoute(
-                                                  settings: RouteSettings(
-                                                      name: "/DeliveryAddressPage"),
-                                                  builder: (ctx) =>
-                                                      DeliveryAddressPage(),
-                                                ),
-                                              );
-                                            },
-                                            child: Text("Proceed"),
-                                          ),
+                                          Text(" COD not available"),
                                         ],
                                       ),
-                                    );
-                                    
-                                  }
-                                  else if(token != null && token != ("null") && token != "" && cartSellerList.length == 0)
-                                    {
-                                      Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  settings: RouteSettings(
-                                                      name: "/DeliveryAddressPage"),
-                                                  builder: (context) =>
-                                                      DeliveryAddressPage(),
-                                                ),
-                                              );
-                                    }
-                                    else{
-                                      Navigator.push(
+                                      content: Text(
+                                          "Ony ONLINE payment available. Seller products fount in cart."),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: Text("Go back"),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).push(
+                                              MaterialPageRoute(
+                                                settings: RouteSettings(
+                                                    name:
+                                                        "/DeliveryAddressPage"),
+                                                builder: (ctx) =>
+                                                    DeliveryAddressPage(),
+                                              ),
+                                            );
+                                          },
+                                          child: Text("Proceed"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else if (token != null &&
+                                    token != ("null") &&
+                                    token != "" &&
+                                    cartSellerList.length == 0) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      settings: RouteSettings(
+                                          name: "/DeliveryAddressPage"),
+                                      builder: (context) =>
+                                          DeliveryAddressPage(),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => LoginPage(
-                                                  fromPage: "cart"))).then((value) {
-                                        setState(() {
-                                          token = value;
-                                        });
-                                        
-                                      });
-                                    }
-
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 12.0, bottom: 12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Proceed to Checkout",
-                                        style: (TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.white)),
-                                      )
-                                    ],
-                                  ),
-                                )),
+                                              builder: (context) =>
+                                                  LoginPage(fromPage: "cart")))
+                                      .then((value) {
+                                    setState(() {
+                                      token = value;
+                                    });
+                                  });
+                                }
+                              },
+                              child: Container(
+                                  // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                  color: colorButtonOrange,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 12.0, bottom: 12.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Proceed to Checkout",
+                                          style: (TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white)),
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ),
                           ),
                           SizedBox(
                             height: 34,
@@ -1086,8 +1114,8 @@ class _CartPageState extends State<CartPage> {
         key: _scaffoldkey);
   }
 
- //Add all guest products to cart when user is login
-  Future<DefaultModel> addAllToCart( List<CartItems> cartList) async {
+  //Add all guest products to cart when user is login
+  Future<DefaultModel> addAllToCart(List<CartItems> cartList) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final token = preferences.getString("token");
     userId = preferences.getString("userId");
@@ -1133,6 +1161,7 @@ class _CartPageState extends State<CartPage> {
       showSnackBar("Failed, please try agian later");
     }
   }
+
   //Cart listing api call
   Future<CartModel> getCart() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -1140,10 +1169,10 @@ class _CartPageState extends State<CartPage> {
     cartSellerList.clear();
     cartStoreList.clear();
     if (this.mounted) {
-  setState(() {
-    isLoading = true;
-  });
-}
+      setState(() {
+        isLoading = true;
+      });
+    }
     // if (isPullDown == false) {
     //   setState(() {
     //     isLoading = true;
@@ -1157,13 +1186,12 @@ class _CartPageState extends State<CartPage> {
     });
 
     Result result = await _apiResponse.getCart(reqBody);
-    if(this.mounted){
+    if (this.mounted) {
       setState(() {
-      isLoading = false;
-      isPullDown = false;
-    });
+        isLoading = false;
+        isPullDown = false;
+      });
     }
-    
 
     _refreshController.refreshCompleted();
     if (result is SuccessState) {
@@ -1209,8 +1237,8 @@ class _CartPageState extends State<CartPage> {
           }
         });
 
-        for(int i = 0; i < cartList.length; i++) {
-          if(cartList[i].vendorType == "SELLER") {
+        for (int i = 0; i < cartList.length; i++) {
+          if (cartList[i].vendorType == "SELLER") {
             setState(() {
               cartSellerList.add(cartList[i]);
             });
@@ -1225,7 +1253,6 @@ class _CartPageState extends State<CartPage> {
           cartList.addAll(cartSellerList);
           cartList.addAll(cartStoreList);
         });
-
       } else {
         showSnackBar("Failed, please try agian later");
       }
@@ -1296,7 +1323,6 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-
   // Delete non deliverable products from cart
   Future<String> deleteMultipleFromCart(BuildContext context) async {
     setState(() {
@@ -1344,9 +1370,10 @@ class _CartPageState extends State<CartPage> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   //To show Product Name
@@ -1356,11 +1383,9 @@ class _CartPageState extends State<CartPage> {
     if (cartList.length > 0) {
       key = cartList[index].productName;
 
-      if(cartList[index].totalAmount!=null)
-        {
-          itemToalAmount = cartList[index].totalAmount.toStringAsFixed(2);
-        }
-
+      if (cartList[index].totalAmount != null) {
+        itemToalAmount = cartList[index].totalAmount.toStringAsFixed(2);
+      }
     } else {
       key = "";
     }
@@ -1563,11 +1588,11 @@ class _CartPageState extends State<CartPage> {
                   int qty = cartList[i].quantity;
                   double total = sellingPrice * qty;
                   double price = cartList[i].itemCurrentPrice.price;
-                 
+
                   cartList[i].totalAmount = total;
                   totalHRP = totalHRP + total;
                   double mrpTotal = price * qty;
-                  totalMRP =  totalMRP + mrpTotal;
+                  totalMRP = totalMRP + mrpTotal;
                   discount = totalMRP - totalHRP;
                 }
                 setState(() {});

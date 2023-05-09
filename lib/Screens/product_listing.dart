@@ -31,7 +31,8 @@ import 'package:highrich/model/cart_model.dart';
 import 'package:highrich/model/get_brand_model.dart';
 import 'package:highrich/model/default_model.dart';
 import 'package:highrich/model/product_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -1087,9 +1088,10 @@ class _ProductListingPageState extends State<ProductListing> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   //To show selling price
@@ -1344,7 +1346,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet>
                               borderRadius: BorderRadius.circular(10),
                               color: colorButtonBlue,
                             ),
-                            child: FlatButton(
+                            child: TextButton(
                               //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               onPressed: () {
                                 setState(() {
@@ -1389,7 +1391,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet>
                               borderRadius: BorderRadius.circular(10),
                               color: colorButtonBlue,
                             ),
-                            child: FlatButton(
+                            child: TextButton(
                               //  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               onPressed: () {
                                 setState(() {
@@ -1413,71 +1415,74 @@ class _ModalBottomSheetState extends State<ModalBottomSheet>
                   )),
               Padding(
                 padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-                child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: stockValue < Qty ? Colors.grey : colorButtonOrange,
-                    onPressed: () {
-                      if (token != null && token != ("null") && token != "") {
-                        if (stockValue >= Qty) {
-                          List<String> productIDList = cartCountModel?.cartItems
-                              ?.map((e) => e.productId)
-                              ?.toList();
-                          List<int> seriesIDList = cartCountModel?.cartItems
-                              ?.map((e) => e.serialNumber)
-                              ?.toList();
-                          if (radioClicked == false) {
-                            selectedUnit = processedPriceAndStockList[0];
-                          }
-                          // if (productIDList.contains(productID)) {
-                          //   if (seriesIDList
-                          //       .contains(selectedUnit.serialNumber)) {
-                          //     showToast("Item already exist in the cart");
-                          //     print("sample" + seriesIDList.toString());
-                          //     print("Exception:::" +
-                          //         selectedUnit.serialNumber.toString());
-                          //     if (cartCountModel?.cartItems[0].variant ==
-                          //         selectedUnit.quantity + selectedUnit.unit) {
-                          //       print("SAME VARIENT");
-                          //     } else {
-                          //       print("NOT SAME VARIENT");
-                          //       // addToCart();
-                          //     }
-                          //   } else {
-                          //     print("sample3");
-                          //     addToCart();
-                          //   }
-                          // } else {
-                          //   print("sample2");
-                          //   addToCart();
-                          // }
-                          addToCart();
-                        } else {
-                          showToast("Out of stock");
+                child: InkWell(
+                  onTap: () {
+                    if (token != null && token != ("null") && token != "") {
+                      if (stockValue >= Qty) {
+                        List<String> productIDList = cartCountModel?.cartItems
+                            ?.map((e) => e.productId)
+                            ?.toList();
+                        List<int> seriesIDList = cartCountModel?.cartItems
+                            ?.map((e) => e.serialNumber)
+                            ?.toList();
+                        if (radioClicked == false) {
+                          selectedUnit = processedPriceAndStockList[0];
                         }
+                        // if (productIDList.contains(productID)) {
+                        //   if (seriesIDList
+                        //       .contains(selectedUnit.serialNumber)) {
+                        //     showToast("Item already exist in the cart");
+                        //     print("sample" + seriesIDList.toString());
+                        //     print("Exception:::" +
+                        //         selectedUnit.serialNumber.toString());
+                        //     if (cartCountModel?.cartItems[0].variant ==
+                        //         selectedUnit.quantity + selectedUnit.unit) {
+                        //       print("SAME VARIENT");
+                        //     } else {
+                        //       print("NOT SAME VARIENT");
+                        //       // addToCart();
+                        //     }
+                        //   } else {
+                        //     print("sample3");
+                        //     addToCart();
+                        //   }
+                        // } else {
+                        //   print("sample2");
+                        //   addToCart();
+                        // }
+                        addToCart();
                       } else {
-                        guestCart();
+                        showToast("Out of stock");
                       }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: SvgPicture.asset("images/ic_cart_white.svg"),
-                          ),
-                          Text(
-                            stockValue < Qty ? "Out of Stock" : "Add to Cart",
-                            style: (TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white)),
-                          )
-                        ],
-                      ),
-                    )),
+                    } else {
+                      guestCart();
+                    }
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10)),
+                      color: stockValue < Qty ? Colors.grey : colorButtonOrange,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child:
+                                  SvgPicture.asset("images/ic_cart_white.svg"),
+                            ),
+                            Text(
+                              stockValue < Qty ? "Out of Stock" : "Add to Cart",
+                              style: (TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white)),
+                            )
+                          ],
+                        ),
+                      )),
+                ),
               ),
             ],
           ),
@@ -1714,7 +1719,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet>
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();

@@ -23,7 +23,8 @@ import 'package:highrich/model/fast_moving_model.dart';
 import 'package:highrich/model/HomeModel/home_category.dart';
 import 'package:highrich/model/HomeModel/home_products_model.dart';
 import 'package:highrich/model/HomeModel/home_products_section_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/src/services/system_navigator.dart';
@@ -447,7 +448,7 @@ class _FastMovingState extends State<FastMoving> {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -644,9 +645,10 @@ class _FastMovingState extends State<FastMoving> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   Container _horizontalProductsListView(BuildContext context) {
@@ -924,7 +926,7 @@ class _FastMovingState extends State<FastMoving> {
                                   Duration(milliseconds: 800),
                               viewportFraction: 1.2,
                             ),
-                            itemBuilder: (_, bannerIndex) {
+                            itemBuilder: (context, index, bannerIndex) {
                               return GestureDetector(
                                 onTap: () async {
                                   GetContentProductsCredentials
@@ -1124,7 +1126,7 @@ class _FastMovingState extends State<FastMoving> {
                                   fontWeight: FontWeight.w700)),
                         ),
                         // Spacer(),
-                        FlatButton(
+                        TextButton(
                           // color: Colors.orange,
                           onPressed: () async {
                             print("*******SAMPLE********");
@@ -1274,7 +1276,7 @@ class _FastMovingState extends State<FastMoving> {
                                   Duration(milliseconds: 800),
                               viewportFraction: 0.6,
                             ),
-                            itemBuilder: (_, cardIndex) {
+                            itemBuilder: (context, index, cardIndex) {
                               return GestureDetector(
                                 onTap: () async {
                                   GetContentProductsCredentials

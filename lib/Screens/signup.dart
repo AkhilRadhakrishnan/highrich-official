@@ -579,7 +579,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 if (title == "Signup Success") {

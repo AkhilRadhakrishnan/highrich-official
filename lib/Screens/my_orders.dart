@@ -70,10 +70,7 @@ class _MyOrdersPageState extends State<MyOrders> {
     offset = 0;
     size = 10;
     getMyOrders(tabIndex, sortType);
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +88,10 @@ class _MyOrdersPageState extends State<MyOrders> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 
   Widget _uiSetup(BuildContext context) {
@@ -538,28 +536,32 @@ class _MyOrdersPageState extends State<MyOrders> {
                                                             Spacer(),
                                                             ButtonTheme(
                                                               minWidth: 80.0,
-                                                              child:
-                                                                  OutlineButton(
-                                                                child: Text(
-                                                                  "Cancel Subscription",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .deepOrange,
-                                                                      fontSize:
-                                                                          10),
-                                                                ),
-                                                                borderSide:
-                                                                    BorderSide(
-                                                                  color: Colors
-                                                                      .red,
-                                                                ),
-                                                                onPressed: () {
+                                                              child: InkWell(
+                                                                onTap: () {
                                                                   showAlertDialog(
                                                                       context,
                                                                       subscriptionList[
                                                                               index]
                                                                           .id);
                                                                 },
+                                                                child:
+                                                                    Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                          border:
+                                                                              Border.all(
+                                                                    color: Colors
+                                                                        .red,
+                                                                  )),
+                                                                  child: Text(
+                                                                    "Cancel Subscription",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .deepOrange,
+                                                                        fontSize:
+                                                                            10),
+                                                                  ),
+                                                                ),
                                                               ),
                                                             )
                                                           ],
@@ -608,13 +610,16 @@ class _MyOrdersPageState extends State<MyOrders> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) => OrderDetail(
-                                                    ordersModelNew: ordersList[index],
-                                                    processedOrderedItemsList: processedOrderedItemsList,
-                                                
+                                                    ordersModelNew:
+                                                        ordersList[index],
+                                                    processedOrderedItemsList:
+                                                        processedOrderedItemsList,
                                                     orderGroupId:
                                                         ordersList[index]
                                                             ?.source
-                                                            ?.orderGroupId,tabIndex:tabIndex.toString())));
+                                                            ?.orderGroupId,
+                                                    tabIndex:
+                                                        tabIndex.toString())));
                                       },
                                       child: Card(
                                         shape: RoundedRectangleBorder(
@@ -718,127 +723,243 @@ class _MyOrdersPageState extends State<MyOrders> {
                                                   SizedBox(
                                                     width: 20,
                                                   ),
-                                                  ordersList[index]?.source?.orderStatus != "CANCELLED" ?
-                                                  Visibility(
-                                                    visible: ordersList[index]
-                                                        .source
-                                                        .processedOrderedItems[
-                                                            0]
-                                                        .invoice,
-                                                    child: GestureDetector(
-                                                      // onTap: () {
-                                                        // BottomSheetViewInvoice
-                                                        //     mbs =
-                                                        //     new BottomSheetViewInvoice(
-                                                        //         ordersModel:
-                                                        //             ordersList[
-                                                        //                 index],
-                                                        //         tabIndex:
-                                                        //             tabIndex);
-                                                  
-                                                        // Future(() =>
-                                                        //     showModalBottomSheet(
-                                                        //         isScrollControlled:
-                                                        //             true,
-                                                        //         context:
-                                                        //             context,
-                                                        //         builder:
-                                                        //             (context) {
-                                                        //           return mbs;
-                                                        //         }));
-                                                        // Navigator.push(context, MaterialPageRoute(
-                                                        //   builder:(BuildContext context) => PdfPage() ));
-                                                      // },
-                                                      ////PDF template
-                                                      onTap: () async {
-                                                        final date = DateTime.now();
-                                                        final dueDate = date.add(Duration(days: 7));
-                                                        List<InvoiceItem> invoiceList = new List();
-                                                        int count = 1;
-                                                        // print("hrid:   " + loginModel[index].accountType.toString());
-                                                        ordersList[index]?.source?.processedOrderedItems[0].orderedItemsOfVendor.forEach((element) {
-                                                          if(element.itemOrderStatus.currentStatus != "CANCELLED") {
-                                                            invoiceList.add(
-                                                            InvoiceItem(
-                                                              count: count,
-                                                              description: element.productName.length<=10 ? element.productName : element.productName.substring(0,10)+'...',
-                                                              unit: element.itemCurrentPrice.quantity +" "+ element.itemCurrentPrice.unit,
-                                                              mrp: element.itemCurrentPrice.price.toStringAsFixed(2).toString(),
-                                                              sellingprice: element.itemCurrentPrice.sellingPrice.toStringAsFixed(2).toString(),
-                                                              quantity: element.quantity,
-                                                              tax: element.taxPerCent+"%",
-                                                              si: element.itemCurrentPrice.salesIncentive.toStringAsFixed(2).toString(),
-                                                              // vat: 0.19,
-                                                              unitPrice: element.totalAmount.toStringAsFixed(2).toString(),
-                                                            ),
-                                                          );
-                                                          count = count + 1;
-                                                          }
-                                                        });
+                                                  ordersList[index]
+                                                              ?.source
+                                                              ?.orderStatus !=
+                                                          "CANCELLED"
+                                                      ? Visibility(
+                                                          visible: ordersList[
+                                                                  index]
+                                                              .source
+                                                              .processedOrderedItems[
+                                                                  0]
+                                                              .invoice,
+                                                          child:
+                                                              GestureDetector(
+                                                            // onTap: () {
+                                                            // BottomSheetViewInvoice
+                                                            //     mbs =
+                                                            //     new BottomSheetViewInvoice(
+                                                            //         ordersModel:
+                                                            //             ordersList[
+                                                            //                 index],
+                                                            //         tabIndex:
+                                                            //             tabIndex);
 
-                                                        final invoice = Invoice(
-                                                          companycontact: Companycontact(
-                                                            title: 'Conatact',
-                                                            gstin: 'GSTIN: 32AAFCH0823E1Z8',
-                                                            phone: '+91 9744338134',
-                                                            mail: 'info@highrich.in',
-                                                          ),
-                                                           company: Company(
-                                                            title: 'Company Address',
-                                                            name: 'Highrich Online Shoppe Pvt. Ltd.',
-                                                            firstaddr: '2nd Floor, Kanimangalam Tower',
-                                                            secondaddr: 'Valiyalukkal,Thrissur,Kerala, 680027',
-                                                          ),
-                                                          supplier: Seller(
-                                                            title: 'Billed From',
-                                                            name: ordersList[index]?.source?.processedOrderedItems[0]?.vendor,
-                                                            address: ordersList[index]?.source?.processedOrderedItems[0]?.vendorAddress?.addressLine1
-                                                            // paymentInfo: 'https://paypal.me/sarahfieldzz',
-                                                          ),
-                                                          customer: Customer(
-                                                            title:'Billed To',
-                                                            name: ordersList[index]?.source?.customerName,
-                                                            address: ordersList[index]?.source?.shippingAddress?.addressLine1,
-                                                            cusno: ordersList[index]?.source?.shippingAddress?.phoneNo,
-                                                          ),
-                                                          info: InvoiceInfo(
-                                                             hrid: ordersList[index]?.source?.referralId,
-                                                            indate: 
-                                                            getFormatedDate(
+                                                            // Future(() =>
+                                                            //     showModalBottomSheet(
+                                                            //         isScrollControlled:
+                                                            //             true,
+                                                            //         context:
+                                                            //             context,
+                                                            //         builder:
+                                                            //             (context) {
+                                                            //           return mbs;
+                                                            //         }));
+                                                            // Navigator.push(context, MaterialPageRoute(
+                                                            //   builder:(BuildContext context) => PdfPage() ));
+                                                            // },
+                                                            ////PDF template
+                                                            onTap: () async {
+                                                              final date =
+                                                                  DateTime
+                                                                      .now();
+                                                              final dueDate = date
+                                                                  .add(Duration(
+                                                                      days: 7));
+                                                              List<InvoiceItem>
+                                                                  invoiceList =
+                                                                  new List();
+                                                              int count = 1;
+                                                              // print("hrid:   " + loginModel[index].accountType.toString());
                                                               ordersList[index]
-                                                            ?.source
-                                                            ?.orderedDate),
-                                                            paymode: ordersList[index]?.source?.paymentMode,
-                                                            // description: 'sugar',
-                                                            number: ordersList[index]?.source?.orderGroupId,
+                                                                  ?.source
+                                                                  ?.processedOrderedItems[
+                                                                      0]
+                                                                  .orderedItemsOfVendor
+                                                                  .forEach(
+                                                                      (element) {
+                                                                if (element
+                                                                        .itemOrderStatus
+                                                                        .currentStatus !=
+                                                                    "CANCELLED") {
+                                                                  invoiceList
+                                                                      .add(
+                                                                    InvoiceItem(
+                                                                      count:
+                                                                          count,
+                                                                      description: element.productName.length <=
+                                                                              10
+                                                                          ? element
+                                                                              .productName
+                                                                          : element.productName.substring(0, 10) +
+                                                                              '...',
+                                                                      unit: element
+                                                                              .itemCurrentPrice
+                                                                              .quantity +
+                                                                          " " +
+                                                                          element
+                                                                              .itemCurrentPrice
+                                                                              .unit,
+                                                                      mrp: element
+                                                                          .itemCurrentPrice
+                                                                          .price
+                                                                          .toStringAsFixed(
+                                                                              2)
+                                                                          .toString(),
+                                                                      sellingprice: element
+                                                                          .itemCurrentPrice
+                                                                          .sellingPrice
+                                                                          .toStringAsFixed(
+                                                                              2)
+                                                                          .toString(),
+                                                                      quantity:
+                                                                          element
+                                                                              .quantity,
+                                                                      tax: element
+                                                                              .taxPerCent +
+                                                                          "%",
+                                                                      si: element
+                                                                          .itemCurrentPrice
+                                                                          .salesIncentive
+                                                                          .toStringAsFixed(
+                                                                              2)
+                                                                          .toString(),
+                                                                      // vat: 0.19,
+                                                                      unitPrice: element
+                                                                          .totalAmount
+                                                                          .toStringAsFixed(
+                                                                              2)
+                                                                          .toString(),
+                                                                    ),
+                                                                  );
+                                                                  count =
+                                                                      count + 1;
+                                                                }
+                                                              });
+
+                                                              final invoice =
+                                                                  Invoice(
+                                                                      companycontact:
+                                                                          Companycontact(
+                                                                        title:
+                                                                            'Conatact',
+                                                                        gstin:
+                                                                            'GSTIN: 32AAFCH0823E1Z8',
+                                                                        phone:
+                                                                            '+91 9744338134',
+                                                                        mail:
+                                                                            'info@highrich.in',
+                                                                      ),
+                                                                      company:
+                                                                          Company(
+                                                                        title:
+                                                                            'Company Address',
+                                                                        name:
+                                                                            'Highrich Online Shoppe Pvt. Ltd.',
+                                                                        firstaddr:
+                                                                            '2nd Floor, Kanimangalam Tower',
+                                                                        secondaddr:
+                                                                            'Valiyalukkal,Thrissur,Kerala, 680027',
+                                                                      ),
+                                                                      supplier: Seller(
+                                                                          title:
+                                                                              'Billed From',
+                                                                          name: ordersList[index]
+                                                                              ?.source
+                                                                              ?.processedOrderedItems[
+                                                                                  0]
+                                                                              ?.vendor,
+                                                                          address: ordersList[index]
+                                                                              ?.source
+                                                                              ?.processedOrderedItems[
+                                                                                  0]
+                                                                              ?.vendorAddress
+                                                                              ?.addressLine1
+                                                                          // paymentInfo: 'https://paypal.me/sarahfieldzz',
+                                                                          ),
+                                                                      customer:
+                                                                          Customer(
+                                                                        title:
+                                                                            'Billed To',
+                                                                        name: ordersList[index]
+                                                                            ?.source
+                                                                            ?.customerName,
+                                                                        address: ordersList[index]
+                                                                            ?.source
+                                                                            ?.shippingAddress
+                                                                            ?.addressLine1,
+                                                                        cusno: ordersList[index]
+                                                                            ?.source
+                                                                            ?.shippingAddress
+                                                                            ?.phoneNo,
+                                                                      ),
+                                                                      info:
+                                                                          InvoiceInfo(
+                                                                        hrid: ordersList[index]
+                                                                            ?.source
+                                                                            ?.referralId,
+                                                                        indate: getFormatedDate(ordersList[index]
+                                                                            ?.source
+                                                                            ?.orderedDate),
+                                                                        paymode: ordersList[index]
+                                                                            ?.source
+                                                                            ?.paymentMode,
+                                                                        // description: 'sugar',
+                                                                        number: ordersList[index]
+                                                                            ?.source
+                                                                            ?.orderGroupId,
+                                                                      ),
+                                                                      items:
+                                                                          invoiceList,
+                                                                      totalPrice:
+                                                                          InvoicePrice(
+                                                                        // rs: '\₹',
+                                                                        deliveryCharge: ordersList[index]
+                                                                            ?.source
+                                                                            ?.deliveryCharge
+                                                                            ?.toStringAsFixed(2)
+                                                                            .toString(),
+                                                                        totalDiscount: ordersList[index]
+                                                                            ?.source
+                                                                            ?.totalDiscount
+                                                                            ?.toStringAsFixed(2)
+                                                                            .toString(),
+                                                                        netTotal: ordersList[index]
+                                                                            ?.source
+                                                                            ?.subTotal
+                                                                            ?.toStringAsFixed(2)
+                                                                            .toString(),
+                                                                        totalAmount: ordersList[index]
+                                                                            ?.source
+                                                                            ?.totalPrice
+                                                                            ?.toStringAsFixed(2)
+                                                                            .toString(),
+                                                                      ));
+
+                                                              final pdfFile =
+                                                                  await PdfInvoiceApi
+                                                                      .generate(
+                                                                          invoice);
+
+                                                              PdfApi.openFile(
+                                                                  pdfFile);
+                                                            },
+                                                            ////////////////////
+                                                            child: Text(
+                                                              "",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .orange,
+                                                                  fontSize:
+                                                                      14.0,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700),
+                                                            ),
                                                           ),
-                                                          items: invoiceList,
-                                                          totalPrice: InvoicePrice(
-                                                            // rs: '\₹',
-                                                            deliveryCharge: ordersList[index]?.source?.deliveryCharge?.toStringAsFixed(2).toString(),
-                                                            totalDiscount: ordersList[index]?.source?.totalDiscount?.toStringAsFixed(2).toString(),
-                                                            netTotal: ordersList[index]?.source?.subTotal?.toStringAsFixed(2).toString(),
-                                                            totalAmount: ordersList[index]?.source?.totalPrice?.toStringAsFixed(2).toString(),
-                                                          )
-                                                        );
-
-                                                        final pdfFile = await PdfInvoiceApi.generate(invoice);
-
-                                                        PdfApi.openFile(pdfFile);
-                                                      },
-                                                      ////////////////////
-                                                      child: Text(
-                                                        "",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.orange,
-                                                            fontSize: 14.0,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w700),
-                                                      ),
-                                                    ),
-                                                  ) : Container(),
+                                                        )
+                                                      : Container(),
                                                   Spacer(),
                                                   SvgPicture.asset(
                                                     'images/right_arrow.svg',
@@ -857,21 +978,22 @@ class _MyOrdersPageState extends State<MyOrders> {
                                                     Spacer(),
                                                     ButtonTheme(
                                                       minWidth: 120.0,
-                                                      child: RaisedButton(
-                                                        color:
-                                                            Colors.blueAccent,
-                                                        onPressed: () {
-                                                          
+                                                      child: InkWell(
+                                                        onTap: () {
                                                           reorderAPI(ordersList[
                                                                   index]
-                                                              ?.source
+                                                              .source
                                                               .orderGroupId);
                                                         },
-                                                        child: Text(
-                                                          "Reorder",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
+                                                        child: Container(
+                                                          color:
+                                                              Colors.blueAccent,
+                                                          child: Text(
+                                                            "Reorder",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -910,13 +1032,13 @@ class _MyOrdersPageState extends State<MyOrders> {
 
   showAlertDialog(BuildContext context, String subscriptionId) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("No"),
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop();
       },
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Yes"),
       onPressed: () {
         cancelSubscription(subscriptionId);
@@ -965,7 +1087,7 @@ class _MyOrdersPageState extends State<MyOrders> {
       "accountType": "customer",
       "userId": userId,
     });
-  
+
     Result result = await _apiResponse.reorderAPI(reorderPayLoad);
     setState(() {
       isLoading = false;
@@ -1030,7 +1152,7 @@ class _MyOrdersPageState extends State<MyOrders> {
         setState(() {
           totalCount = response.count;
           ordersList.addAll(response.orders);
-         
+
           offset = offset + size;
           size = 20;
           _isPaginationInProgress = false;
@@ -1198,7 +1320,6 @@ class _ModalBottomSheetSortMyOrdersState
     );
   }
 }
-
 
 class BottomSheetViewInvoice extends StatefulWidget {
   Orders ordersModel = new Orders();
@@ -1600,11 +1721,12 @@ class _BottomSheetViewInvoiceState extends State<BottomSheetViewInvoice>
     }
     return key;
   }
+
   String getFormatedDate() {
     String formattedDate = "";
     if (ordersModel.source?.orderedDate != null) {
-      var date = DateTime.fromMillisecondsSinceEpoch(
-          ordersModel.source.orderedDate);
+      var date =
+          DateTime.fromMillisecondsSinceEpoch(ordersModel.source.orderedDate);
       formattedDate = DateFormat('MMM dd , hh:mm a').format(date);
       print(formattedDate);
     } else {
@@ -1614,5 +1736,3 @@ class _BottomSheetViewInvoiceState extends State<BottomSheetViewInvoice>
     return formattedDate;
   }
 }
-
-

@@ -14,7 +14,8 @@ import 'package:highrich/Screens/my_orders.dart';
 import 'package:highrich/Screens/profile_details.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/Profile/profile_model.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -468,21 +469,22 @@ class _ProfilePageState extends State<ProfilePage> {
       content: Text(message),
       action: SnackBarAction(
           label: 'OK',
-          onPressed: _scaffoldkey.currentState.hideCurrentSnackBar),
+          onPressed: () => ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
-    _scaffoldkey.currentState.showSnackBar(snackBarContent);
+    ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
   }
 }
 
 showAlertDialog(BuildContext context) {
   // set up the buttons
-  Widget cancelButton = FlatButton(
+  Widget cancelButton = TextButton(
     child: Text("No"),
     onPressed: () {
       Navigator.of(context, rootNavigator: true).pop();
     },
   );
-  Widget continueButton = FlatButton(
+  Widget continueButton = TextButton(
     child: Text("Yes"),
     onPressed: () {
       _LogOut(context);
