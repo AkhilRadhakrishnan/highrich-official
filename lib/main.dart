@@ -60,7 +60,7 @@ class _InitalState extends State<Inital> {
       AppUpdateModel appUpdate = (result).value;
       if (appUpdate.status == "success") {
         setState(() {
-          updateAvailable = false;
+          updateAvailable = true;
         });
       } else {
         setState(() {
