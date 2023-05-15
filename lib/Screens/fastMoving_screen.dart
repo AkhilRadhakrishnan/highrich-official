@@ -1207,6 +1207,7 @@ class _FastMovingState extends State<FastMoving> {
                                   "No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
                             }
                           },
+
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 10),
