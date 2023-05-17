@@ -22,6 +22,7 @@ import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/Screens/search.dart';
 import 'package:highrich/database/database.dart';
 import 'package:highrich/entity/CartEntity.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/general/custom_dialog.dart';
 import 'package:highrich/general/default_button.dart';
@@ -54,6 +55,7 @@ class ProductListing extends StatefulWidget {
   String categoryName;
   GetContentProductsCredentials getContentProductsCredentials;
   ProductListingCredentials productListingCredentials;
+  final bool isFromFMCG;
 
   ProductListing(
       {@required this.apiName,
@@ -67,7 +69,9 @@ class ProductListing extends StatefulWidget {
       this.subCategory2Id,
       this.subCategory3Id,
       this.brandId,
-      this.vendorId});
+      this.vendorId,
+      this.isFromFMCG = false,
+      });
 
   @override
   _ProductListingPageState createState() => _ProductListingPageState();
@@ -852,7 +856,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                                               .processedPriceAndStock
                                                               .length >
                                                           0
-                                                      ? Row(
+                                                      ? AppConfig.isAuthorized ? Row(
                                                           children: [
                                                             Text(
                                                               "SI:",
@@ -889,7 +893,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                                                       14.0),
                                                             )
                                                           ],
-                                                        )
+                                                        ) : SizedBox.shrink()
                                                       : Container(),
                                                   SizedBox(height: 2),
                                                   ElevatedButton(
@@ -1004,7 +1008,7 @@ class _ProductListingPageState extends State<ProductListing> {
     });
 
     Result result =
-        await _apiResponse.productListing(productListingCredentials);
+        await _apiResponse.productListing(productListingCredentials,isFromFMCG: widget.isFromFMCG);
 
     setState(() {
       isLoading = false;
@@ -1047,7 +1051,7 @@ class _ProductListingPageState extends State<ProductListing> {
     });
 
     Result result =
-        await _apiResponse.getContentProducts(getContentProductsCredentials);
+        await _apiResponse.getContentProducts(getContentProductsCredentials,isFromFMCG: widget.isFromFMCG);
 
     setState(() {
       isLoading = false;

@@ -11,6 +11,7 @@ class ProductListingCredentials {
   String sortBy;
   String sortType;
   UserSearch userSearch;
+  String fmcgCategoryId;
 
   ProductListingCredentials(
       {this.filter,
@@ -21,7 +22,9 @@ class ProductListingCredentials {
         this.size,
         this.sortBy,
         this.sortType,
-        this.userSearch});
+        this.userSearch,
+        this.fmcgCategoryId
+      });
 
   ProductListingCredentials.fromJson(Map<String, dynamic> json) {
     filter =
@@ -33,6 +36,7 @@ class ProductListingCredentials {
     size = json['size'];
     sortBy = json['sortBy'];
     sortType = json['sortType'];
+    fmcgCategoryId = json['fmcgCategoryId'];
     userSearch = json['userSearch'] != null
         ? new UserSearch.fromJson(json['userSearch'])
         : null;
@@ -50,6 +54,7 @@ class ProductListingCredentials {
     data['size'] = this.size;
     data['sortBy'] = this.sortBy;
     data['sortType'] = this.sortType;
+    data['fmcgCategoryId'] = this.fmcgCategoryId;
     if (this.userSearch != null) {
       data['userSearch'] = this.userSearch.toJson();
     }

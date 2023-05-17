@@ -17,6 +17,7 @@ import 'package:highrich/Screens/product_detail_page.dart';
 import 'package:highrich/Screens/product_listing.dart';
 import 'package:highrich/Screens/search.dart';
 import 'package:highrich/Screens/fastMoving_screen.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/constants.dart';
 import 'package:highrich/model/HomeModel/home_banner_model.dart';
 import 'package:highrich/model/HomeModel/home_category.dart';
@@ -151,7 +152,7 @@ class _HomePageState extends State<HomePage> {
     if (pinCode != null && pinCode != ("null") && pinCode != ("")) {
       homeAPI();
     } else {
-      showDialog(
+      /*showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) =>
@@ -160,7 +161,7 @@ class _HomePageState extends State<HomePage> {
           pinCode = value[0];
         });
         homeAPI();
-      });
+      });*/
     }
   }
 
@@ -998,7 +999,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "+91 95445 00096, +91 81370 0844",
+                                "+91 95445 00096, +91 81370 00844",
                                 style: (TextStyle(
                                     fontSize: 12.0,
                                     fontWeight: FontWeight.w400,
@@ -1235,12 +1236,17 @@ class _HomePageState extends State<HomePage> {
                                 new GetContentProductsCredentials();
                             getContentProductsCredentials.sectionId =
                                 homeProductsSectionsList[index]?.sectionId;
+                            getContentProductsCredentials.fmcgCategoryId = homeProductsSectionsList[index].conditions.fmcgId;
                             getContentProductsCredentials.offset = 0;
                             getContentProductsCredentials.size = 20;
-                            getContentProductsCredentials.type = "section";
-                            getContentProductsCredentials.sortBy = "price";
-                            getContentProductsCredentials.sortType = "asc";
-
+                            getContentProductsCredentials.type = "";
+                            if(homeProductsSectionsList[index]?.sectionTypeName?.contains("FMCG") ?? false){
+                              getContentProductsCredentials.sortBy = "";
+                              getContentProductsCredentials.sortType = "";
+                            }else{
+                              getContentProductsCredentials.sortBy = "highestDiscount.discount";
+                              getContentProductsCredentials.sortType = "desc";
+                            }
                             FilterCredentialsContent filterCredentials =
                                 new FilterCredentialsContent();
                             TermCredentialsContent termCredentials =
@@ -1282,6 +1288,7 @@ class _HomePageState extends State<HomePage> {
                                       categoryName:
                                           homeProductsSectionsList[index]
                                               ?.sectionTitle,
+                                      isFromFMCG:homeProductsSectionsList[index]?.sectionTypeName?.contains("FMCG"),
                                     ),
                                   ));
                             } else {
@@ -1802,40 +1809,41 @@ Container _buildBox(int itemIndex, BuildContext context,
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 6, right: 6),
-                  child: productSectionModelHome[itemIndex]
-                              .source
-                              .processedPriceAndStock
-                              .length >
-                          0
-                      ? Row(
-                          children: [
-                            Text(
-                              "SI:",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
-                                  fontSize: 14.0),
-                              maxLines: 1,
-                            ),
-                            Spacer(),
-                            Text(
-                              productSectionModelHome[itemIndex]
-                                  .source
-                                  ?.processedPriceAndStock[0]
-                                  ?.salesIncentive
-                                  .toStringAsFixed(2)
-                                  .toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blueAccent,
-                                  fontSize: 14.0),
-                            )
-                          ],
-                        )
-                      : Container(),
-                ),
+                if (AppConfig.isAuthorized)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6, right: 6),
+                    child: productSectionModelHome[itemIndex]
+                                .source
+                                .processedPriceAndStock
+                                .length >
+                            0
+                        ? Row(
+                            children: [
+                              Text(
+                                "SI:",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blueAccent,
+                                    fontSize: 14.0),
+                                maxLines: 1,
+                              ),
+                              Spacer(),
+                              Text(
+                                productSectionModelHome[itemIndex]
+                                    .source
+                                    ?.processedPriceAndStock[0]
+                                    ?.salesIncentive
+                                    .toStringAsFixed(2)
+                                    .toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blueAccent,
+                                    fontSize: 14.0),
+                              )
+                            ],
+                          )
+                        : Container(),
+                  ),
                 SizedBox(
                   height: 5,
                 ),

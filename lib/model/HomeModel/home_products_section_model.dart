@@ -117,11 +117,31 @@ class Conditions {
 
   int offset;
   int size;
+  String fmcgId;
 
-  Conditions({this.offset, this.size});
+  String getFmcgId(dynamic json){
+    try{
+      String tempId;
+      final List<dynamic> tempValue = json["filter"]["term"];
+      tempValue.forEach((element) {
+        final Map map = element;
+        map.entries.forEach((element) {
+          if(element.key == "subCategory0Id"){
+            final List<dynamic> temp = element.value;
+            tempId = temp.first;
+          }
+        });
+      });
+      return tempId;
+    }catch(e){
+      return null;
+    }
+  }
+
+  Conditions({this.offset, this.size,this.fmcgId});
 
   Conditions.fromJson(Map<String, dynamic> json) {
-
+    fmcgId = getFmcgId(json);
     offset = json['offset'];
     size = json['size'];
   }

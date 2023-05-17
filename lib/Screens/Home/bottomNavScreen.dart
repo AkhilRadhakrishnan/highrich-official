@@ -10,6 +10,7 @@ import 'package:highrich/Screens/Home/cartMainScreen.dart';
 import 'package:highrich/Screens/Home/category.dart';
 import 'package:highrich/Screens/Home/home_screen.dart';
 import 'package:highrich/Screens/Home/profileMainScreen.dart';
+import 'package:highrich/general/app_config.dart';
 import 'package:highrich/general/globals.dart' as globals;
 import 'package:highrich/general/shared_pref.dart';
 import 'package:highrich/model/CartModel/cart_count_model.dart';
@@ -38,6 +39,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   @override
   void initState() {
     loadSharedPrefs();
+    getAuthorizationStatus();
     super.initState();
 
     DartNotificationCenter.subscribe(
@@ -67,6 +69,12 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       }
     });
     }
+  }
+
+  getAuthorizationStatus()async{
+     await SharedPref.shared.getLogin().then((value) {
+       AppConfig.isAuthorized = value;
+     });
   }
 
   Future<void> loadSharedPrefs() async {
