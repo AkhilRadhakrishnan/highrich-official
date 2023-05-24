@@ -22,4 +22,4 @@ const String playstore =
     "https://play.google.com/store/apps/details?id=com.app.highrich";
 const String appStore = "https://apps.apple.com/in/app/highrich/id1577895771";
 const String appType = "ANDROID";
-const String appVersion = "1.2.21";
+const String appVersion = "1.2.23";
