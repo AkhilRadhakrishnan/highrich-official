@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:highrich/constants.dart';
 
@@ -81,7 +82,9 @@ class _AppUpdateState extends State<AppUpdate> {
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ElevatedButton.icon(
-              onPressed: () {
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString("pinCode", "");
                 _updatePlayStore();
                 // Respond to button press
               },
