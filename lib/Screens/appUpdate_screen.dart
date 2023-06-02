@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +16,15 @@ class _AppUpdateState extends State<AppUpdate> {
     const url = playstore;
     if (await canLaunch(url)) {
       await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _updateAppStore() async {
+    const url = appStore;
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $url';
     }
@@ -85,7 +96,12 @@ class _AppUpdateState extends State<AppUpdate> {
               onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setString("pinCode", "");
-                _updatePlayStore();
+                if (Platform.isAndroid) {
+                  _updatePlayStore();
+                } else {
+                  _updateAppStore();
+                }
+
                 // Respond to button press
               },
               icon: Icon(Icons.settings, size: 18),

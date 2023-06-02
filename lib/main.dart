@@ -54,8 +54,17 @@ class _InitalState extends State<Inital> {
   }
 
   void checkUpdateAvailable() async {
+    String appTypeValue;
+    String appVersionValue;
+    if(Platform.isAndroid){
+      appTypeValue = appType;
+      appVersionValue = appVersion;
+    }else{
+      appTypeValue = iOSAppType;
+      appVersionValue = iosAppVersion;
+    }
     Result result = await _apiResponse
-        .appUpdate({"appType": appType, "appVersion": appVersion});
+        .appUpdate({"appType": appTypeValue, "appVersion": appVersionValue});
     if (result is SuccessState) {
       AppUpdateModel appUpdate = (result).value;
       if (appUpdate.status == "success") {
