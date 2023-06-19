@@ -23,6 +23,8 @@ import 'package:highrich/Screens/pincodeDialog.dart';
 import 'package:highrich/Screens/profile_details.dart';
 import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/Screens/search.dart';
+import 'package:highrich/Screens/setPincodeFromProduct.dart';
+import 'package:highrich/Screens/set_pincode_from_list.dart';
 import 'package:highrich/Screens/specification_product_detail.dart';
 import 'package:highrich/database/database.dart';
 import 'package:highrich/entity/CartEntity.dart';
@@ -2086,6 +2088,60 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
     DartNotificationCenter.post(channel: "getCart");
   }
 
+  void addToCardAfterPinCode()async{
+    bool isAlreadyInCart = false;
+    final database =
+    await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+    cartDao = database.cartDao;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    List<CartEntity> resultEntity = await cartDao.getGuestCart();
+    List<String> cartListTemp = new List();
+    List<CartItems> getCartList = new List();
+    List<int> seriesIDList = new List();
+    List<String> guestCartProductIDList = new List();
+    cartListTemp = resultEntity.map((e) => e.itemsInCart).toList();
+    Map<String, dynamic> userMap;
+    cartListTemp.map((e) => null);
+    for (int i = 0; i < cartListTemp.length; i++) {
+      Map<String, dynamic> userMap = jsonDecode(cartListTemp[i]);
+
+      CartItems cartItemModel = CartItems.fromJson(userMap);
+
+      setState(() {
+        getCartList.add(cartItemModel);
+        guestCartProductIDList.add(cartItemModel.productId);
+        seriesIDList.add(cartItemModel.itemCurrentPrice.serialNumber);
+      });
+    }
+    if (guestCartProductIDList.contains(productID)) {
+      getCartList.forEach((element) {
+        if (element.itemCurrentPrice.serialNumber ==
+            selectedUnit.serialNumber) {
+          isAlreadyInCart = true;
+        }
+      });
+      if (isAlreadyInCart) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) =>
+                CustomDialog(message: "Item already exist in the cart"));
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        _guestCart();
+      }
+    } else {
+      _guestCart();
+    }
+    _loadPinCode();
+  }
+
   _moveToCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = await SharedPref.shared.getToken();
@@ -2094,11 +2150,29 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
       if (pinCode != null && pinCode != ("null") && pinCode != "") {
         if (pinCode == defaultPincode) {
           showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) =>
-                  pinCodeDialog(message: "Please wait")).then((value) {
-            _loadPinCode();
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) =>
+                      SetPincodeFromProductDialog(message: "Please wait",
+                          serviceLocations: productDetailModel?.product?.source?.serviceLocations))
+              .then((value) {
+            print(value);
+            if(value==null){
+              return;
+            }
+            else if(value=="pincode"){
+              addToCardAfterPinCode();
+            } else {
+              showDialog(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (BuildContext context) =>
+                      SetPinCodeFromList(pinCode: value)).then((value) {
+                if(value!=null){
+                  addToCardAfterPinCode();
+                }
+              });
+            }
           });
         } else {
           List<String> productIDList =
@@ -2115,6 +2189,32 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
             addToCart();
           }
         }
+      }else{
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) =>
+                SetPincodeFromProductDialog(message: "Please wait",
+                    serviceLocations: productDetailModel?.product?.source?.serviceLocations))
+            .then((value) {
+          print(value);
+          if(value==null){
+            return;
+          }
+          else if(value=="pincode"){
+            addToCardAfterPinCode();
+          } else {
+            showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) =>
+                    SetPinCodeFromList(pinCode: value)).then((value) {
+              if(value!=null){
+                addToCardAfterPinCode();
+              }
+            });
+          }
+        });
       }
     } else {
       if (pinCode != null && pinCode != ("null") && pinCode != "") {
@@ -2170,11 +2270,29 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
         }
       } else {
         showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) =>
-                pinCodeDialog(message: "Please wait")).then((value) {
-          _loadPinCode();
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) =>
+                    SetPincodeFromProductDialog(message: "Please wait",
+                        serviceLocations: productDetailModel?.product?.source?.serviceLocations))
+            .then((value) async{
+              print(value);
+              if(value==null){
+                return;
+              }
+              else if(value=="pincode"){
+                addToCardAfterPinCode();
+              } else {
+                showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) =>
+                    SetPinCodeFromList(pinCode: value)).then((value) {
+                      if(value!=null){
+                        addToCardAfterPinCode();
+                      }
+                });
+              }
         });
       }
     }
