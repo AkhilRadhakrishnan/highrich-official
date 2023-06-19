@@ -238,7 +238,11 @@ class SetPincodeFromProductDialog extends StatelessWidget {
   Future<String> checkDeliveryLocationFromList(BuildContext context, String pinCodeCheckAvailability,List<String> locations)async{
     if(locations == null || locations.isEmpty){
       return null;
-    }else{
+    }
+    else if(locations[0]!=null && locations[0]=="All India"){
+      return pinCodeCheckAvailability.trim();
+    }
+    else{
       List <int> intStringPincodes = locations.map(int.parse).toList();
       int value = int.parse(pinCodeCheckAvailability);
       int nearestValue = findNearestValue(intStringPincodes, value);

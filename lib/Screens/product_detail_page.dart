@@ -310,7 +310,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                     color: Colors.blue,
                     fontWeight: FontWeight.w700)),
           )),
-          Container(
+          (pinCode != defaultPincode) ? Container(
             margin: EdgeInsets.only(right: 4),
             child: IconButton(
               icon: Icon(
@@ -327,6 +327,17 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                     pinCode = value[0];
                   });
                 });
+              },
+            ),
+          ) : SizedBox.shrink(),
+          Container(
+            margin: EdgeInsets.only(right: 4),
+            child: IconButton(
+              icon: Image.asset("images/global_icon.png",height: 22,width: 22),
+              onPressed: () async{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString("pinCode","");
+                _loadPinCode();
               },
             ),
           ),

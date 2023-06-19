@@ -214,6 +214,17 @@ class _HomePageState extends State<HomePage> {
     // if failed,use refreshFailed()
   }
 
+  void getChangedPincode()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    pinCode = (prefs.getString('pinCode') ?? '');
+  }
+
+  @override
+  void didUpdateWidget(covariant HomePage oldWidget) {
+    getChangedPincode();
+    super.didUpdateWidget(oldWidget);
+  }
+
   Widget _uiSetup(BuildContext context) {
     var body = new Container(
         color: gray_bg,
@@ -294,7 +305,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.blue,
                       fontWeight: FontWeight.w700)),
             )),
-            Container(
+            (pinCode != defaultPincode) ? Container(
               margin: EdgeInsets.only(right: 4),
               child: IconButton(
                 icon: Icon(
@@ -313,6 +324,17 @@ class _HomePageState extends State<HomePage> {
 
                     homeAPI();
                   });
+                },
+              ),
+            ):SizedBox.shrink(),
+            Container(
+              margin: EdgeInsets.only(right: 4),
+              child: IconButton(
+                icon: Image.asset("images/global_icon.png",height: 22,width: 22),
+                onPressed: () async{
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setString("pinCode","");
+                  _loadPinCode();
                 },
               ),
             ),

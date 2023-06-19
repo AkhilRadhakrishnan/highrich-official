@@ -190,6 +190,17 @@ class _FastMovingState extends State<FastMoving> {
         });
   }
 
+  void getChangedPincode()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    pinCode = (prefs.getString('pinCode') ?? '');
+  }
+
+  @override
+  void didUpdateWidget(covariant FastMoving oldWidget) {
+    getChangedPincode();
+    super.didUpdateWidget(oldWidget);
+  }
+
   Future<CategoryModel> getCategory() async {
     setState(() {
       isLoading = true;
@@ -571,7 +582,7 @@ class _FastMovingState extends State<FastMoving> {
                       color: Colors.blue,
                       fontWeight: FontWeight.w700)),
             )),
-            Container(
+            (pinCode != defaultPincode) ? Container(
               margin: EdgeInsets.only(right: 4),
               child: IconButton(
                 icon: Icon(
@@ -592,7 +603,18 @@ class _FastMovingState extends State<FastMoving> {
                   });
                 },
               ),
-            ),
+            ):SizedBox.shrink(),
+            Container(
+              margin: EdgeInsets.only(right: 4),
+              child: IconButton(
+                icon: Image.asset("images/global_icon.png",height: 22,width: 22),
+                onPressed: () async{
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setString("pinCode","");
+                  _loadPinCode();
+                },
+              ),
+            )
           ],
         ),
         body: SafeArea(
