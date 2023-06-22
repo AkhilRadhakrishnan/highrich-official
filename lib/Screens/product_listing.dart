@@ -20,6 +20,8 @@ import 'package:highrich/Screens/product_filter.dart';
 import 'package:highrich/Screens/product_listing.dart';
 import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/Screens/search.dart';
+import 'package:highrich/Screens/setPincodeFromProduct.dart';
+import 'package:highrich/Screens/set_pincode_from_list.dart';
 import 'package:highrich/database/database.dart';
 import 'package:highrich/entity/CartEntity.dart';
 import 'package:highrich/general/app_config.dart';
@@ -393,6 +395,7 @@ class _ProductListingPageState extends State<ProductListing> {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.setString("pinCode","");
                     _loadPinCode();
+                    loadProducts();
                   },
                 ),
               )
@@ -438,6 +441,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                         subCategory2Id: subCategory2Id,
                                         subCategory3Id: subCategory3Id),
                                   )).then((value) {
+                                    _loadPinCode();
                                 apiName = value[0];
                                 productListingCredentials = value[1];
                                 categoryName = value[2];
@@ -590,7 +594,9 @@ class _ProductListingPageState extends State<ProductListing> {
                                     builder: (context) => Product_Detail_Page(
                                       product_id: product_id,
                                     ),
-                                  ));
+                                  )).then((value) {
+                                _loadPinCode();
+                              });
                             },
                             child: Container(
                               //  margin: EdgeInsets.only(top: 8, left: 4),
@@ -997,6 +1003,7 @@ class _ProductListingPageState extends State<ProductListing> {
   }
 
   _moveToCart(int index) async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = await SharedPref.shared.getToken();
     pinCode = prefs.getString('pinCode');
@@ -1016,13 +1023,109 @@ class _ProductListingPageState extends State<ProductListing> {
           builder: (context) {
             return mbs;
           }));
-    } else {
+    }
+    else if(pinCode == null || pinCode.isEmpty || pinCode == "null"){
+      print(productlist[index].source.serviceLocations);
       showDialog(
           barrierDismissible: false,
           context: context,
           builder: (BuildContext context) =>
-              pinCodeDialog(message: "Please wait")).then((value) {
-        loadProducts();
+              SetPincodeFromProductDialog(message: "Please wait",
+                  serviceLocations: productlist[index].source.serviceLocations))
+          .then((value) async{
+        print(value);
+        if(value==null){
+          return;
+        }
+        else if(value=="pincode"){
+          ModalBottomSheet mbs = new ModalBottomSheet(
+              processedPriceAndStockList:
+              productlist[index].source.processedPriceAndStock,
+              productName: productlist[index].source.name,
+              productImage: productlist[index].source.images[0],
+              productID: productlist[index].source.productId,
+              vendorId: productlist[index].source.vendorId,
+              vendorType: productlist[index].source.vendorType);
+          Future(() => showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return mbs;
+              }));
+        } else {
+          showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (BuildContext context) =>
+                  SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
+            if(value!=null){
+              ModalBottomSheet mbs = new ModalBottomSheet(
+                  processedPriceAndStockList:
+                  productlist[index].source.processedPriceAndStock,
+                  productName: productlist[index].source.name,
+                  productImage: productlist[index].source.images[0],
+                  productID: productlist[index].source.productId,
+                  vendorId: productlist[index].source.vendorId,
+                  vendorType: productlist[index].source.vendorType);
+              Future(() => showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return mbs;
+                  }));
+            }
+          });
+        }
+      });
+    }
+    else {
+      print(productlist[index].source.serviceLocations);
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) =>
+              SetPincodeFromProductDialog(message: "Please wait",
+                  serviceLocations: productlist[index].source.serviceLocations))
+          .then((value) async{
+        print(value);
+        if(value==null){
+          return;
+        }
+        else if(value=="pincode"){
+          ModalBottomSheet mbs = new ModalBottomSheet(
+              processedPriceAndStockList:
+              productlist[index].source.processedPriceAndStock,
+              productName: productlist[index].source.name,
+              productImage: productlist[index].source.images[0],
+              productID: productlist[index].source.productId,
+              vendorId: productlist[index].source.vendorId,
+              vendorType: productlist[index].source.vendorType);
+          Future(() => showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return mbs;
+              }));
+        } else {
+          showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (BuildContext context) =>
+                  SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
+            if(value!=null){
+              ModalBottomSheet mbs = new ModalBottomSheet(
+                  processedPriceAndStockList:
+                  productlist[index].source.processedPriceAndStock,
+                  productName: productlist[index].source.name,
+                  productImage: productlist[index].source.images[0],
+                  productID: productlist[index].source.productId,
+                  vendorId: productlist[index].source.vendorId,
+                  vendorType: productlist[index].source.vendorType);
+              Future(() => showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return mbs;
+                  }));
+            }
+          });
+        }
       });
     }
   }
@@ -1493,8 +1596,8 @@ class _ModalBottomSheetState extends State<ModalBottomSheet>
                   },
                   child: Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)),
-                      color: stockValue < Qty ? Colors.grey : colorButtonOrange,
+                          borderRadius: BorderRadius.circular(10),
+                        color: stockValue < Qty ? Colors.grey : colorButtonOrange,),
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Row(

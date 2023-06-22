@@ -173,7 +173,7 @@ class SetPincodeFromProductDialog extends StatelessWidget {
                                    prefs.setString("pinCode", res);
                                    Navigator.of(context).pop("pincode");
                                  }else{
-                                   Navigator.of(context).pop(res);
+                                   Navigator.of(context).pop([res,controllerPnCode.text.trim()]);
                                  }
                                }else{
                                  Navigator.of(context).pop();

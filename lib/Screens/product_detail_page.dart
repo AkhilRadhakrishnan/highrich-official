@@ -291,7 +291,11 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
               ),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Searchpage()));
+                    MaterialPageRoute(builder: (context) => Searchpage())).then((value){
+                  setState(() {
+                    _loadPinCode();
+                  });
+                });
               },
             ),
           ),
@@ -1225,7 +1229,9 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                         product_id:
                             recentlyViewedProductsList[index].source?.productId,
                       ),
-                    ));
+                    )).then((value) {
+                  _loadPinCode();
+                });
               },
               child: Column(
                 children: [
@@ -1492,7 +1498,9 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                         product_id:
                             relatedProductsList[index].source?.productId,
                       ),
-                    ));
+                    )).then((value) {
+                      _loadPinCode();
+                });
               },
               child: Column(
                 children: [
@@ -2178,7 +2186,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                   barrierDismissible: true,
                   context: context,
                   builder: (BuildContext context) =>
-                      SetPinCodeFromList(pinCode: value)).then((value) {
+                      SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
                 if(value!=null){
                   addToCardAfterPinCode();
                 }
@@ -2219,7 +2227,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                 barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) =>
-                    SetPinCodeFromList(pinCode: value)).then((value) {
+                    SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
               if(value!=null){
                 addToCardAfterPinCode();
               }
@@ -2298,7 +2306,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                     barrierDismissible: true,
                     context: context,
                     builder: (BuildContext context) =>
-                    SetPinCodeFromList(pinCode: value)).then((value) {
+                    SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
                       if(value!=null){
                         addToCardAfterPinCode();
                       }

@@ -558,7 +558,11 @@ class _FastMovingState extends State<FastMoving> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Searchpage()));
+                      MaterialPageRoute(builder: (context) => Searchpage())).then((value){
+                        setState(() {
+                          getChangedPincode();
+                        });
+                  });
                 },
               ),
             ),
@@ -611,7 +615,9 @@ class _FastMovingState extends State<FastMoving> {
                 onPressed: () async{
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setString("pinCode","");
-                  _loadPinCode();
+                  pinCode = (prefs.getString('pinCode') ?? '');
+                  fastMovingProducts();
+                  getBrand();
                 },
               ),
             )
@@ -775,7 +781,11 @@ class _FastMovingState extends State<FastMoving> {
                             // subCategory0Id: subCategories[index].subCategory0Id,
                             brandId: brands[brandIndex].source.brandId,
                           ),
-                        ));
+                        )).then((value){
+                      setState(() {
+                        getChangedPincode();
+                      });
+                    });
                   } else {
                     _showAlert("No internet connection",
                         "No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
@@ -930,7 +940,7 @@ class _FastMovingState extends State<FastMoving> {
                             itemCount: subCategories[index]
                                 ?.advertisements
                                 ?.advertisementBanner
-                                ?.length,
+                                ?.length??0,
                             // scrollDirection: Axis.horizontal,
                             options: CarouselOptions(
                               // height: 200.0,
@@ -1074,7 +1084,11 @@ class _FastMovingState extends State<FastMoving> {
                                                       bannerIndex]
                                                   .id,
                                             ),
-                                          ));
+                                          )).then((value){
+                                        setState(() {
+                                          getChangedPincode();
+                                        });
+                                      });
                                     } else {
                                       Navigator.push(
                                           context,
@@ -1097,7 +1111,11 @@ class _FastMovingState extends State<FastMoving> {
                                                       bannerIndex]
                                                   .id,
                                             ),
-                                          ));
+                                          )).then((value){
+                                        setState(() {
+                                          getChangedPincode();
+                                        });
+                                      });
                                     }
                                     //  print(advertisementCardList.length);
                                   } else {
@@ -1230,7 +1248,11 @@ class _FastMovingState extends State<FastMoving> {
                                           subCategories[index].subCategory0Id,
                                       isFromFMCG: categoryName.toLowerCase() == "fmcg",
                                     ),
-                                  ));
+                                  )).then((value){
+                                setState(() {
+                                  getChangedPincode();
+                                });
+                              });
                               //  print(advertisementCardList.length);
                             } else {
                               _showAlert("No internet connection",
@@ -1276,7 +1298,7 @@ class _FastMovingState extends State<FastMoving> {
                             itemCount: subCategories[index]
                                 ?.advertisements
                                 ?.advertisementCard
-                                ?.length,
+                                ?.length??0,
                             // scrollDirection: Axis.horizontal,
                             options: CarouselOptions(
                               height: 100.0,
@@ -1431,7 +1453,11 @@ class _FastMovingState extends State<FastMoving> {
                                                   ?.advertisementCard[cardIndex]
                                                   .id,
                                             ),
-                                          ));
+                                          )).then((value){
+                                        setState(() {
+                                          getChangedPincode();
+                                        });
+                                      });
                                     } else {
                                       Navigator.push(
                                           context,
@@ -1453,7 +1479,11 @@ class _FastMovingState extends State<FastMoving> {
                                                   ?.advertisementCard[cardIndex]
                                                   .id,
                                             ),
-                                          ));
+                                          )).then((value){
+                                        setState(() {
+                                          getChangedPincode();
+                                        });
+                                      });
                                     }
                                     //  print(advertisementCardList.length);
                                   } else {

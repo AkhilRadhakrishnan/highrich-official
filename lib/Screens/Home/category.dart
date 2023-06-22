@@ -177,6 +177,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setString("pinCode","");
                 _loadPinCode();
+                getCategory();
               },
             ),
           )
@@ -310,7 +311,11 @@ class _CategoryPageState extends State<CategoryPage> {
                                       //       categoryList[index].categoryName,
                                       //   categoryId: categoryList[index].id,
                                       // ),
-                                    ));
+                                    )).then((_){
+                                      setState(() {
+                                        getChangedPincode();
+                                      });
+                                });
                               }
                             } else {
                               _showAlert("No internet connection",
@@ -410,7 +415,11 @@ class _CategoryPageState extends State<CategoryPage> {
                         categoryName: content.categoryName,
                         subCategory0Id: content.id,
                       ),
-                    ));
+                    )).then((_) {
+                  setState(() {
+                    getChangedPincode();
+                  });
+                });
               }
             } else {
               _showAlert("No internet connection",
@@ -502,7 +511,11 @@ class _CategoryPageState extends State<CategoryPage> {
                         categoryName: content.categoryName,
                         subCategory1Id: content.id,
                       ),
-                    ));
+                    )).then((_) {
+                  setState(() {
+                    getChangedPincode();
+                  });
+                });
               }
             } else {
               _showAlert("No internet connection",
@@ -598,7 +611,11 @@ class _CategoryPageState extends State<CategoryPage> {
                         categoryName: content.categoryName,
                         subCategory2Id: categoryIdList[0],
                       ),
-                    ));
+                    )).then((_) {
+                  setState(() {
+                    getChangedPincode();
+                  });
+                });
               }
               else {
                 showSnackBar("Currently not available");
@@ -683,7 +700,11 @@ class _CategoryPageState extends State<CategoryPage> {
                           categoryName: content.categoryName,
                           subCategory3Id: categoryIdList[0],
                         ),
-                  ));
+                  )).then((_) {
+                setState(() {
+                  getChangedPincode();
+                });
+              });
             }
 
             else

@@ -152,6 +152,7 @@ class _HomePageState extends State<HomePage> {
     if (pinCode != null && pinCode != ("null") && pinCode != ("")) {
       homeAPI();
     } else {
+      prefs.setString("pinCode","");
       /*showDialog(
           barrierDismissible: false,
           context: context,
@@ -280,8 +281,20 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black,
                 ),
                 onPressed: () {
+                  final previousPinCode = pinCode;
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Searchpage()));
+                      MaterialPageRoute(builder: (context) => Searchpage())).then((_) async{
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    pinCode = (prefs.getString('pinCode') ?? '');
+                    print("Previous Pincode"+previousPinCode);
+                    print("Current Pincode"+pinCode);
+                     if(previousPinCode!=pinCode){
+                       homeAPI();
+                     }
+                    setState(() {
+                      getChangedPincode();
+                    });
+                  });
                 },
               ),
             ),
@@ -334,7 +347,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async{
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setString("pinCode","");
-                  _loadPinCode();
+                  homeAPI();
                 },
               ),
             ),
@@ -1298,6 +1311,7 @@ class _HomePageState extends State<HomePage> {
                             bool checkConnection =
                                 await DataConnectionChecker().hasConnection;
                             if (checkConnection == true) {
+                              final previousPinCode = pinCode;
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -1312,7 +1326,18 @@ class _HomePageState extends State<HomePage> {
                                               ?.sectionTitle,
                                       isFromFMCG:homeProductsSectionsList[index]?.sectionTypeName?.contains("FMCG"),
                                     ),
-                                  ));
+                                  )).then((_) async {
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                final currentPincode = (prefs.getString('pinCode') ?? '');
+                                print("Previous Pincode"+previousPinCode);
+                                print("Current Pincode"+currentPincode);
+                                if(previousPinCode!=currentPincode){
+                                homeAPI();
+                                }
+                                setState(() {
+                                  getChangedPincode();
+                                });
+                              });
                             } else {
                               _showAlert("No internet connection",
                                   "No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
@@ -1334,7 +1359,38 @@ class _HomePageState extends State<HomePage> {
                           homeProductsSectionsList[index]?.sectionData?.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (_, itemIndex) => _buildBox(itemIndex,
-                          context, homeProductsSectionsList[index].sectionData),
+                          context, homeProductsSectionsList[index].sectionData,
+                            () async {
+                          final previousPinCode = pinCode;
+                          bool checkConnection =
+                          await DataConnectionChecker().hasConnection;
+                          if (checkConnection == true) {
+                            if (homeProductsSectionsList[index].sectionData[itemIndex].source != null) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Product_Detail_Page(
+                                      product_id: homeProductsSectionsList[index].sectionData[itemIndex].source
+                                          ?.productId,
+                                    ),
+                                  )).then((value) async{
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                final currentPincode = (prefs.getString('pinCode') ?? '');
+                                print("Previous Pincode"+previousPinCode);
+                                print("Current Pincode"+currentPincode);
+                                if(previousPinCode!=currentPincode){
+                                  homeAPI();
+                                }
+                                setState(() {
+                                  getChangedPincode();
+                                });
+                              });
+                            }
+                          } else {
+                            Fluttertoast.showToast(msg: "No internet connection");
+                          }
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(height: 10),
@@ -1479,6 +1535,7 @@ class _HomePageState extends State<HomePage> {
                 if (categoryList[index].id != null ||
                     categoryList[index].id != "" ||
                     categoryList[index].id != ("null")) {
+                  final previousPinCode = pinCode;
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1496,7 +1553,18 @@ class _HomePageState extends State<HomePage> {
                         //       categoryList[index].categoryName,
                         //   categoryId: categoryList[index].id,
                         // ),
-                      ));
+                      )).then((_) async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    final currentPincode = (prefs.getString('pinCode') ?? '');
+                    print("Previous Pincode"+previousPinCode);
+                    print("Current Pincode"+currentPincode);
+                     if(previousPinCode!=currentPincode){
+                       homeAPI();
+                     }
+                    setState(() {
+                      getChangedPincode();
+                    });
+                  });
                 }
               } else {
                 _showAlert("No internet connection",
@@ -1554,7 +1622,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 Container _buildBox(int itemIndex, BuildContext context,
-        List<SectionDataProducts> productSectionModelHome) =>
+        List<SectionDataProducts> productSectionModelHome,void Function() onTap) =>
     Container(
       margin: EdgeInsets.only(top: 12, left: 4),
       height: 180,
@@ -1567,25 +1635,7 @@ Container _buildBox(int itemIndex, BuildContext context,
           ),
           // elevation: 1.0,
           child: new InkWell(
-            onTap: () async {
-              bool checkConnection =
-                  await DataConnectionChecker().hasConnection;
-              if (checkConnection == true) {
-                if (productSectionModelHome[itemIndex].source != null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Product_Detail_Page(
-                          product_id: productSectionModelHome[itemIndex]
-                              .source
-                              ?.productId,
-                        ),
-                      ));
-                }
-              } else {
-                Fluttertoast.showToast(msg: "No internet connection");
-              }
-            },
+            onTap: onTap,
             child: Column(
               children: [
                 productSectionModelHome[itemIndex]
