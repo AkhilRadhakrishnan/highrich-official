@@ -424,8 +424,8 @@ class _CartPageState extends State<CartPage> {
                         deleteSigleItemFromCart(cartList[index].id,
                             cartList[index].productId, index, context);
                       } else {
-                        cartList.removeAt(index);
                         await cartDao.clearCartEntity();
+                        cartList.removeAt(index);
                         cartList.forEach((element) async {
                           String jsonCartItemModel = jsonEncode(element);
                           final cart = CartEntity(null, jsonCartItemModel);

@@ -132,10 +132,11 @@ class _$CartDao extends CartDao {
   }
 
   @override
-  Future<List<CartEntity>> clearCartEntity() async {
-    return _queryAdapter.queryList('DELETE FROM CartEntity',
-        mapper: (Map<String, dynamic> row) =>
-            CartEntity(row['id'] as int, row['itemsInCart'] as String));
+  Future<void> clearCartEntity() async {
+    return await _queryAdapter.queryNoReturn('DELETE FROM CartEntity');
+    // return _queryAdapter.queryList('DELETE FROM CartEntity',
+    //     mapper: (Map<String, dynamic> row) =>
+    //         CartEntity(row['id'] as int, row['itemsInCart'] as String));
   }
 
   @override

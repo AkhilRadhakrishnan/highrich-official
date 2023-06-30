@@ -295,7 +295,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     setState(() {
       isLoading = true;
     });
-    String userId = preferences.getString("userId");
+    String userId =await preferences.getString("userId");
 
     Result result = await _apiResponse.getCartCount(userId);
 

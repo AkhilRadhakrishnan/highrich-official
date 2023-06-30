@@ -50,7 +50,6 @@ class Nothing {
 class RemoteDataSource {
   ApiClient client = new ApiClient(Client());
 
-
   //LogIn api call
   Future<Result> login(String email, String password) async {
     ApiClient client = new ApiClient(Client());
@@ -122,7 +121,7 @@ class RemoteDataSource {
 
   //Reset password api call
   Future<Result> reset_password(String otp, String email, String newPassword,
-      String confirmPassword,String highrichID) async {
+      String confirmPassword, String highrichID) async {
     final response = await client.request(
         requestType: RequestType.POST,
         path: "reset/forgot-password",
@@ -150,7 +149,8 @@ class RemoteDataSource {
   }
 
   //Change  password api call
-  Future<Result> change_password(String email,String currentPassword, String newPassword, String confirmPassword,String userId) async {
+  Future<Result> change_password(String email, String currentPassword,
+      String newPassword, String confirmPassword, String userId) async {
     final response = await client.request(
         requestType: RequestType.POST,
         path: "user/reset-password",
@@ -181,21 +181,22 @@ class RemoteDataSource {
   //Home Listing api call
   Future<Result> getHomeAPI(String pinCode) async {
     try {
-    final response = await client.request(
-        requestType: RequestType.POST, path: "home", parameter: pinCode);
-    print(response.request);
+      final response = await client.request(
+          requestType: RequestType.POST, path: "home", parameter: pinCode);
+      print(response.request);
 
-    if (response.statusCode == 200) {
-      print(response.body);
-      var rawCookie = response.headers['set-cookie'];
-      return Result<HomeModel>.success(HomeModel.fromRawJson(response.body));
-    }
-    if (response.statusCode == 401) {
-      return Result<HomeModel>.unAuthored(HomeModel.fromRawJson(response.body));
-    } else {
-      print('Failed ');
-      return Result.error('Failed ');
-    }
+      if (response.statusCode == 200) {
+        print(response.body);
+        var rawCookie = response.headers['set-cookie'];
+        return Result<HomeModel>.success(HomeModel.fromRawJson(response.body));
+      }
+      if (response.statusCode == 401) {
+        return Result<HomeModel>.unAuthored(
+            HomeModel.fromRawJson(response.body));
+      } else {
+        print('Failed ');
+        return Result.error('Failed ');
+      }
     } on Exception catch (exception) {
       print(exception.toString());
       if (exception.toString().contains('Connection failed') ||
@@ -209,17 +210,17 @@ class RemoteDataSource {
   }
 
   //Product Listing api call
-  Future<Result> productListing(ProductListingCredentials productListingCredentials,{bool isFromFMCG = false}) async {
-
-
+  Future<Result> productListing(
+      ProductListingCredentials productListingCredentials,
+      {bool isFromFMCG = false}) async {
     print("*** Params ProductListing  ****");
     print(json.encode(productListingCredentials));
 
     final response = await client.request(
         requestType: RequestType.POST,
-        path: isFromFMCG ? "product/fast-moving/list":"product/search/filter",
+        path: isFromFMCG ? "product/fast-moving/list" : "product/search/filter",
         parameter: productListingCredentials);
-        print("============search=========");
+    print("============search=========");
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -238,14 +239,16 @@ class RemoteDataSource {
   }
 
   //Product Listing api section/get-contents call
-  Future<Result> getContentProducts(GetContentProductsCredentials getContentProductsCredentials,{bool isFromFMCG = false}) async {
+  Future<Result> getContentProducts(
+      GetContentProductsCredentials getContentProductsCredentials,
+      {bool isFromFMCG = false}) async {
     print("*** Params Contents  ****");
     print(json.encode(getContentProductsCredentials));
     final response = await client.request(
         requestType: RequestType.POST,
-        path: isFromFMCG ? "product/fast-moving/list":"section/get-contents",
+        path: isFromFMCG ? "product/fast-moving/list" : "section/get-contents",
         parameter: getContentProductsCredentials);
-        print("****get-contents***");
+    print("****get-contents***");
     print(response.request);
     print(jsonEncode(getContentProductsCredentials));
 
@@ -271,7 +274,7 @@ class RemoteDataSource {
         requestType: RequestType.POST,
         path: "product/brand-category-list",
         parameter: getContentProductsCredentials);
-        print("**BRAND CATEGORY LIST");
+    print("**BRAND CATEGORY LIST");
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -288,14 +291,16 @@ class RemoteDataSource {
       return Result.error('Failed ');
     }
   }
+
   //Product Listing api section/get-contents call
-  Future<Result> productFilterSearchFilter(dynamic productListingCredentials) async {
+  Future<Result> productFilterSearchFilter(
+      dynamic productListingCredentials) async {
     print(json.encode(productListingCredentials));
     final response = await client.request(
         requestType: RequestType.POST,
         path: "product/brand-category-list",
         parameter: productListingCredentials);
-         print("**BRAND CATEGORY LIST---productListingCredentials");
+    print("**BRAND CATEGORY LIST---productListingCredentials");
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -312,14 +317,15 @@ class RemoteDataSource {
       return Result.error('Failed ');
     }
   }
-   //Brand images api category/get-brand call
+
+  //Brand images api category/get-brand call
   Future<Result> getBrand(dynamic getBrand) async {
     print(json.encode(getBrand));
     final response = await client.request(
         requestType: RequestType.POST,
         path: "category/get-brand",
         parameter: getBrand);
-        print("response.request**************");
+    print("response.request**************");
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -338,13 +344,13 @@ class RemoteDataSource {
   }
 
   //Fast moving api
-   Future<Result> fastMovingProducts(dynamic fastMovingProducts) async {
+  Future<Result> fastMovingProducts(dynamic fastMovingProducts) async {
     print(json.encode(fastMovingProducts));
     final response = await client.request(
         requestType: RequestType.POST,
         path: "product/fast-moving",
         parameter: fastMovingProducts);
-        print("*****FAST MOVING REQUEST******");
+    print("*****FAST MOVING REQUEST******");
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -363,14 +369,14 @@ class RemoteDataSource {
     }
   }
 
-  //Advertisement Api 
-   Future<Result> advertismentClick(dynamic advertismentClick) async {
+  //Advertisement Api
+  Future<Result> advertismentClick(dynamic advertismentClick) async {
     print(json.encode(advertismentClick));
     final response = await client.request(
         requestType: RequestType.POST,
         path: "advertisement/users/action",
         parameter: advertismentClick);
-        print("*****Advertisement Banner Request******");
+    print("*****Advertisement Banner Request******");
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -390,13 +396,16 @@ class RemoteDataSource {
   }
 
   //Product Detail api call
-  Future<Result> productDetail(
-      String userId, String accountType, String productID,String pinCode) async {
+  Future<Result> productDetail(String userId, String accountType,
+      String productID, String pinCode) async {
     final response = await client.request(
         requestType: RequestType.POST,
         path: "product/details/" + productID,
-        parameter: {"userId": userId, "accountType": accountType,"pinCode":pinCode});
-
+        parameter: {
+          "userId": userId,
+          "accountType": accountType,
+          "pinCode": pinCode
+        });
 
     print(response.request);
 
@@ -415,15 +424,12 @@ class RemoteDataSource {
     }
   }
 
-
   // Delivery charge for subscription
-  Future<Result> deliveryCharge(
-      double totalAmount, double totalWeight) async {
+  Future<Result> deliveryCharge(double totalAmount, double totalWeight) async {
     final response = await client.request(
         requestType: RequestType.POST,
         path: "user/cart/calculate-delivery-charge_subscription",
         parameter: {"totalAmount": totalAmount, "totalWeights": totalWeight});
-
 
     print(response.request);
 
@@ -442,14 +448,11 @@ class RemoteDataSource {
     }
   }
 
-
-
   //Check Availability API
-  Future<Result> checkAvailabilityAPI(String productID,String pinCode) async {
-    String url="product/"+productID+"/availability/"+pinCode;
-    final response = await client.request(
-        requestType: RequestType.GET,
-        path: url);
+  Future<Result> checkAvailabilityAPI(String productID, String pinCode) async {
+    String url = "product/" + productID + "/availability/" + pinCode;
+    final response =
+        await client.request(requestType: RequestType.GET, path: url);
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -469,14 +472,12 @@ class RemoteDataSource {
 
   //Check Delivery location using pincode
   Future<Result> checkDeliveryLocation(String pinCode) async {
-    String url="product/availability-pincode/"+pinCode;
-    final response = await client.request(
-        requestType: RequestType.GET,
-        path: url);
+    String url = "product/availability-pincode/" + pinCode;
+    final response =
+        await client.request(requestType: RequestType.GET, path: url);
     print(response.request);
 
     if (response.statusCode == 200) {
-
       print(response.body);
       var rawCookie = response.headers['set-cookie'];
       return Result<CheckDeliveryLocationModel>.success(
@@ -496,7 +497,7 @@ class RemoteDataSource {
     final response = await client.request(
         requestType: RequestType.POST,
         path: "multilevel/category",
-        parameter: {"processResponse":true});
+        parameter: {"processResponse": true});
     print(response.request);
 
     if (response.statusCode == 200) {
@@ -525,15 +526,18 @@ class RemoteDataSource {
     if (response.statusCode == 200) {
       print(response.body);
       var rawCookie = response.headers['set-cookie'];
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
-      return Result<DefaultModel>.unAuthored(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.unAuthored(
+          DefaultModel.fromRawJson(response.body));
     } else {
       print('Failed to Cart ');
       return Result.error('Failed Cart');
     }
   }
+
   //Add All to Cart
   Future<Result> addAllToCart(Map reqBody) async {
     final response = await client.request(
@@ -545,15 +549,18 @@ class RemoteDataSource {
     if (response.statusCode == 200) {
       print(response.body);
       var rawCookie = response.headers['set-cookie'];
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
-      return Result<DefaultModel>.unAuthored(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.unAuthored(
+          DefaultModel.fromRawJson(response.body));
     } else {
       print('Failed to Cart ');
       return Result.error('Failed Cart');
     }
   }
+
 // Add to cart
   Future<Result> addToCart(
       String userId,
@@ -563,7 +570,6 @@ class RemoteDataSource {
       int quantity,
       String token,
       ItemCurrentPrice itemCurrentPrice) async {
-
     AddToCartModel addToCartCredential = new AddToCartModel();
     addToCartCredential.userId = userId;
     addToCartCredential.accountType = "customer";
@@ -598,10 +604,11 @@ class RemoteDataSource {
       return Result.error('Failed ');
     }
   }
+
 // Add to cart
   Future<Result> updateCart(UpdateCartCredential updateCartCredential) async {
-print("update Params");
-print(jsonEncode(updateCartCredential));
+    print("update Params");
+    print(jsonEncode(updateCartCredential));
 
     final response = await client.request(
       requestType: RequestType.POST,
@@ -624,6 +631,7 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed ');
     }
   }
+
   //get Delivery Charge api call
   Future<Result> getDeliveryCharge(Map reqBody) async {
     final response = await client.request(
@@ -635,15 +643,18 @@ print(jsonEncode(updateCartCredential));
     if (response.statusCode == 200) {
       print(response.body);
       var rawCookie = response.headers['set-cookie'];
-      return Result<DeliveryChargeModel>.success(DeliveryChargeModel.fromRawJson(response.body));
+      return Result<DeliveryChargeModel>.success(
+          DeliveryChargeModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
-      return Result<DeliveryChargeModel>.unAuthored(DeliveryChargeModel.fromRawJson(response.body));
+      return Result<DeliveryChargeModel>.unAuthored(
+          DeliveryChargeModel.fromRawJson(response.body));
     } else {
       print('Failed to Cart ');
       return Result.error('Failed Cart');
     }
   }
+
   //get Cart api call
   Future<Result> getCart(Map reqBody) async {
     final response = await client.request(
@@ -664,26 +675,31 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed Cart');
     }
   }
+
   //get Cart api call
   Future<Result> getCartCount(String userId) async {
-    String url="user/"+userId+"/customer/cart-items/count";
+    String url = "user/" + userId + "/customer/cart-items/count";
     final response = await client.request(
-        requestType: RequestType.GET,
-        path: url,);
+      requestType: RequestType.GET,
+      path: url,
+    );
     print(response.request);
 
     if (response.statusCode == 200) {
       print(response.body);
       var rawCookie = response.headers['set-cookie'];
-      return Result<CartCountModel>.success(CartCountModel.fromRawJson(response.body));
+      return Result<CartCountModel>.success(
+          CartCountModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
-      return Result<CartCountModel>.unAuthored(CartCountModel.fromRawJson(response.body));
+      return Result<CartCountModel>.unAuthored(
+          CartCountModel.fromRawJson(response.body));
     } else {
       print('Failed to Cart ');
       return Result.error('Failed Cart');
     }
   }
+
   //Address Listing api call
   Future<Result> addressListing(userId) async {
     String url = "user/" + userId + "/address/all";
@@ -779,8 +795,8 @@ print(jsonEncode(updateCartCredential));
   //Place order API
   Future<Result> placeOrderAPI(Map reqBody) async {
     String url = "order/add";
-    final response = await client
-        .request(requestType: RequestType.POST, path: url, parameter:reqBody);
+    final response = await client.request(
+        requestType: RequestType.POST, path: url, parameter: reqBody);
     print(jsonEncode(reqBody));
 
     if (response.statusCode == 200) {
@@ -799,7 +815,7 @@ print(jsonEncode(updateCartCredential));
   }
 
   //Online paymenet verification api call
-  Future<Result> verifyPayment(Map paymentBody,String ) async {
+  Future<Result> verifyPayment(Map paymentBody, String) async {
     print(paymentBody);
     final response = await client.request(
         requestType: RequestType.POST,
@@ -824,7 +840,9 @@ print(jsonEncode(updateCartCredential));
   Future<Result> deleteSingleItemFromCart(Map reqBody) async {
     print(reqBody);
     final response = await client.request(
-        requestType: RequestType.DELETE, path: "user/cart/item/delete", parameter: reqBody);
+        requestType: RequestType.DELETE,
+        path: "user/cart/item/delete",
+        parameter: reqBody);
     print(response.request);
     print(response.body);
     print(response.statusCode);
@@ -852,7 +870,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<OrdersModel>.success(OrdersModel.fromRawJson(response.body));
+      return Result<OrdersModel>.success(
+          OrdersModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<OrdersModel>.unAuthored(
@@ -874,7 +893,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<SubscriptionResponseModel>.success(SubscriptionResponseModel.fromRawJson(response.body));
+      return Result<SubscriptionResponseModel>.success(
+          SubscriptionResponseModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<SubscriptionResponseModel>.unAuthored(
@@ -884,6 +904,7 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed ');
     }
   }
+
 //TeOrders  api call
   Future<Result> reorderAPI(Map reorderPayLoad) async {
     print(reorderPayLoad);
@@ -895,7 +916,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<DefaultModel>.unAuthored(
@@ -905,6 +927,7 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed ');
     }
   }
+
   //Get My Orders  api call
   Future<Result> cancelSubscription(Map myOrdersReqBody) async {
     print(myOrdersReqBody);
@@ -916,7 +939,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<DefaultModel>.unAuthored(
@@ -938,7 +962,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<MyRetunsModel>.success(MyRetunsModel.fromRawJson(response.body));
+      return Result<MyRetunsModel>.success(
+          MyRetunsModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<MyRetunsModel>.unAuthored(
@@ -948,6 +973,7 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed ');
     }
   }
+
   //Cancel  api call
   Future<Result> cancelOrders(Map cancelOrdersReqBody) async {
     print(cancelOrdersReqBody);
@@ -959,7 +985,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<DefaultModel>.unAuthored(
@@ -981,7 +1008,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<DefaultModel>.unAuthored(
@@ -1002,7 +1030,8 @@ print(jsonEncode(updateCartCredential));
 
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<DefaultModel>.success(DefaultModel.fromRawJson(response.body));
+      return Result<DefaultModel>.success(
+          DefaultModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<DefaultModel>.unAuthored(
@@ -1013,17 +1042,16 @@ print(jsonEncode(updateCartCredential));
     }
   }
 
-
   //Cancel  Order reasons for drop down
   Future<Result> cancelOrderReason() async {
     final response = await client.request(
-        requestType: RequestType.GET,
-        path: "admin/get/cancel-reasons");
+        requestType: RequestType.GET, path: "admin/get/cancel-reasons");
     print(response.request);
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<CancelOrderReasonModel>.success(CancelOrderReasonModel.fromRawJson(response.body));
+      return Result<CancelOrderReasonModel>.success(
+          CancelOrderReasonModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<CancelOrderReasonModel>.unAuthored(
@@ -1037,13 +1065,13 @@ print(jsonEncode(updateCartCredential));
   //Reason for Return
   Future<Result> returnReasons() async {
     final response = await client.request(
-        requestType: RequestType.GET,
-        path: "admin/get/return-reasons");
+        requestType: RequestType.GET, path: "admin/get/return-reasons");
     print(response.request);
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<ReasonForReturnModel>.success(ReasonForReturnModel.fromRawJson(response.body));
+      return Result<ReasonForReturnModel>.success(
+          ReasonForReturnModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<ReasonForReturnModel>.unAuthored(
@@ -1065,7 +1093,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<ProfileModel>.success(ProfileModel.fromRawJson(response.body));
+      return Result<ProfileModel>.success(
+          ProfileModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<ProfileModel>.unAuthored(
@@ -1097,7 +1126,7 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed ');
     }
   }
-  
+
   //District
   Future<Result> districtSuggestion(Map districtSuggestion) async {
     print(districtSuggestion);
@@ -1110,7 +1139,8 @@ print(jsonEncode(updateCartCredential));
     print(response.body);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<DistrictModel>.success(DistrictModel.fromRawJson(response.body));
+      return Result<DistrictModel>.success(
+          DistrictModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<DistrictModel>.unAuthored(
@@ -1120,6 +1150,7 @@ print(jsonEncode(updateCartCredential));
       return Result.error('Failed to fetch profile ');
     }
   }
+
   //Search Suggeston api call
   Future<Result> searchSuggestion(Map searchSuggestion) async {
     print(searchSuggestion);
@@ -1131,7 +1162,8 @@ print(jsonEncode(updateCartCredential));
     print(response.statusCode);
     if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<SearchSuggestionModel>.success(SearchSuggestionModel.fromRawJson(response.body));
+      return Result<SearchSuggestionModel>.success(
+          SearchSuggestionModel.fromRawJson(response.body));
     }
     if (response.statusCode == 401) {
       return Result<SearchSuggestionModel>.unAuthored(
@@ -1143,17 +1175,32 @@ print(jsonEncode(updateCartCredential));
   }
 
   Future<Result> appUpdate(Map reqBody) async {
-  final response = await client.request(
-      requestType: RequestType.POST,
-      path: "verify-version",
-      parameter: reqBody);
-  if (response.statusCode == 200) {
+    final response = await client.request(
+        requestType: RequestType.POST,
+        path: "verify-version",
+        parameter: reqBody);
+    if (response.statusCode == 200) {
       print("response is ${response.body}");
-      return Result<AppUpdateModel>.success(AppUpdateModel.fromRawJson(response.body));
-  }
-  else {
+      return Result<AppUpdateModel>.success(
+          AppUpdateModel.fromRawJson(response.body));
+    } else {
       print('Failed');
       return Result.error('Failed');
+    }
   }
-}
+
+  Future<Result> deleteAccount(Map reqBody) async {
+    final response = await client.request(
+        requestType: RequestType.POST,
+        path: "user/delete-customer",
+        parameter: reqBody);
+    if (response.statusCode == 200) {
+      print("response is ${response.body}");
+      return Result<AppUpdateModel>.success(
+          AppUpdateModel.fromRawJson(response.body));
+    } else {
+      print('Failed');
+      return Result.error('Failed');
+    }
+  }
 }

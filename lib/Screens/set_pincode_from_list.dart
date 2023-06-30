@@ -12,7 +12,8 @@ import 'package:highrich/model/check_deliverylocation_model.dart';
 class SetPinCodeFromList extends StatelessWidget {
   final String pinCode;
   final String enteredPinCode;
-   SetPinCodeFromList({Key key, this.pinCode,this.enteredPinCode}) : super(key: key);
+  SetPinCodeFromList({Key key, this.pinCode, this.enteredPinCode})
+      : super(key: key);
 
   RemoteDataSource _apiResponse = RemoteDataSource();
   bool availability;
@@ -75,16 +76,21 @@ class SetPinCodeFromList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
-                        onPressed: () {
-                          checkDeliveryLocation(context,enteredPinCode);
+                        onPressed: () async {
+                          Navigator.pop(context, null);
+                          // SharedPreferences prefs =
+                          //     await SharedPreferences.getInstance();
+                          // prefs.setString("pinCode", pinCode);
+                          // Navigator.pop(context);
                         },
                         child: Text("No")),
                     TextButton(
                         onPressed: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.setString("pinCode", pinCode);
-                          Navigator.of(context).pop("pincode");
+                          // SharedPreferences prefs =
+                          //     await SharedPreferences.getInstance();
+                          // prefs.setString("pinCode", pinCode);
+                          // Navigator.of(context).pop("pincode");
+                          checkDeliveryLocation(context, enteredPinCode);
                         },
                         child: Text("Yes")),
                   ],
@@ -96,10 +102,11 @@ class SetPinCodeFromList extends StatelessWidget {
       ],
     );
   }
+
   Future<CheckDeliveryLocationModel> checkDeliveryLocation(
       BuildContext context, String pinCodeCheckAvailability) async {
     Result result =
-    await _apiResponse.checkDeliveryLocation(pinCodeCheckAvailability);
+        await _apiResponse.checkDeliveryLocation(pinCodeCheckAvailability);
 
     if (result is SuccessState) {
       CheckDeliveryLocationModel checkAvailabilityModel = (result).value;
@@ -115,6 +122,7 @@ class SetPinCodeFromList extends StatelessWidget {
           });
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString("pinCode", checkAvailabilityModel.pinCode);
+
           Navigator.pop(context, [checkAvailabilityModel.pinCode]);
         } else {
           Fluttertoast.showToast(

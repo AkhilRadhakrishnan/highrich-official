@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:highrich/DAO/CartDao.dart';
 import 'package:highrich/entity/CartEntity.dart';
+import 'package:highrich/model/cart_model.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 

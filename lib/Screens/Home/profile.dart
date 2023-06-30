@@ -13,6 +13,7 @@ import 'package:highrich/Screens/delete_account.dart';
 import 'package:highrich/Screens/my_orders.dart';
 import 'package:highrich/Screens/profile_details.dart';
 import 'package:highrich/general/constants.dart';
+import 'package:highrich/model/HomeModel/app_update_model.dart';
 import 'package:highrich/model/Profile/profile_model.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -379,6 +380,30 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ],
                                 ),
                               ),
+                              SizedBox(
+                                height: 18,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  //add what you want to do on tap
+                                  //for navigating to new screen use this
+                                  showDeleteAlertDialog(context);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+
+                                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                                  children: [
+                                    SvgPicture.asset(
+                                        "images/ic_deactivate_account.svg"),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Text("Delete Account")
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         )
@@ -462,6 +487,28 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> deleteAccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userId = prefs.getString('userId');
+    Result result = await _apiResponse
+        .deleteAccount({"userId": userId, "userCode": userCode});
+    if (result is SuccessState) {
+      AppUpdateModel appUpdate = (result).value;
+      if (appUpdate.status == "success") {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool("LOGIN", false);
+        prefs.setString("token", "");
+        prefs.setString("userId", "");
+        prefs.setString("pinCode", "");
+        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.of(context, rootNavigator: true).pushReplacement(
+            MaterialPageRoute(builder: (context) => new BottomNavScreen()));
+      } else {
+        showSnackBar("Failed, please try again later");
+      }
+    }
+  }
+
   //Display snack bar
   void showSnackBar(String message) {
     final snackBarContent = SnackBar(
@@ -473,6 +520,41 @@ class _ProfilePageState extends State<ProfilePage> {
               .hideCurrentSnackBar(reason: SnackBarClosedReason.hide)),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBarContent);
+  }
+
+  showDeleteAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("No"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed: () {
+        deleteAccount();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Account"),
+      content: Text("Are you sure you want to delete your account ?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
 

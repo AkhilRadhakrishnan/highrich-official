@@ -12,13 +12,14 @@ import 'package:highrich/general/default_button.dart';
 import 'package:highrich/model/check_deliverylocation_model.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 /*
  *  2021 Highrich.in
  */
 class SetPincodeFromProductDialog extends StatelessWidget {
   final List<String> serviceLocations;
   final RoundedLoadingButtonController _btnController =
-  new RoundedLoadingButtonController();
+      new RoundedLoadingButtonController();
 
   RemoteDataSource _apiResponse = RemoteDataSource();
   bool availability;
@@ -45,11 +46,9 @@ class SetPincodeFromProductDialog extends StatelessWidget {
   _loadPinCodeInDialog() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     pinCode = (prefs.getString('pinCode') ?? '');
-    if(pinCode==defaultPincode)
-    {
-      pinCode="";
+    if (pinCode == defaultPincode) {
+      pinCode = "";
     }
-
   }
 
   Widget dialogContent(BuildContext context) {
@@ -88,7 +87,6 @@ class SetPincodeFromProductDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Spacer(),
-
                           IconButton(
                             icon: Icon(Icons.close),
                             onPressed: () async {
@@ -96,10 +94,9 @@ class SetPincodeFromProductDialog extends StatelessWidget {
                                   pinCode != ("null") &&
                                   pinCode != ("")) {
                                 Navigator.pop(context);
-                              }
-                              else
-                              {
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                              } else {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
                                 prefs.setString("pinCode", defaultPincode);
                                 Navigator.pop(context);
                               }
@@ -151,7 +148,7 @@ class SetPincodeFromProductDialog extends StatelessWidget {
                       SizedBox(height: 20.0),
                       RoundedLoadingButton(
                           child:
-                          Text('GO', style: TextStyle(color: Colors.white)),
+                              Text('GO', style: TextStyle(color: Colors.white)),
                           controller: _btnController,
                           width: MediaQuery.of(context).size.width - 60,
                           height: 50,
@@ -164,20 +161,28 @@ class SetPincodeFromProductDialog extends StatelessWidget {
                                   controllerPnCode.text != ("")) {
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
-                               final res = await checkDeliveryLocationFromList(context,
-                                     controllerPnCode.text,serviceLocations);
-                               print(res);
-                               if(res!=null){
-                                 if(res==controllerPnCode.text.trim()){
-                                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                   prefs.setString("pinCode", res);
-                                   Navigator.of(context).pop("pincode");
-                                 }else{
-                                   Navigator.of(context).pop([res,controllerPnCode.text.trim()]);
-                                 }
-                               }else{
-                                 Navigator.of(context).pop();
-                               }
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString(
+                                    "pinCode", controllerPnCode.text.trim());
+                                final res = await checkDeliveryLocationFromList(
+                                    context,
+                                    controllerPnCode.text,
+                                    serviceLocations);
+                                print(res);
+                                if (res != null) {
+                                  if (res == controllerPnCode.text.trim()) {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setString("pinCode", res);
+                                    Navigator.of(context).pop("pincode");
+                                  } else {
+                                    Navigator.of(context).pop(
+                                        [res, controllerPnCode.text.trim()]);
+                                  }
+                                } else {
+                                  Navigator.of(context).pop();
+                                }
                               }
                             } else {
                               Fluttertoast.showToast(
@@ -200,19 +205,14 @@ class SetPincodeFromProductDialog extends StatelessWidget {
           ),
         ),
         onWillPop: () async {
-          if (pinCode != null &&
-              pinCode != ("null") &&
-              pinCode != ("")) {
+          if (pinCode != null && pinCode != ("null") && pinCode != ("")) {
             Navigator.pop(context);
-          }
-          else
-          {
+          } else {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString("pinCode", defaultPincode);
             Navigator.pop(context);
           }
         });
-
   }
 
   //Timer to stop button
@@ -235,15 +235,14 @@ class SetPincodeFromProductDialog extends StatelessWidget {
     return nearest;
   }
 
-  Future<String> checkDeliveryLocationFromList(BuildContext context, String pinCodeCheckAvailability,List<String> locations)async{
-    if(locations == null || locations.isEmpty){
+  Future<String> checkDeliveryLocationFromList(BuildContext context,
+      String pinCodeCheckAvailability, List<String> locations) async {
+    if (locations == null || locations.isEmpty) {
       return null;
-    }
-    else if(locations[0]!=null && locations[0]=="All India"){
+    } else if (locations[0] != null && locations[0] == "All India") {
       return pinCodeCheckAvailability.trim();
-    }
-    else{
-      List <int> intStringPincodes = locations.map(int.parse).toList();
+    } else {
+      List<int> intStringPincodes = locations.map(int.parse).toList();
       int value = int.parse(pinCodeCheckAvailability);
       int nearestValue = findNearestValue(intStringPincodes, value);
       return nearestValue.toString();
@@ -254,10 +253,9 @@ class SetPincodeFromProductDialog extends StatelessWidget {
       BuildContext context, String pinCodeCheckAvailability) async {
     RoundedButtonDelayStop();
     Result result =
-    await _apiResponse.checkDeliveryLocation(pinCodeCheckAvailability);
+        await _apiResponse.checkDeliveryLocation(pinCodeCheckAvailability);
 
     if (result is SuccessState) {
-
       CheckDeliveryLocationModel checkAvailabilityModel = (result).value;
       if (checkAvailabilityModel.status == "success") {
         availability = checkAvailabilityModel.availability;
@@ -274,7 +272,6 @@ class SetPincodeFromProductDialog extends StatelessWidget {
 
           // Navigator.pop(context);
           Navigator.pop(context, [checkAvailabilityModel.pinCode]);
-
         } else {
           Fluttertoast.showToast(
               msg: checkAvailabilityModel.message,

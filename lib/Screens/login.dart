@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:dart_notification_center/dart_notification_center.dart';
@@ -25,11 +24,9 @@ import '../general/size_config.dart';
 import 'Home/bottomNavScreen.dart';
 
 class LoginPage extends StatefulWidget {
-
   String fromPage;
   String product_id;
-  LoginPage(
-      {@required this.fromPage,this.product_id});
+  LoginPage({@required this.fromPage, this.product_id});
 
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -55,47 +52,47 @@ class _LoginPageState extends State<LoginPage> {
   RemoteDataSource _apiResponse = RemoteDataSource();
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   final RoundedLoadingButtonController _btnController =
-  new RoundedLoadingButtonController();
-  TextEditingController userNameController=new TextEditingController();
-  TextEditingController passwordController=new TextEditingController();
+      new RoundedLoadingButtonController();
+  TextEditingController userNameController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
 
   @override
   void initState() {
     loadSharedPrefs();
     super.initState();
-    fromPage=widget.fromPage;
-    product_id=widget.product_id;
-    DartNotificationCenter.subscribe(channel: 'LOGIN', observer: this, onNotification: (result) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-
-      }
-    });
+    fromPage = widget.fromPage;
+    product_id = widget.product_id;
+    DartNotificationCenter.subscribe(
+        channel: 'LOGIN',
+        observer: this,
+        onNotification: (result) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+        });
   }
 
   Future<void> loadSharedPrefs() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    email =  preferences.getString("userName");
-    password=preferences.getString("password");
+    email = preferences.getString("userName");
+    password = preferences.getString("password");
 
-    if (email != null && email!=("null")) {
-      userNameController.text=email;
+    if (email != null && email != ("null")) {
+      userNameController.text = email;
     }
-    if (password != null && password!=("null")) {
-      passwordController.text=password;
+    if (password != null && password != ("null")) {
+      passwordController.text = password;
     }
-
   }
 
   Widget build(BuildContext context) {
-
     node = FocusScope.of(context);
 
     SizeConfig().init(context);
 
     var body = new Form(
       key: _formKey,
-      child:Column(
+      child: Column(
         children: [
           logInTitle(),
           SizedBox(height: getProportionateScreenHeight(40)),
@@ -107,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(height: getProportionateScreenHeight(30)),
 
           RoundedLoadingButton(
-
               child: Text('LOGIN', style: TextStyle(color: Colors.white)),
               controller: _btnController,
               width: MediaQuery.of(context).size.width - 60,
@@ -116,9 +112,9 @@ class _LoginPageState extends State<LoginPage> {
               //  borderRadius: 2,
               onPressed: () async {
                 FocusScope.of(context).requestFocus(FocusNode());
-                bool checkConnection = await DataConnectionChecker()
-                    .hasConnection;
-                if(checkConnection == true) {
+                bool checkConnection =
+                    await DataConnectionChecker().hasConnection;
+                if (checkConnection == true) {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
                     setState(() {
@@ -134,53 +130,54 @@ class _LoginPageState extends State<LoginPage> {
                       LogInModel user = (result).value;
                       if (user.status == "success") {
                         if (user.type == "NEW") {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) =>
-                                  SignUpPage(user.highRichId,)));
-                        }
-                        else {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpPage(
+                                        user.highRichId,
+                                      )));
+                        } else {
                           DartNotificationCenter.post(channel: 'LOGIN');
                           AppConfig.isAuthorized = true;
                           SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
+                              await SharedPreferences.getInstance();
                           prefs.setBool("LOGIN", true);
                           prefs.setString("token", user.token);
                           prefs.setString("userId", user.userId);
                           prefs.setString("pinCode", user.pinCode);
                           prefs.setString("userName", email);
                           prefs.setString("password", password);
+
                           prefs.setString("highrichID", user.highRichId);
 
-                          print(user.token);
-                          await SharedPref.shared.setToken(user.token);
-                          if(prefs.getInt("guestCartCount")!=null)
-                            {
-                             int guestCartCount = prefs.getInt("guestCartCount");
-                             if(guestCartCount>0)
-                               {
-                                 DartNotificationCenter.post(channel: 'GET_ALL_CART');
-                               }
+                          // print(user.token);
+                          // await SharedPref.shared.setToken(user.token);
+                          int count = await prefs.getInt("guestCartCount");
+                          if (count != null) {
+                            int guestCartCount =
+                                await prefs.getInt("guestCartCount");
+                            if (guestCartCount > 0) {
+                              DartNotificationCenter.post(
+                                  channel: 'GET_ALL_CART');
                             }
-                          else
-                            {
-                              DartNotificationCenter.post(channel: 'getCart');
-                            }
-                            if (Navigator.canPop(context)) {
-                            Navigator.pop(context,user.token);
+                          } else {
+                            DartNotificationCenter.post(channel: 'getCart');
+                          }
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context, user.token);
                             print("pOP");
                           } else {
                             print("PdOP");
                             print("CAN'T POP SCREEN");
                             Navigator.of(context, rootNavigator: true)
-                                .pushReplacement(MaterialPageRoute(builder: (
-                                context) => new BottomNavScreen()));
+                                .pushReplacement(MaterialPageRoute(
+                                    builder: (context) =>
+                                        new BottomNavScreen()));
                           }
                         }
-                      }
-                      else {
+                      } else {
                         _showAlert("Sorry", user.message);
                       }
-                      
                     } else if (result is UnAuthoredState) {
                       LogInModel unAuthoedUser = (result).value;
                       print(unAuthoedUser.message);
@@ -190,14 +187,11 @@ class _LoginPageState extends State<LoginPage> {
                       return _showAlert('Sorry', errorMessage);
                     }
                   }
+                } else {
+                  _showAlert("No internet connection",
+                      "No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
                 }
-                else
-                  {
-                    _showAlert("No internet connection","No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.");
-                  }
-              }
-
-          ),
+              }),
           SizedBox(height: getProportionateScreenHeight(30)),
           signUp(), //sign_up
           SizedBox(height: getProportionateScreenHeight(70)),
@@ -223,7 +217,6 @@ class _LoginPageState extends State<LoginPage> {
             Spacer(),
           ],
         ),
-
         body: SafeArea(
           child: Container(
             color: Colors.white,
@@ -237,7 +230,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 60,
-                  padding: EdgeInsets.only(top: 25, left: 25, right: 25,bottom: 25),
+                  padding:
+                      EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 25),
                   //  child: isLoading ? bodyProgress : body
                   child: body,
                 ),
@@ -245,8 +239,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        key:_scaffoldkey
-    );
+        key: _scaffoldkey);
   }
 
   Container logInTitle() {
@@ -262,8 +255,8 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.centerLeft,
     );
   }
-  Container buildEmailFormField() {
 
+  Container buildEmailFormField() {
     return Container(
       child: TextFormField(
         style: TextStyle(fontFamily: 'Montserrat-Black'),
@@ -273,14 +266,12 @@ class _LoginPageState extends State<LoginPage> {
         onChanged: (value) {
           return null;
         },
-
         validator: (value) {
           if (value.isEmpty) {
             setState(() {
               RoundedButtonDelayStop();
             });
             return "enter your email";
-
           }
           return null;
         },
@@ -298,12 +289,13 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.grey,
             ),
           ),
-          border:  OutlineInputBorder(
-            borderRadius: BorderRadius.circular(2), borderSide: BorderSide(
-            color: Colors.grey,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(2),
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
           ),
-          ),
-          focusedBorder:OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(2),
             borderSide: BorderSide(
               color: Colors.grey,
@@ -314,6 +306,7 @@ class _LoginPageState extends State<LoginPage> {
       //   height: 80,
     );
   }
+
   Container buildPasswordFormField() {
     return Container(
       child: TextFormField(
@@ -330,7 +323,6 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {
               RoundedButtonDelayStop();
             });
-
           }
           return null;
         },
@@ -348,12 +340,13 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.grey,
             ),
           ),
-          border:  OutlineInputBorder(
-            borderRadius: BorderRadius.circular(2), borderSide: BorderSide(
-            color: Colors.grey,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(2),
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
           ),
-          ),
-          focusedBorder:OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(2),
             borderSide: BorderSide(
               color: Colors.grey,
@@ -372,15 +365,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
   void RoundedButtonDelayStop() async {
     Timer(Duration(seconds: 1), () {
       _btnController.stop();
     });
   }
+
   Container forgotPasswordField() {
     return Container(
-
         alignment: Alignment.centerRight,
         child: GestureDetector(
           onTap: () {
@@ -400,8 +392,9 @@ class _LoginPageState extends State<LoginPage> {
                   fontWeight: FontWeight.w600),
             ),
           ),
-        ));//forgot_password
+        )); //forgot_password
   }
+
   Container signUp() {
     return Container(
         alignment: Alignment.centerLeft,
@@ -411,7 +404,6 @@ class _LoginPageState extends State<LoginPage> {
               print('Sign Up');
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SignUpPage("")));
-
             },
             // onTap: () => Navigator.pushNamed(
             //     context, ForgotPasswordScreen.routeName),
@@ -423,16 +415,22 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 14.0,
                 ),
                 children: <TextSpan>[
-                  new TextSpan(text: 'New to ',style: new TextStyle(color: Colors.black,fontWeight: FontWeight.w600)),
-                  new TextSpan(text: 'Highrich?',style: new TextStyle(color: colorOrange,fontWeight: FontWeight.w600)),
-                  new TextSpan(text: ' REGISTER', style: new TextStyle(color: Colors.black,fontWeight: FontWeight.w600)),
+                  new TextSpan(
+                      text: 'New to ',
+                      style: new TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600)),
+                  new TextSpan(
+                      text: 'Highrich?',
+                      style: new TextStyle(
+                          color: colorOrange, fontWeight: FontWeight.w600)),
+                  new TextSpan(
+                      text: ' REGISTER',
+                      style: new TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600)),
                 ],
               ),
-            )
-        )
-    );
+            )));
   }
-
 
   Future<void> _showAlert(String title, String message) async {
     return showDialog<void>(

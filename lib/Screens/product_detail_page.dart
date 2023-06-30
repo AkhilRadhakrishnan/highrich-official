@@ -291,7 +291,8 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
               ),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Searchpage())).then((value){
+                        MaterialPageRoute(builder: (context) => Searchpage()))
+                    .then((value) {
                   setState(() {
                     _loadPinCode();
                   });
@@ -314,33 +315,37 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                     color: Colors.blue,
                     fontWeight: FontWeight.w700)),
           )),
-          (pinCode != defaultPincode) ? Container(
-            margin: EdgeInsets.only(right: 4),
-            child: IconButton(
-              icon: Icon(
-                Icons.my_location,
-                color: Colors.blue,
-              ),
-              onPressed: () {
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) =>
-                        pinCodeDialog(message: "Please wait")).then((value) {
-                  setState(() {
-                    pinCode = value[0];
-                  });
-                });
-              },
-            ),
-          ) : SizedBox.shrink(),
+          (pinCode != defaultPincode)
+              ? Container(
+                  margin: EdgeInsets.only(right: 4),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.my_location,
+                      color: Colors.blue,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  pinCodeDialog(message: "Please wait"))
+                          .then((value) {
+                        setState(() {
+                          pinCode = value[0];
+                        });
+                      });
+                    },
+                  ),
+                )
+              : SizedBox.shrink(),
           Container(
             margin: EdgeInsets.only(right: 4),
             child: IconButton(
-              icon: Image.asset("images/global_icon.png",height: 22,width: 22),
-              onPressed: () async{
+              icon:
+                  Image.asset("images/global_icon.png", height: 22, width: 22),
+              onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setString("pinCode","");
+                prefs.setString("pinCode", "");
                 _loadPinCode();
               },
             ),
@@ -1499,7 +1504,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                             relatedProductsList[index].source?.productId,
                       ),
                     )).then((value) {
-                      _loadPinCode();
+                  _loadPinCode();
                 });
               },
               child: Column(
@@ -2107,10 +2112,10 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
     DartNotificationCenter.post(channel: "getCart");
   }
 
-  void addToCardAfterPinCode()async{
+  void addToCardAfterPinCode() async {
     bool isAlreadyInCart = false;
     final database =
-    await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+        await $FloorAppDatabase.databaseBuilder('app_database.db').build();
     cartDao = database.cartDao;
 
     setState(() {
@@ -2169,26 +2174,39 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
       if (pinCode != null && pinCode != ("null") && pinCode != "") {
         if (pinCode == defaultPincode) {
           showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (BuildContext context) =>
-                      SetPincodeFromProductDialog(message: "Please wait",
-                          serviceLocations: productDetailModel?.product?.source?.serviceLocations))
-              .then((value) {
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) => SetPincodeFromProductDialog(
+                  message: "Please wait",
+                  serviceLocations: productDetailModel
+                      ?.product?.source?.serviceLocations)).then((value) {
             print(value);
-            if(value==null){
+            if (value == null) {
               return;
-            }
-            else if(value=="pincode"){
+            } else if (value == "pincode") {
               addToCardAfterPinCode();
             } else {
               showDialog(
                   barrierDismissible: true,
                   context: context,
-                  builder: (BuildContext context) =>
-                      SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
-                if(value!=null){
+                  builder: (BuildContext context) => SetPinCodeFromList(
+                      pinCode: value[0],
+                      enteredPinCode: value[1])).then((value) {
+                if (value != null) {
                   addToCardAfterPinCode();
+                } else {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  Future.delayed(
+                    Duration(seconds: 1),
+                    () {
+                      _loadPinCode();
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                  );
                 }
               });
             }
@@ -2208,27 +2226,26 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
             addToCart();
           }
         }
-      }else{
+      } else {
         showDialog(
             barrierDismissible: false,
             context: context,
-            builder: (BuildContext context) =>
-                SetPincodeFromProductDialog(message: "Please wait",
-                    serviceLocations: productDetailModel?.product?.source?.serviceLocations))
-            .then((value) {
+            builder: (BuildContext context) => SetPincodeFromProductDialog(
+                message: "Please wait",
+                serviceLocations: productDetailModel
+                    ?.product?.source?.serviceLocations)).then((value) {
           print(value);
-          if(value==null){
+          if (value == null) {
             return;
-          }
-          else if(value=="pincode"){
+          } else if (value == "pincode") {
             addToCardAfterPinCode();
           } else {
             showDialog(
                 barrierDismissible: true,
                 context: context,
-                builder: (BuildContext context) =>
-                    SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
-              if(value!=null){
+                builder: (BuildContext context) => SetPinCodeFromList(
+                    pinCode: value[0], enteredPinCode: value[1])).then((value) {
+              if (value != null) {
                 addToCardAfterPinCode();
               }
             });
@@ -2289,29 +2306,41 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
         }
       } else {
         showDialog(
-                barrierDismissible: false,
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => SetPincodeFromProductDialog(
+                message: "Please wait",
+                serviceLocations: productDetailModel
+                    ?.product?.source?.serviceLocations)).then((value) async {
+          print(value);
+          if (value == null) {
+            return;
+          } else if (value == "pincode") {
+            addToCardAfterPinCode();
+          } else {
+            showDialog(
+                barrierDismissible: true,
                 context: context,
-                builder: (BuildContext context) =>
-                    SetPincodeFromProductDialog(message: "Please wait",
-                        serviceLocations: productDetailModel?.product?.source?.serviceLocations))
-            .then((value) async{
-              print(value);
-              if(value==null){
-                return;
-              }
-              else if(value=="pincode"){
+                builder: (BuildContext context) => SetPinCodeFromList(
+                    pinCode: value[0], enteredPinCode: value[1])).then((value) {
+              if (value != null) {
                 addToCardAfterPinCode();
               } else {
-                showDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    builder: (BuildContext context) =>
-                    SetPinCodeFromList(pinCode: value[0],enteredPinCode: value[1])).then((value) {
-                      if(value!=null){
-                        addToCardAfterPinCode();
-                      }
+                setState(() {
+                  isLoading = true;
                 });
+                Future.delayed(
+                  Duration(seconds: 1),
+                  () {
+                    _loadPinCode();
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
+                );
               }
+            });
+          }
         });
       }
     }

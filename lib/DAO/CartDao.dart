@@ -2,6 +2,7 @@
 
 import 'package:floor/floor.dart';
 import 'package:highrich/entity/CartEntity.dart';
+import 'package:highrich/model/cart_model.dart';
 
 @dao
 abstract class CartDao {
@@ -11,14 +12,12 @@ abstract class CartDao {
   @Query('SELECT * FROM CartEntity WHERE id = :id')
   Stream<CartEntity> findPersonById(int id);
 
-  @Query("DELETE FROM CartEntity")
-  Future<List<CartEntity>> clearCartEntity();
+  @Query("DELETE * FROM CartEntity")
+  Future<void> clearCartEntity();
 
-  // @Query('UPDATE CartEntity SET order_price=:price WHERE order_id = :id')
-  // Stream<CartEntity> updateGuestCart(int id);
+
 
 
   @insert
   Future<void> addToGuestCart(CartEntity cartEntity);
 }
-

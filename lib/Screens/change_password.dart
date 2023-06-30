@@ -222,7 +222,7 @@ class _ResetPasswordPageState extends State<ChangePasswordPage> {
           if (value.isEmpty) {
             RoundedButtonDelayStop();
             return kPassNullError;
-          } else if (value.length <= 8) {
+          } else if (value.length <= 4) {
             RoundedButtonDelayStop();
             return kShortPassError;
           }
