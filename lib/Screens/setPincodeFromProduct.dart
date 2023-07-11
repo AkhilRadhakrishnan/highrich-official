@@ -163,8 +163,6 @@ class SetPincodeFromProductDialog extends StatelessWidget {
                                     .requestFocus(new FocusNode());
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
-                                prefs.setString(
-                                    "pinCode", controllerPnCode.text.trim());
                                 final res = await checkDeliveryLocationFromList(
                                     context,
                                     controllerPnCode.text,

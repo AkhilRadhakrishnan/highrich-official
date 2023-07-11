@@ -393,4 +393,27 @@ class ServiceLocationRequest {
   }
 }
 
+class PinCodeAvailabilityModel{
+  final String status;
+  final String message;
+  final bool availability;
+  final String pinCode;
+  final Products product;
+
+  PinCodeAvailabilityModel({
+    this.status,
+    this.message,
+    this.availability,
+    this.pinCode,
+    this.product,
+  });
+
+  factory PinCodeAvailabilityModel.fromJson(Map<String, dynamic> json) => PinCodeAvailabilityModel(
+    status: json["status"],
+    message: json["message"],
+    availability: json["availability"],
+    pinCode: json["pinCode"],
+    product: json["product"]==null ? null :  Products.fromJson(json["product"]),
+  );
+}
 

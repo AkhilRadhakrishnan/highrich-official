@@ -1203,4 +1203,23 @@ class RemoteDataSource {
       return Result.error('Failed');
     }
   }
+
+  Future<Result> availabilityAtPinCode(Map reqBody) async {
+    print(reqBody);
+    final response = await client.request(
+        requestType: RequestType.POST,
+        path: "product/availability-at-pincode",
+        parameter: reqBody);
+    print(response.request);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return Result<PinCodeAvailabilityModel>.success(
+          PinCodeAvailabilityModel.fromJson(json));
+    }
+    else {
+      print('Failed ');
+      return Result.error('Failed ');
+    }
+  }
 }

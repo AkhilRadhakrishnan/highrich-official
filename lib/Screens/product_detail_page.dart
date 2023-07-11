@@ -44,6 +44,7 @@ import 'package:highrich/model/check_availability_model.dart';
 import 'package:highrich/model/default_model.dart';
 import 'package:highrich/model/deliveryCharge.dart';
 import 'package:highrich/model/product_detail_model.dart';
+import 'package:highrich/model/product_model.dart' as productModel;
 import 'package:highrich/model/subscription_model.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -2111,7 +2112,6 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
     );
     DartNotificationCenter.post(channel: "getCart");
   }
-
   void addToCardAfterPinCode() async {
     bool isAlreadyInCart = false;
     final database =
@@ -2166,6 +2166,131 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
     _loadPinCode();
   }
 
+  _availabilityAtPinCodeGuestCart(productModel.PinCodeAvailabilityModel model) async {
+    getGuestCartCount();
+    productModel.Products product = productModel.Products();
+    product = model.product;
+    CartItems cartItemModel = new CartItems();
+    cartItemModel.productId = product.source.productId;
+    cartItemModel.productName = product.source.name;
+    cartItemModel.vendorId = product.source.vendorId;
+    cartItemModel.vendorType = product.source.vendorType;
+    cartItemModel.quantity = qty;
+    cartItemModel.image = product.source.images[0];
+
+   final productUnit = product.source.processedPriceAndStock.firstWhere((element) =>
+    (element.quantity==selectedUnit.quantity) && (element.unit==selectedUnit.unit),
+      orElse: ()=>product.source.processedPriceAndStock[0]
+    );
+
+    cartItemModel.itemCurrentPrice = productUnit;
+    cartItemModel.processedPriceAndStocks = product.source.processedPriceAndStock;
+    String jsonCartItemModel = jsonEncode(cartItemModel);
+    print(jsonCartItemModel);
+
+    final cart = CartEntity(null, jsonCartItemModel);
+    await cartDao.addToGuestCart(cart);
+    Fluttertoast.showToast(
+        msg: "Item Added to Cart", backgroundColor: Color(0xFF42A5F5));
+    // showDialog(
+    //     barrierDismissible: false,
+    //     context: context,
+    //     builder: (BuildContext context) =>
+    //         CustomDialog(message: "Item added to cart"));
+
+    setState(() {
+      isLoading = false;
+      if (guestCartCount != null) {
+        guestCartCount = guestCartCount + qty;
+      } else {
+        guestCartCount = 1;
+      }
+
+      setGuestCartCount(guestCartCount);
+    });
+    DartNotificationCenter.post(
+      channel: "cartCount_event",
+      options: "getGuestCart",
+    );
+    DartNotificationCenter.post(channel: "getCart");
+  }
+
+  void availabilityAtPinCodeAddToCardAfterPinCode(productModel.PinCodeAvailabilityModel model) async {
+    bool isAlreadyInCart = false;
+    final database =
+    await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+    cartDao = database.cartDao;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    List<CartEntity> resultEntity = await cartDao.getGuestCart();
+    List<String> cartListTemp = new List();
+    List<CartItems> getCartList = new List();
+    List<int> seriesIDList = new List();
+    List<String> guestCartProductIDList = new List();
+    cartListTemp = resultEntity.map((e) => e.itemsInCart).toList();
+    Map<String, dynamic> userMap;
+    cartListTemp.map((e) => null);
+    for (int i = 0; i < cartListTemp.length; i++) {
+      Map<String, dynamic> userMap = jsonDecode(cartListTemp[i]);
+
+      CartItems cartItemModel = CartItems.fromJson(userMap);
+
+      setState(() {
+        getCartList.add(cartItemModel);
+        guestCartProductIDList.add(cartItemModel.productId);
+        seriesIDList.add(cartItemModel.itemCurrentPrice.serialNumber);
+      });
+    }
+    final productUnit = model.product.source.processedPriceAndStock.firstWhere((element) =>
+    (element.quantity==selectedUnit.quantity) && (element.unit==selectedUnit.unit),
+        orElse: ()=>model.product.source.processedPriceAndStock[0]
+    );
+    if (guestCartProductIDList.contains(model.product.source.productId)) {
+      getCartList.forEach((element) {
+        if (element.itemCurrentPrice.serialNumber ==
+            productUnit.serialNumber) {
+          isAlreadyInCart = true;
+        }
+      });
+      if (isAlreadyInCart) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) =>
+                CustomDialog(message: "Item already exist in the cart"));
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        _availabilityAtPinCodeGuestCart(model);
+      }
+    } else {
+      _availabilityAtPinCodeGuestCart(model);
+    }
+    _loadPinCode();
+  }
+
+  availabilityAtPinCode({String name,String pinCode,int quantity}) async {
+    Map<String,dynamic> map = {
+      "name": name,
+      "pincode": pinCode,
+      "quantity": quantity
+    };
+    Result result = await _apiResponse.availabilityAtPinCode(map);
+
+    if (result is SuccessState) {
+      print(result.value);
+      final model = result.value as productModel.PinCodeAvailabilityModel;
+      if(model.product!=null){
+        availabilityAtPinCodeAddToCardAfterPinCode(model);
+      }
+    }
+  }
+
+
   _moveToCart() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = await SharedPref.shared.getToken();
@@ -2186,11 +2311,12 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
             } else if (value == "pincode") {
               addToCardAfterPinCode();
             } else {
-              showDialog(
+              availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty);
+              /*showDialog(
                   barrierDismissible: true,
                   context: context,
                   builder: (BuildContext context) => SetPinCodeFromList(
-                      pinCode: value[0],
+                      pinCode: value[0],value[1]
                       enteredPinCode: value[1])).then((value) {
                 if (value != null) {
                   addToCardAfterPinCode();
@@ -2208,7 +2334,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                     },
                   );
                 }
-              });
+              });*/
             }
           });
         } else {
@@ -2240,7 +2366,8 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
           } else if (value == "pincode") {
             addToCardAfterPinCode();
           } else {
-            showDialog(
+            availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty);
+            /*showDialog(
                 barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) => SetPinCodeFromList(
@@ -2248,7 +2375,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
               if (value != null) {
                 addToCardAfterPinCode();
               }
-            });
+            });*/
           }
         });
       }
@@ -2318,7 +2445,8 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
           } else if (value == "pincode") {
             addToCardAfterPinCode();
           } else {
-            showDialog(
+            availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty);
+            /*showDialog(
                 barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) => SetPinCodeFromList(
@@ -2339,7 +2467,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
                   },
                 );
               }
-            });
+            });*/
           }
         });
       }
