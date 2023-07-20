@@ -576,7 +576,7 @@ class _ProductListingPageState extends State<ProductListing> {
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 300,
-                          childAspectRatio: 1 / 1.95,
+                          childAspectRatio: 1 / 1.70,
                           //  crossAxisSpacing: 0,
                           mainAxisSpacing: 2),
                       controller: scrollController,
@@ -931,7 +931,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                                         ) : SizedBox.shrink()
                                                       : Container(),
                                                   SizedBox(height: 2),
-                                                  ElevatedButton(
+                                                  /*ElevatedButton(
                                                     style: ElevatedButton
                                                         .styleFrom(
                                                       minimumSize: Size(
@@ -942,7 +942,7 @@ class _ProductListingPageState extends State<ProductListing> {
                                                       _moveToCart(index);
                                                     },
                                                     child: Text('ADD TO CART'),
-                                                  ),
+                                                  ),*/
 
                                                   //  Expanded(child: Container(
                                                   //   padding: EdgeInsets.only(top: 5, bottom: 5),

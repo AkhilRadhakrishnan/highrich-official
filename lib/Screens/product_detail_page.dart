@@ -20,6 +20,7 @@ import 'package:highrich/Screens/address.dart';
 import 'package:highrich/Screens/delivery_address.dart';
 import 'package:highrich/Screens/login.dart';
 import 'package:highrich/Screens/pincodeDialog.dart';
+import 'package:highrich/Screens/product_change_alert.dart';
 import 'package:highrich/Screens/profile_details.dart';
 import 'package:highrich/Screens/progress_hud.dart';
 import 'package:highrich/Screens/search.dart';
@@ -2175,7 +2176,6 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
     cartItemModel.productName = product.source.name;
     cartItemModel.vendorId = product.source.vendorId;
     cartItemModel.vendorType = product.source.vendorType;
-    cartItemModel.quantity = qty;
     cartItemModel.image = product.source.images[0];
 
    final productUnit = product.source.processedPriceAndStock.firstWhere((element) =>
@@ -2183,6 +2183,7 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
       orElse: ()=>product.source.processedPriceAndStock[0]
     );
 
+    cartItemModel.quantity = qty;
     cartItemModel.itemCurrentPrice = productUnit;
     cartItemModel.processedPriceAndStocks = product.source.processedPriceAndStock;
     String jsonCartItemModel = jsonEncode(cartItemModel);
@@ -2190,13 +2191,17 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
 
     final cart = CartEntity(null, jsonCartItemModel);
     await cartDao.addToGuestCart(cart);
+    SharedPreferences prefs =
+
+    await SharedPreferences.getInstance();
+    prefs.setString("pinCode", model.pinCode);
+    _loadPinCode();
     Fluttertoast.showToast(
         msg: "Item Added to Cart", backgroundColor: Color(0xFF42A5F5));
-    // showDialog(
-    //     barrierDismissible: false,
-    //     context: context,
-    //     builder: (BuildContext context) =>
-    //         CustomDialog(message: "Item added to cart"));
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => ProductChangeAlert());
 
     setState(() {
       isLoading = false;
@@ -2273,7 +2278,202 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
     _loadPinCode();
   }
 
-  availabilityAtPinCode({String name,String pinCode,int quantity}) async {
+  Future<String> checkDeliveryLocationFromList(BuildContext context,
+      String pinCodeCheckAvailability, List<String> locations) async {
+    if (locations == null || locations.isEmpty) {
+      return null;
+    } else if (locations[0] != null && locations[0] == "All India") {
+      return pinCodeCheckAvailability.trim();
+    } else {
+      List<int> intStringPincodes = locations.map(int.parse).toList();
+      int value = int.parse(pinCodeCheckAvailability);
+      int nearestValue = findNearestValue(intStringPincodes, value);
+      return nearestValue.toString();
+    }
+  }
+
+  int findNearestValue(List<int> numbers, int target) {
+    int nearest = numbers[0];
+    int difference = (numbers[0] - target).abs();
+    for (int i = 1; i < numbers.length; i++) {
+      int currentDifference = (numbers[i] - target).abs();
+      if (currentDifference < difference) {
+        nearest = numbers[i];
+        difference = currentDifference;
+      }
+    }
+    return nearest;
+  }
+
+  Future<void> addToCartAuthenticated(productModel.PinCodeAvailabilityModel model) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final token = preferences.getString("token");
+    userId = preferences.getString("userId");
+    productBatchesList.clear();
+
+    final productUnit = model.product.source.processedPriceAndStock.firstWhere((element) =>
+    (element.quantity==selectedUnit.quantity) && (element.unit==selectedUnit.unit),
+        orElse: ()=>model.product.source.processedPriceAndStock[0]
+    );
+
+    itemCurrentPriceCredential.serialNumber = productUnit.serialNumber;
+    itemCurrentPriceCredential.batchNumbers = productUnit.batchNumbers;
+    itemCurrentPriceCredential.variant = productUnit.variant;
+    itemCurrentPriceCredential.quantity = productUnit.quantity;
+    itemCurrentPriceCredential.unit = productUnit.unit;
+    itemCurrentPriceCredential.batchType = productUnit.batchType;
+    itemCurrentPriceCredential.addedDate = productUnit.addedDate;
+    itemCurrentPriceCredential.expiryDate = productUnit.expiryDate;
+    itemCurrentPriceCredential.price = productUnit.price.toDouble();
+    itemCurrentPriceCredential.weightInKg = productUnit.weightInKg;
+    if (itemCurrentPriceCredential.discount.toString() != null &&
+        itemCurrentPriceCredential.discount.toString() != ("null")) {
+      itemCurrentPriceCredential.discount = productUnit.discount.toDouble();
+    } else {
+      itemCurrentPriceCredential.discount = 0;
+    }
+    itemCurrentPriceCredential.stock = productUnit.stock;
+    itemCurrentPriceCredential.sellingPrice =
+        productUnit.sellingPrice.toDouble();
+    itemCurrentPriceCredential.salesIncentive = productUnit.salesIncentive;
+    setState(() {
+      isLoading = true;
+    });
+    print(jsonEncode(itemCurrentPriceCredential));
+    Result result = await _apiResponse.addToCart(userId, model.product.id, model.product.source.vendorId,
+        model.product.source.vendorType, qty, token, itemCurrentPriceCredential);
+    setState(() {
+      isLoading = false;
+    });
+    if (result is SuccessState) {
+      DefaultModel defaultModel = (result).value;
+      if (defaultModel.status == "success") {
+        DartNotificationCenter.post(
+          channel: "cartCount_event",
+          options: "getCart",
+        );
+        DartNotificationCenter.post(channel: 'getCart');
+        SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+        prefs.setString("pinCode", model.pinCode);
+        _loadPinCode();
+        Fluttertoast.showToast(
+            msg: "Item Added to Cart", backgroundColor: Color(0xFF42A5F5));
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => ProductChangeAlert());
+      } else {
+        showSnackBar("Failed, please try agian later");
+      }
+    } else if (result is UnAuthoredState) {
+      DefaultModel unAuthoedUser = (result).value;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool("LOGIN", false);
+      prefs.setString("token", "");
+      prefs.setString("userId", "");
+      prefs.setString("pinCode", "");
+
+      Navigator.of(context, rootNavigator: true).pushReplacement(
+          MaterialPageRoute(builder: (context) => new BottomNavScreen()));
+      showSnackBar("Failed, please try agian later");
+    } else if (result is ErrorState) {
+      String errorMessage = (result).msg;
+      showSnackBar("Failed, please try agian later");
+    }
+  }
+
+  availabilityAtPinCodeAuthenticated({String name,String pinCode,int quantity,List<String> serviceLocations}) async {
+    Map<String,dynamic> map = {
+      "name": name,
+      "pincode": pinCode,
+      "quantity": quantity
+    };
+    Result result = await _apiResponse.availabilityAtPinCode(map);
+
+    if (result is SuccessState) {
+      print(result.value);
+      final model = result.value as productModel.PinCodeAvailabilityModel;
+      if(model.product!=null){
+        addToCartAuthenticated(model);
+      }else{
+        Result result = await _apiResponse.nearestForPinCode(map);
+        if(result is SuccessState){
+          print(result.value);
+          final model = result.value as productModel.PinCodeAvailabilityModel;
+          if(model.product!=null){
+            final res = await checkDeliveryLocationFromList(
+                context,
+                pinCode,
+                model.product.source.serviceLocations);
+            print(res);
+            if (res != null) {
+              if (res == pinCode.trim()) {
+                addToCartAuthenticated(model);
+              } else {
+                if(pinCode==res){
+                  addToCartAuthenticated(model);
+                }
+                else{
+                  showDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (BuildContext context) => SetPinCodeFromList(
+                          pinCode: res,
+                          enteredPinCode: pinCode)).then((value) async{
+                    if (value != null) {
+                      SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                      prefs.setString("pinCode", res);
+                      addToCartAuthenticated(model);
+                    }else{
+                      SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                      prefs.setString("pinCode", pinCode);
+                      _loadPinCode();
+                    }
+                  });
+                }
+              }
+            }
+          }else{
+            final res = await checkDeliveryLocationFromList(
+                context,
+                pinCode,
+                serviceLocations);
+            print(res);
+            if (res != null) {
+              if(pinCode==res){
+                addToCardAfterPinCode();
+              }
+              else{
+                showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) => SetPinCodeFromList(
+                        pinCode: res,
+                        enteredPinCode: pinCode)).then((value) async{
+                  if (value != null) {
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                    prefs.setString("pinCode", res);
+                    addToCardAfterPinCode();
+                  }else{
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                    prefs.setString("pinCode", pinCode);
+                    _loadPinCode();
+                  }
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  availabilityAtPinCode({String name,String pinCode,int quantity,List<String> serviceLocations}) async {
     Map<String,dynamic> map = {
       "name": name,
       "pincode": pinCode,
@@ -2286,6 +2486,81 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
       final model = result.value as productModel.PinCodeAvailabilityModel;
       if(model.product!=null){
         availabilityAtPinCodeAddToCardAfterPinCode(model);
+      }else{
+        Result result = await _apiResponse.nearestForPinCode(map);
+        if(result is SuccessState){
+          print(result.value);
+          final model = result.value as productModel.PinCodeAvailabilityModel;
+          if(model.product!=null){
+            final res = await checkDeliveryLocationFromList(
+                context,
+                pinCode,
+                model.product.source.serviceLocations);
+            print(res);
+            if (res != null) {
+              if (res == pinCode.trim()) {
+                SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+                prefs.setString("pinCode", res);
+                availabilityAtPinCodeAddToCardAfterPinCode(model);
+              } else {
+                if(pinCode==res){
+                  availabilityAtPinCodeAddToCardAfterPinCode(model);
+                }else{
+                  showDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (BuildContext context) => SetPinCodeFromList(
+                          pinCode: res,
+                          enteredPinCode: pinCode)).then((value) async{
+                    if (value != null) {
+                      SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                      prefs.setString("pinCode", res);
+                      availabilityAtPinCodeAddToCardAfterPinCode(model);
+                    }else{
+                      SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                      prefs.setString("pinCode", pinCode);
+                      _loadPinCode();
+                    }
+                  });
+                }
+              }
+            }
+          }else{
+            final res = await checkDeliveryLocationFromList(
+                context,
+                pinCode,
+                serviceLocations);
+            print(res);
+            if (res != null) {
+              if(pinCode==res){
+                addToCardAfterPinCode();
+              }
+              else{
+                showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) => SetPinCodeFromList(
+                        pinCode: res,
+                        enteredPinCode: pinCode)).then((value) async{
+                  if (value != null) {
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                    prefs.setString("pinCode", res);
+                    addToCardAfterPinCode();
+                  }else{
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                    prefs.setString("pinCode", pinCode);
+                    _loadPinCode();
+                  }
+                });
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -2311,30 +2586,8 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
             } else if (value == "pincode") {
               addToCardAfterPinCode();
             } else {
-              availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty);
-              /*showDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (BuildContext context) => SetPinCodeFromList(
-                      pinCode: value[0],value[1]
-                      enteredPinCode: value[1])).then((value) {
-                if (value != null) {
-                  addToCardAfterPinCode();
-                } else {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  Future.delayed(
-                    Duration(seconds: 1),
-                    () {
-                      _loadPinCode();
-                      setState(() {
-                        isLoading = false;
-                      });
-                    },
-                  );
-                }
-              });*/
+              availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty,serviceLocations: productDetailModel
+                  ?.product?.source?.serviceLocations);
             }
           });
         } else {
@@ -2346,10 +2599,12 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
             if (seriesIDList.contains(selectedUnit.serialNumber)) {
               showToast("Item already exist in the cart");
             } else {
-              addToCart();
+              availabilityAtPinCodeAuthenticated(name: productName, pinCode: pinCode,quantity: qty,serviceLocations: productDetailModel
+                  ?.product?.source?.serviceLocations);
             }
           } else {
-            addToCart();
+            availabilityAtPinCodeAuthenticated(name: productName, pinCode: pinCode,quantity: qty,serviceLocations: productDetailModel
+                ?.product?.source?.serviceLocations);
           }
         }
       } else {
@@ -2366,71 +2621,15 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
           } else if (value == "pincode") {
             addToCardAfterPinCode();
           } else {
-            availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty);
-            /*showDialog(
-                barrierDismissible: true,
-                context: context,
-                builder: (BuildContext context) => SetPinCodeFromList(
-                    pinCode: value[0], enteredPinCode: value[1])).then((value) {
-              if (value != null) {
-                addToCardAfterPinCode();
-              }
-            });*/
+            availabilityAtPinCodeAuthenticated(name: productName, pinCode: value[1],quantity: qty,serviceLocations: productDetailModel
+                ?.product?.source?.serviceLocations);
           }
         });
       }
     } else {
       if (pinCode != null && pinCode != ("null") && pinCode != "") {
-        bool isAlreadyInCart = false;
-        final database =
-            await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-        cartDao = database.cartDao;
-
-        setState(() {
-          isLoading = true;
-        });
-
-        List<CartEntity> resultEntity = await cartDao.getGuestCart();
-        List<String> cartListTemp = new List();
-        List<CartItems> getCartList = new List();
-        List<int> seriesIDList = new List();
-        List<String> guestCartProductIDList = new List();
-        cartListTemp = resultEntity.map((e) => e.itemsInCart).toList();
-        Map<String, dynamic> userMap;
-        cartListTemp.map((e) => null);
-        for (int i = 0; i < cartListTemp.length; i++) {
-          Map<String, dynamic> userMap = jsonDecode(cartListTemp[i]);
-
-          CartItems cartItemModel = CartItems.fromJson(userMap);
-
-          setState(() {
-            getCartList.add(cartItemModel);
-            guestCartProductIDList.add(cartItemModel.productId);
-            seriesIDList.add(cartItemModel.itemCurrentPrice.serialNumber);
-          });
-        }
-        if (guestCartProductIDList.contains(productID)) {
-          getCartList.forEach((element) {
-            if (element.itemCurrentPrice.serialNumber ==
-                selectedUnit.serialNumber) {
-              isAlreadyInCart = true;
-            }
-          });
-          if (isAlreadyInCart) {
-            showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) =>
-                    CustomDialog(message: "Item already exist in the cart"));
-            setState(() {
-              isLoading = false;
-            });
-          } else {
-            _guestCart();
-          }
-        } else {
-          _guestCart();
-        }
+        availabilityAtPinCode(name: productName, pinCode: pinCode,quantity: qty,serviceLocations: productDetailModel
+            ?.product?.source?.serviceLocations);
       } else {
         showDialog(
             barrierDismissible: false,
@@ -2445,29 +2644,8 @@ class __Product_Detail_PageState extends State<Product_Detail_Page> {
           } else if (value == "pincode") {
             addToCardAfterPinCode();
           } else {
-            availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty);
-            /*showDialog(
-                barrierDismissible: true,
-                context: context,
-                builder: (BuildContext context) => SetPinCodeFromList(
-                    pinCode: value[0], enteredPinCode: value[1])).then((value) {
-              if (value != null) {
-                addToCardAfterPinCode();
-              } else {
-                setState(() {
-                  isLoading = true;
-                });
-                Future.delayed(
-                  Duration(seconds: 1),
-                  () {
-                    _loadPinCode();
-                    setState(() {
-                      isLoading = false;
-                    });
-                  },
-                );
-              }
-            });*/
+            availabilityAtPinCode(name: productName, pinCode: value[1],quantity: qty,serviceLocations: productDetailModel
+                ?.product?.source?.serviceLocations);
           }
         });
       }

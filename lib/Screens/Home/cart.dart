@@ -434,6 +434,7 @@ class _CartPageState extends State<CartPage> {
                         totalHRP = 0.0;
                         totalMRP = 0.0;
                         discount = 0.0;
+                        guestCartCount = 0;
                         for (int i = 0; i < cartList.length; i++) {
                           double sellingPrice =
                               cartList[i].itemCurrentPrice.sellingPrice;
@@ -446,7 +447,7 @@ class _CartPageState extends State<CartPage> {
                           totalMRP = totalMRP + mrpTotal;
                           discount = totalMRP - totalHRP;
                           if (cartList.length > 0) {
-                            guestCartCount = cartList[i].quantity;
+                            guestCartCount = guestCartCount + cartList[i].quantity;
                             setGuestCartCount(guestCartCount);
                           }
                         }
