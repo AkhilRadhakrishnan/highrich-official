@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    _resetPinCode();
     _loadPinCode();
     getCategory();
     _onRefresh();
@@ -141,6 +142,13 @@ class _HomePageState extends State<HomePage> {
       String errorMessage = (result).msg;
       showSnackBar("Failed, please try agian later");
     }
+  }
+
+  _resetPinCode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString("pinCode", "");
+    });
   }
 
   _loadPinCode() async {
