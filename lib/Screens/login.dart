@@ -144,11 +144,11 @@ class _LoginPageState extends State<LoginPage> {
                           prefs.setBool("LOGIN", true);
                           prefs.setString("token", user.token);
                           prefs.setString("userId", user.userId);
-                          prefs.setString("pinCode", user.pinCode);
+                          //prefs.setString("pinCode", user.pinCode);
                           prefs.setString("userName", email);
                           prefs.setString("password", password);
 
-                          prefs.setString("highrichID", user.highRichId);
+                          //prefs.setString("highrichID", user.highRichId);
 
                           // print(user.token);
                           // await SharedPref.shared.setToken(user.token);

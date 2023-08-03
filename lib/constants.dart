@@ -24,4 +24,4 @@ const String appStore = "https://apps.apple.com/in/app/highrich/id1577895771";
 const String androidAppType = "ANDROID";
 const String androidAppVersion = "1.2.26";
 const String iosAppType = "IOS";
-const String iOSAppVersion = "1.2.26";
+const String iOSAppVersion = "1.0.11";
